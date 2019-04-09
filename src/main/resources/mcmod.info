@@ -1,0 +1,16 @@
+[
+{
+  "modid": "aeonicraft",
+  "name": "Aeonicraft",
+  "description": "Tick tock tick tock...",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Lumaceon"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
