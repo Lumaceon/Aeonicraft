@@ -1,11 +1,14 @@
 package lumaceon.mods.aeonicraft.capability.timelink;
 
+import lumaceon.mods.aeonicraft.util.BlockLoc;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+
+import java.util.ArrayList;
 
 public class CapabilityTimeLink
 {
@@ -38,17 +41,37 @@ public class CapabilityTimeLink
          */
         long getTime();
 
+        BlockLoc[] getCompressorLocations();
+
+        /**
+         * Adds the location to the list of compressor locations only if it doesn't already exist.
+         */
+        void addCompressorLocationIfUnique(BlockLoc location);
+
         void loadFromNBT(NBTBase nbt);
         NBTTagCompound saveToNBT();
     }
 
     public static class TimeLinkHandler implements ITimeLinkHandler
     {
-
+        protected ArrayList<BlockLoc> compressorLocations = new ArrayList<>();
 
         @Override
         public long getTime() {
             return 0;
+        }
+
+        @Override
+        public BlockLoc[] getCompressorLocations() {
+            return compressorLocations.toArray(new BlockLoc[0]);
+        }
+
+        @Override
+        public void addCompressorLocationIfUnique(BlockLoc location) {
+            if(!compressorLocations.contains(location))
+            {
+                compressorLocations.add(location);
+            }
         }
 
         @Override
@@ -58,7 +81,7 @@ public class CapabilityTimeLink
 
         @Override
         public NBTTagCompound saveToNBT() {
-            return null;
+            return new NBTTagCompound();
         }
     }
 }
