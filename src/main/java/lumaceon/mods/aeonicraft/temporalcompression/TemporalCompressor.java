@@ -3,11 +3,12 @@ package lumaceon.mods.aeonicraft.temporalcompression;
 import lumaceon.mods.aeonicraft.util.BlockLoc;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 /**
  * Defines the workings of a temporal compressor. Compressors (usually) don't actually do anything via
  * tiles which are meant to be unloaded. Instead, a TemporalCompressor instance is created, stored on a WorldSavedData
- * extension, and updated from a server tick event.
+ * extension, and updated from a server tick handler.
  */
 public class TemporalCompressor
 {
@@ -37,23 +38,32 @@ public class TemporalCompressor
         this.location = location;
     }
 
-    public void updateTick(World worldUpdatedFrom)
+    /**
+     * @return True if internal values of have changed, false if not.
+     */
+    public boolean updateTick(World worldUpdatedFrom)
     {
+        boolean ret;
         if(worldUpdatedFrom.provider.getDimension() != location.getDimensionID())
-            return;
+            return false;
 
-        if(worldUpdatedFrom.getChunkProvider().getLoadedChunk(location.getX() >> 4, location.getZ() >> 4) != null)
+        Chunk c = worldUpdatedFrom.getChunkProvider().getLoadedChunk(location.getX() >> 4, location.getZ() >> 4);
+        if(c != null && c.isLoaded())
         {
             // Chunk is loaded - destroy all stored time and skip the rest of the update
+            ret = timeInMilliseconds != 0;
             timeInMilliseconds = 0;
-            return;
+            return ret;
         }
 
+        ret = timeInMilliseconds == timeCapacityInMilliseconds;
+        if(ret) return false; // Already at max capacity - return with no change
+
         timeInMilliseconds += timeProductionInMillisecondsPerTick;
-        if(timeInMilliseconds > timeCapacityInMilliseconds)
-        {
+        if(timeInMilliseconds > timeCapacityInMilliseconds) {
             timeInMilliseconds = timeCapacityInMilliseconds;
         }
+        return true;
     }
 
     public long getTimeCapacityInMilliseconds()

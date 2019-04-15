@@ -59,6 +59,17 @@ public class ExtendedWorldData extends WorldSavedData
         markDirty();
     }
 
+    public boolean updateCompressorAt(BlockLoc location, World world)
+    {
+        TemporalCompressor tc = temporalCompressorProcesses.get(location);
+        if(tc != null) {
+            boolean dirty = tc.updateTick(world);
+            if(dirty) { this.markDirty(); }
+            return dirty;
+        }
+        return false; // No compressor; no change
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {

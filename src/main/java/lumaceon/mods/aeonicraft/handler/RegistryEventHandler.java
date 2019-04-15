@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.event;
+package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.init.ModBlocks;
 import lumaceon.mods.aeonicraft.init.ModItems;

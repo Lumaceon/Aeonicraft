@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.util;
 
+import com.google.common.base.MoreObjects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -65,5 +66,10 @@ public class BlockLoc extends BlockPos
                 return this.dimID == loc.getDimensionID();
             }
         }
+    }
+
+    public String toString()
+    {
+        return MoreObjects.toStringHelper(this).add("x", this.getX()).add("y", this.getY()).add("z", this.getZ()).add("dim_id", this.getDimensionID()).toString();
     }
 }

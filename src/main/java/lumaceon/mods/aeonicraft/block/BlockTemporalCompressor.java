@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -26,6 +27,7 @@ public class BlockTemporalCompressor extends BlockAeonicraft implements ITempora
 
     public BlockTemporalCompressor(Material blockMaterial, String name) {
         super(blockMaterial, name);
+        this.setLightLevel(1.0F);
     }
 
     @Override
@@ -53,5 +55,11 @@ public class BlockTemporalCompressor extends BlockAeonicraft implements ITempora
         {
             cap.addCompressorLocationIfUnique(new BlockLoc(pos, world));
         }
+    }
+
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
+    {
+        return face == EnumFacing.DOWN;
     }
 }

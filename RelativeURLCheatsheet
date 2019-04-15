@@ -1,0 +1,3 @@
+Blockstate Texture path - aeonicraft:blocks/test = aeonicraft/textures/blocks/test.png
+Blockstate Model path - aeonicraft:block = aeonicraft/models/block/block
+Resource Location Model path - aeonicraft:block/block = aeonicraft/models/block/block

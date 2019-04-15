@@ -3,6 +3,7 @@ package lumaceon.mods.aeonicraft;
 import lumaceon.mods.aeonicraft.init.ModBlocks;
 import lumaceon.mods.aeonicraft.init.ModCapabilities;
 import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.proxy.IProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -47,6 +48,8 @@ public class Aeonicraft
     {
         logger = event.getModLog();
 
+        proxy.preInit();
+
         ModBlocks.initTE();
         ModCapabilities.init();
 
@@ -57,5 +60,6 @@ public class Aeonicraft
     public void init(FMLInitializationEvent event)
     {
         //ModBlocks.initModels();
+        PacketHandler.init();
     }
 }
