@@ -1,7 +1,9 @@
 package lumaceon.mods.aeonicraft.item;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
+import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.timelink.CapabilityTimeLink;
+import lumaceon.mods.aeonicraft.lib.GUIs;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
 import lumaceon.mods.aeonicraft.temporalcompression.ITemporalCompressorLinkableBlock;
@@ -38,6 +40,8 @@ public class ItemTemporalHourglass extends ItemAeonicraft
 {
     @CapabilityInject(CapabilityTimeLink.ITimeLinkHandler.class)
     private static final Capability<CapabilityTimeLink.ITimeLinkHandler> TIME_LINK = null;
+    @CapabilityInject(CapabilityHourglass.IHourglassHandler.class)
+    public static final Capability<CapabilityHourglass.IHourglassHandler> HOURGLASS = null;
 
     public ItemTemporalHourglass(int maxStack, int maxDamage, String name) {
         super(maxStack, maxDamage, name);
@@ -77,13 +81,6 @@ public class ItemTemporalHourglass extends ItemAeonicraft
     }
 
     @Override
-    public void readNBTShareTag(ItemStack stack, @Nullable NBTTagCompound nbt)
-    {
-        Aeonicraft.logger.info("Hi");
-        stack.setTagCompound(nbt);
-    }
-
-    @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         Block block = world.getBlockState(pos).getBlock();
@@ -97,18 +94,7 @@ public class ItemTemporalHourglass extends ItemAeonicraft
 
         if(!world.isRemote)
         {
-            ExtendedWorldData worldData = ExtendedWorldData.getInstance(world);
-
-            ItemStack hourglassInHand = player.getHeldItem(hand);
-            CapabilityTimeLink.ITimeLinkHandler cap = hourglassInHand.getCapability(TIME_LINK, null);
-            if(cap != null)
-            {
-                BlockLoc[] locs = cap.getCompressorLocations();
-                for(BlockLoc loc : locs)
-                {
-                    Aeonicraft.logger.info(worldData.temporalCompressorProcesses.get(loc).getLocation().toString());
-                }
-            }
+            player.openGui(Aeonicraft.instance, GUIs.TEMPORAL_HOuRGLASS.ordinal(), world, (int) player.posX, (int) player.posY, (int) player.posZ);
         }
         return EnumActionResult.PASS;
     }
@@ -157,24 +143,27 @@ public class ItemTemporalHourglass extends ItemAeonicraft
     private static class Provider implements ICapabilitySerializable<NBTTagCompound>
     {
         CapabilityTimeLink.ITimeLinkHandler timeLinkHandler;
+        CapabilityHourglass.IHourglassHandler hourglassHandler;
 
         private Provider()
         {
             timeLinkHandler = new CapabilityTimeLink.TimeLinkHandler();
+            hourglassHandler = new CapabilityHourglass.HourglassHandler();
             //Init stuff if necessary...
         }
 
         @Override
         public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-            return capability == TIME_LINK;
+            return capability == TIME_LINK || capability == HOURGLASS;
         }
 
         @Override
         public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
         {
-            if(capability == TIME_LINK)
-            {
+            if(capability == TIME_LINK) {
                 return TIME_LINK.cast(timeLinkHandler);
+            } else if(capability == HOURGLASS) {
+                return HOURGLASS.cast(hourglassHandler);
             }
             return null;
         }
@@ -182,13 +171,17 @@ public class ItemTemporalHourglass extends ItemAeonicraft
         @Override
         public NBTTagCompound serializeNBT()
         {
-            return timeLinkHandler.saveToNBT();
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setTag("time_link", timeLinkHandler.saveToNBT());
+            nbt.setTag("hourglass_data", hourglassHandler.saveToNBT());
+            return nbt;
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound nbt)
         {
-            timeLinkHandler.loadFromNBT(nbt);
+            timeLinkHandler.loadFromNBT(nbt.getCompoundTag("time_link"));
+            hourglassHandler.loadFromNBT(nbt.getCompoundTag("hourglass_data"));
         }
     }
 }

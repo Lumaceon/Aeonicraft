@@ -2,6 +2,7 @@ package lumaceon.mods.aeonicraft.proxy;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.client.ModelRegistry;
+import lumaceon.mods.aeonicraft.client.gui.GuiHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void preInit() {
         OBJLoader.INSTANCE.addDomain(Aeonicraft.MOD_ID);
+        new GuiHandler();
     }
 
     @Override
