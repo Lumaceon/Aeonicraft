@@ -164,4 +164,5 @@ itemGroup.Aeonicraft=Aeonicraft
 key.clockworkphase2.category=Clockwork Phase 2
 key.clockworkphase2.activate=General Activation Key
 key.clockworkphase2.toolbelt=Temporal Toolbelt Swap
+aeonicraft:hourglass_function_excavator.name=(Excavate)
 death.attack.temporal= 

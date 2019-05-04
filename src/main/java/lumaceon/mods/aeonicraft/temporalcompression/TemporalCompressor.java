@@ -66,9 +66,29 @@ public class TemporalCompressor
         return true;
     }
 
+    public void setTime(long time)
+    {
+        timeInMilliseconds = time;
+    }
+
+    /**
+     * @return Amount consumed.
+     */
+    public long consumeTime(long maxConsume)
+    {
+        long amt = Math.min(timeInMilliseconds, maxConsume);
+        this.setTime(timeInMilliseconds - amt);
+        return amt;
+    }
+
     public long getTimeCapacityInMilliseconds()
     {
         return this.timeCapacityInMilliseconds;
+    }
+
+    public long getRemainingSpaceInMilliseconds()
+    {
+        return this.timeCapacityInMilliseconds - this.timeInMilliseconds;
     }
 
     public long getTimeProductionInMillisecondsPerTick()

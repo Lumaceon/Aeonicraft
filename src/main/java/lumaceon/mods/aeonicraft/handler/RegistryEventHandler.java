@@ -1,7 +1,10 @@
 package lumaceon.mods.aeonicraft.handler;
 
+import lumaceon.mods.aeonicraft.api.AeonicraftAPIRegistry;
+import lumaceon.mods.aeonicraft.api.IHourglassFunction;
 import lumaceon.mods.aeonicraft.init.ModBlocks;
 import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.tile.TileHourglassProgrammer;
 import lumaceon.mods.aeonicraft.util.IOreDict;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -12,7 +15,10 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.Objects;
 
 @Mod.EventBusSubscriber
 public class RegistryEventHandler
@@ -21,6 +27,7 @@ public class RegistryEventHandler
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
         event.getRegistry().registerAll(ModBlocks.BLOCKS.toArray(new Block[0]));
+        GameRegistry.registerTileEntity(TileHourglassProgrammer.class, Objects.requireNonNull(ModBlocks.hourglassProgrammer.getRegistryName()));
     }
 
     @SubscribeEvent
@@ -34,25 +41,34 @@ public class RegistryEventHandler
             {
                 OreDictionary.registerOre(((IOreDict) item).getOreDictionaryString(), item);
             }
+
+            if(item instanceof IHourglassFunction)
+            {
+                AeonicraftAPIRegistry.registerHourglassFunction((IHourglassFunction) item);
+            }
         }
 
         for(Block block : ModBlocks.BLOCKS)
         {
-            event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
+            event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
         }
     }
 
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event)
     {
+        // register custom model loaders which will load custom IModels
+        //ModelLoaderRegistry.registerLoader(new AeonicraftModelLoader());
+
+
         for(Block block : ModBlocks.BLOCKS)
         {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(Objects.requireNonNull(block.getRegistryName()), "inventory"));
         }
 
         for(Item item : ModItems.ITEMS)
         {
-            ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Objects.requireNonNull(item.getRegistryName()), "inventory"));
         }
     }
 }

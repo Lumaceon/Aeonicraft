@@ -182,7 +182,7 @@ public class TimeParser
 
         if(time < SECOND && parsedString.isEmpty())
         {
-            parsedString = time + (time == 1 ? " Millisecond" : "Milliseconds");
+            parsedString = time + " Ms";
         }
         if(parsedString.isEmpty())
             parsedString = "Frozen";

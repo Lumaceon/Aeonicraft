@@ -31,7 +31,7 @@ public interface IHourglassFunction
     //void onUpdate(int ticksSinceLastUpdate);
 
     /**
-     * @return Location pointing to the texture for the giant button to (de)activate this module; default 64x64
+     * @return Model for the hourglass with this function.
      */
-    ResourceLocation getGUITexture();
+    ResourceLocation getModel();
 }

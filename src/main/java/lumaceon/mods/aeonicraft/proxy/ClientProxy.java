@@ -46,6 +46,10 @@ public class ClientProxy extends CommonProxy
         {
             return Minecraft.getMinecraft();
         }
+        else if(context.side.isServer())
+        {
+            return context.getServerHandler().player.mcServer;
+        }
         return null;
     }
 }

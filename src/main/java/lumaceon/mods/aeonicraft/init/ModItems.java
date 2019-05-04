@@ -1,6 +1,7 @@
 package lumaceon.mods.aeonicraft.init;
 
 import lumaceon.mods.aeonicraft.item.ItemAeonicraftOreDict;
+import lumaceon.mods.aeonicraft.item.ItemHourglassFunction;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import net.minecraft.item.Item;
 
@@ -13,6 +14,8 @@ public class ModItems
     public static final Item ingotTemporal = init(new ItemAeonicraftOreDict(64, 100, "ingot_temporal", "ingotTemporal"));
     public static final Item ingotBrass = init(new ItemAeonicraftOreDict(64, 100, "ingot_brass", "ingotBrass"));
     public static final Item temporalHourglass = init(new ItemTemporalHourglass(1, 10000, "temporal_hourglass"));
+    public static final Item hgFuncExcavationOC = init(new ItemHourglassFunction(1, 10000, "hourglass_function_excavator",
+            "textures/hgf/hgf_excavation_OC"));
 
     private static Item init(Item item) {
         ITEMS.add(item);

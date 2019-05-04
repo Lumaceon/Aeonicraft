@@ -1,15 +1,16 @@
 package lumaceon.mods.aeonicraft.item;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
+import lumaceon.mods.aeonicraft.api.IHourglassFunction;
 import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.timelink.CapabilityTimeLink;
-import lumaceon.mods.aeonicraft.lib.GUIs;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
 import lumaceon.mods.aeonicraft.temporalcompression.ITemporalCompressorLinkableBlock;
 import lumaceon.mods.aeonicraft.temporalcompression.TemporalCompressor;
 import lumaceon.mods.aeonicraft.util.BlockLoc;
 import lumaceon.mods.aeonicraft.util.Colors;
+import lumaceon.mods.aeonicraft.util.InventoryHelper;
 import lumaceon.mods.aeonicraft.util.TimeParser;
 import lumaceon.mods.aeonicraft.worlddata.ExtendedWorldData;
 import net.minecraft.block.Block;
@@ -23,6 +24,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -47,21 +49,108 @@ public class ItemTemporalHourglass extends ItemAeonicraft
         super(maxStack, maxDamage, name);
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
+    @Nullable
+    public IHourglassFunction getActiveHourglassFunction(ItemStack stack)
     {
-        CapabilityTimeLink.ITimeLinkHandler cap = stack.getCapability(TIME_LINK, null);
-        if(cap != null) {
-            tooltip.add(Colors.AQUA + "TC: " + TimeParser.parseTimeValue(cap.getTimeClient(world), 2));
-        }
-        else {
-            tooltip.add(Colors.RED + "Broken");
-        }
+        CapabilityHourglass.IHourglassHandler cap = stack.getCapability(HOURGLASS, null);
+        if(cap != null)
+            return cap.getActiveFunction();
+        return null;
     }
 
-    public boolean showDurabilityBar(ItemStack stack)
+    public long availableTime(ItemStack stack, @Nullable World world, Side side)
     {
+        if(side.isServer())
+        {
+            CapabilityTimeLink.ITimeLinkHandler cap = stack.getCapability(TIME_LINK, null);
+            if(cap != null) {
+                return cap.getTimeServer(world);
+            }
+        }
+        else
+        {
+            CapabilityTimeLink.ITimeLinkHandler cap = stack.getCapability(TIME_LINK, null);
+            if(cap != null) {
+                return cap.getTimeClient();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * To be called server-side, which will automatically update the client. Can be called client-side, in which case
+     * this will be a no-op method which returns 0.
+     * @param indexOfStack Index of the hourglass within the containing inventory.
+     * @return The amount of time actually consumed.
+     */
+    public long consumeTime(EntityPlayer player, ItemStack stack, World world, int indexOfStack, long maxConsume)
+    {
+        if(!world.isRemote)
+        {
+            CapabilityTimeLink.ITimeLinkHandler cap = stack.getCapability(TIME_LINK, null);
+            if(cap != null)
+            {
+                ExtendedWorldData worldData = ExtendedWorldData.getInstance(world);
+                BlockLoc[] locs = cap.getCompressorLocations();
+                ArrayList<TemporalCompressor> tcs = new ArrayList<>(locs.length);
+                ArrayList<TemporalCompressor> temporalCompressorsCopy = new ArrayList<>(tcs);
+                for(BlockLoc loc : locs)
+                {
+                    TemporalCompressor tc = worldData.temporalCompressorProcesses.get(loc);
+                    if(tc != null)
+                        tcs.add(tc);
+                }
+
+                tcs.sort((o1, o2) -> {
+                    long diff = o1.getRemainingSpaceInMilliseconds() - o2.getRemainingSpaceInMilliseconds();
+                    return diff == 0 ? 0 : diff < 0 ? -1 : 1;
+                });
+
+                long amountConsumed = 0;
+                int i = 0;
+                while(amountConsumed < maxConsume && i < tcs.size())
+                {
+                    TemporalCompressor tc = tcs.get(i);
+                    amountConsumed += tc.consumeTime(maxConsume - amountConsumed);
+                    i++;
+                }
+
+                if(amountConsumed != 0)
+                {
+                    worldData.markDirty();
+                    PacketHandler.INSTANCE.sendTo(new MessageHourglassTCUpdate(temporalCompressorsCopy.toArray(new TemporalCompressor[0]), indexOfStack), (EntityPlayerMP) player);
+                }
+                return amountConsumed;
+            }
+        }
+
+        return 0;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+        tooltip.add(Colors.AQUA + "TC: " + TimeParser.parseTimeValue(availableTime(stack, null, Side.CLIENT), 2));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public String getItemStackDisplayName(ItemStack stack)
+    {
+        CapabilityHourglass.IHourglassHandler hg = stack.getCapability(HOURGLASS, null);
+        if(hg != null)
+        {
+            IHourglassFunction hourglassFunction = hg.getActiveFunction();
+            if(hourglassFunction != null)
+            {
+                return I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name").trim()
+                        + " " + I18n.translateToLocal(hourglassFunction.getRegistryIDString() + ".name").trim();
+            }
+        }
+        return I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name").trim();
+    }
+
+    public boolean showDurabilityBar(ItemStack stack) {
         return true;
     }
 
@@ -75,7 +164,7 @@ public class ItemTemporalHourglass extends ItemAeonicraft
     {
         CapabilityTimeLink.ITimeLinkHandler cap = stack.getCapability(TIME_LINK, null);
         if(cap != null) {
-            return 1.0f - (cap.getTimeClient(Aeonicraft.proxy.getClientWorld()) / 60000.0F);
+            return 1.0f - (cap.getTimeClient() / 60000.0F);
         }
         return 1.0F;
     }
@@ -94,7 +183,23 @@ public class ItemTemporalHourglass extends ItemAeonicraft
 
         if(!world.isRemote)
         {
-            player.openGui(Aeonicraft.instance, GUIs.TEMPORAL_HOuRGLASS.ordinal(), world, (int) player.posX, (int) player.posY, (int) player.posZ);
+            ItemStack stack = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, this);
+            CapabilityHourglass.IHourglassHandler hg = stack.getCapability(HOURGLASS, null);
+            if(hg != null)
+            {
+                Aeonicraft.logger.info(hg.getActiveFunction());
+            }
+
+
+            CapabilityTimeLink.ITimeLinkHandler cap = stack.getCapability(TIME_LINK, null);
+            if(cap != null) {
+                Aeonicraft.logger.info("Time (server): " + cap.getTimeServer(world));
+                Aeonicraft.logger.info("Should be 0: " + cap.getTimeClient());
+                for(BlockLoc l : cap.getCompressorLocations())
+                {
+                    Aeonicraft.logger.info("Compressor" + l.toString());
+                }
+            }
         }
         return EnumActionResult.PASS;
     }
@@ -104,34 +209,59 @@ public class ItemTemporalHourglass extends ItemAeonicraft
     {
         ExtendedWorldData worldData = ExtendedWorldData.getInstance(world);
         CapabilityTimeLink.ITimeLinkHandler cap = stack.getCapability(TIME_LINK, null);
-        if(cap != null && !world.isRemote)
+        if(cap != null)
         {
-            boolean isDirty = false;
-
-            BlockLoc[] locs = cap.getCompressorLocations();
-            ArrayList<TemporalCompressor> tcs = new ArrayList<>();
-            for(BlockLoc loc : locs)
+            if(!world.isRemote)
             {
-                TemporalCompressor tc = worldData.temporalCompressorProcesses.get(loc);
-                if(tc != null)
+                boolean isDirty = false;
+
+                BlockLoc[] locs = cap.getCompressorLocations();
+                ArrayList<TemporalCompressor> tcs = new ArrayList<>();
+                for(BlockLoc loc : locs)
                 {
-                    tcs.add(tc);
-                    if(worldData.updateCompressorAt(loc, world))
+                    TemporalCompressor tc = worldData.temporalCompressorProcesses.get(loc);
+                    if(tc != null)
                     {
-                        isDirty = true;
+                        tcs.add(tc);
+                        if(worldData.updateCompressorAt(loc, world))
+                        {
+                            isDirty = true;
+                        }
+                    }
+                    else
+                    {
+                        Aeonicraft.logger.info("Hourglass searched for null compressor at: ("+loc.toString()+")");
                     }
                 }
-                else
+
+                if(isDirty && entity instanceof EntityPlayerMP)
                 {
-                    Aeonicraft.logger.info("Hourglass searched for null compressor at: ("+loc.toString()+")");
+                    PacketHandler.INSTANCE.sendTo(new MessageHourglassTCUpdate(tcs.toArray(new TemporalCompressor[0]), itemSlot), (EntityPlayerMP) entity);
                 }
             }
-
-            if(isDirty && entity instanceof EntityPlayerMP)
-            {
-                PacketHandler.INSTANCE.sendTo(new MessageHourglassTCUpdate(tcs.toArray(new TemporalCompressor[0]), itemSlot), (EntityPlayerMP) entity);
-            }
         }
+        CapabilityHourglass.IHourglassHandler hgcap = stack.getCapability(HOURGLASS, null);
+        if(hgcap != null && world.isRemote)
+        {
+            hgcap.checkForUpdatesClientSide(itemSlot);
+        }
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+    {
+        CapabilityHourglass.IHourglassHandler cap = newStack.getCapability(HOURGLASS, null);
+        if(!(cap instanceof CapabilityHourglass.HourglassHandler))
+        {
+            return !oldStack.equals(newStack);
+        }
+
+        if(((CapabilityHourglass.HourglassHandler) cap).reequipAnimation)
+        {
+            ((CapabilityHourglass.HourglassHandler) cap).reequipAnimation = false;
+            return true;
+        }
+        return !oldStack.equals(newStack);
     }
 
     @Override

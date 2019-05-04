@@ -47,7 +47,7 @@ public class CapabilityTimeLink
          */
         long getTimeServer(World world);
 
-        long getTimeClient(World world);
+        long getTimeClient();
 
         BlockLoc[] getCompressorLocations();
 
@@ -86,7 +86,7 @@ public class CapabilityTimeLink
         }
 
         @Override
-        public long getTimeClient(World world)
+        public long getTimeClient()
         {
             long time = 0;
 

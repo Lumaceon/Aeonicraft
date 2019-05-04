@@ -2,6 +2,8 @@ package lumaceon.mods.aeonicraft.capability.hourglass;
 
 import lumaceon.mods.aeonicraft.api.AeonicraftAPIRegistry;
 import lumaceon.mods.aeonicraft.api.IHourglassFunction;
+import lumaceon.mods.aeonicraft.network.PacketHandler;
+import lumaceon.mods.aeonicraft.network.message.MessageHourglassRequestTCUpdate;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,9 +52,16 @@ public class CapabilityHourglass
     public interface IHourglassHandler
     {
         /**
-         * @return True if the function exists and is active.
+         * @return The active function of the hourglass.
          */
-        boolean functionActive(IHourglassFunction function);
+        @Nullable IHourglassFunction getActiveFunction();
+
+        void cycleActiveFunction(boolean forward);
+
+        /**
+         * @return True if function was found, false if not.
+         */
+        boolean setActiveFunction(IHourglassFunction function);
 
         /**
          * Get and return the first hourglass function for the given string.
@@ -67,6 +76,12 @@ public class CapabilityHourglass
 
         @Nullable ItemStack convertHourglassFunctionToItemstackAndRemove(IHourglassFunction function);
 
+        /**
+         * Typically used to send an update request to the server to get initial values.
+         * @param slotIndex The index of this stack in the containing inventory.
+         */
+        void checkForUpdatesClientSide(int slotIndex);
+
         void loadFromNBT(NBTTagCompound nbt);
         NBTTagCompound saveToNBT();
     }
@@ -74,15 +89,101 @@ public class CapabilityHourglass
     public static class HourglassHandler implements IHourglassHandler
     {
         ArrayList<IHourglassFunction> functions = new ArrayList<>();
-        HashMap<String, Boolean> activeMap = new HashMap<>();
+        IHourglassFunction active = null;
+
+        // Hourglass needs to send data on initial load (and a few other cases).
+        private boolean shouldClientSendRequestForUpdate = true;
+        public boolean reequipAnimation = false;
+
+        public void checkForUpdatesClientSide(int slotIndex)
+        {
+            if(shouldClientSendRequestForUpdate)
+            {
+                shouldClientSendRequestForUpdate = false;
+                PacketHandler.INSTANCE.sendToServer(new MessageHourglassRequestTCUpdate(slotIndex));
+            }
+        }
 
         @Override
-        public boolean functionActive(IHourglassFunction function)
+        public IHourglassFunction getActiveFunction() {
+            return active;
+        }
+
+        @Override
+        public void cycleActiveFunction(boolean forward)
         {
+            reequipAnimation = true;
+            if(forward)
+            {
+                // null active function - set to first function.
+                if(active == null && functions.size() > 0)
+                {
+                    active = functions.get(0);
+                    return;
+                }
+
+                // last active function - loop to null function.
+                if(active != null && active.equals(functions.get(functions.size() - 1)))
+                {
+                    active = null;
+                    return;
+                }
+
+                // set to next function.
+                for(int i = 0; i < functions.size(); i++)
+                {
+                    IHourglassFunction f = functions.get(i);
+                    if(f.equals(active))
+                    {
+                        active = functions.get(i+1);
+                        return;
+                    }
+                }
+            }
+            else //backward
+            {
+                // null active function - set to last function.
+                if(active == null && functions.size() > 0)
+                {
+                    active = functions.get(functions.size() - 1);
+                    return;
+                }
+
+                // first active function - set to null function.
+                if(active != null && active.equals(functions.get(0)))
+                {
+                    active = null;
+                    return;
+                }
+
+                // set to previous function.
+                for(int i = functions.size() - 1; i > 0; i--)
+                {
+                    IHourglassFunction f = functions.get(i);
+                    if(f.equals(active))
+                    {
+                        active = functions.get(i-1);
+                        return;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean setActiveFunction(IHourglassFunction function)
+        {
+            reequipAnimation = true;
+            if(function == null)
+            {
+                active = null;
+                return true;
+            }
+
             for(IHourglassFunction f : functions)
             {
-                if(f.equals(function) && activeMap.get(f.getRegistryIDString()))
+                if(f.equals(function))
                 {
+                    active = f;
                     return true;
                 }
             }
@@ -113,9 +214,7 @@ public class CapabilityHourglass
             {
                 return false;
             }
-            functions.add((IHourglassFunction) module.getItem());
-            activeMap.put(((IHourglassFunction) module.getItem()).getRegistryIDString(), false);
-            return true;
+            return addHourglassFunction((IHourglassFunction) module.getItem());
         }
 
         @Override
@@ -127,7 +226,8 @@ public class CapabilityHourglass
                 return false;
             }
             functions.add(hourglassFunction);
-            activeMap.put(hourglassFunction.getRegistryIDString(), false);
+            if(active == null)
+                active = hourglassFunction;
             return true;
         }
 
@@ -155,7 +255,19 @@ public class CapabilityHourglass
                     String s = tag.getString("id");
                     IHourglassFunction hourglassFunction = AeonicraftAPIRegistry.getHourglassFunction(s);
                     functions.add(hourglassFunction);
-                    activeMap.put(s, tag.getBoolean("active"));
+                }
+            }
+
+            if(nbt.hasKey("active"))
+            {
+                String activeFunc = nbt.getString("active");
+                for(IHourglassFunction f : functions)
+                {
+                    if(activeFunc.equals(f.getRegistryIDString()))
+                    {
+                        this.active = f;
+                        break;
+                    }
                 }
             }
         }
@@ -169,10 +281,12 @@ public class CapabilityHourglass
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setString("id", function.getRegistryIDString());
-                tag.setBoolean("active", activeMap.get(function.getRegistryIDString()));
                 list.appendTag(tag);
             }
             nbt.setTag("function_list", list);
+            IHourglassFunction active = this.active;
+            if(this.active != null)
+                nbt.setString("active", active.getRegistryIDString());
             return nbt;
         }
     }

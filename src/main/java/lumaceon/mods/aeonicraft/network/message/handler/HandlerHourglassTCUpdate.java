@@ -24,7 +24,7 @@ public class HandlerHourglassTCUpdate implements IMessageHandler<MessageHourglas
     {
         if(ctx.side != Side.CLIENT)
         {
-            System.err.println("MessageParticleSpawn received on wrong side:" + ctx.side);
+            System.err.println(this.getClass().toString() + " received on wrong side:" + ctx.side);
             return null;
         }
 

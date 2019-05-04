@@ -19,6 +19,14 @@ public class ServerProxy extends CommonProxy
     public void registerBlockModel(Block block, String unlocalizedName) {}
     @Override
     public void registerItemModel(Item item, String unlocalizedName) {}
+
     @Override
-    public IThreadListener getThreadListener(MessageContext context) { return null; }
+    public IThreadListener getThreadListener(MessageContext context)
+    {
+        if(context.side.isServer())
+        {
+            return context.getServerHandler().player.mcServer;
+        }
+        return null;
+    }
 }
