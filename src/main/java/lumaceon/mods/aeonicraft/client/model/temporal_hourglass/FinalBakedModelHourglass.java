@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.client.model;
+package lumaceon.mods.aeonicraft.client.model.temporal_hourglass;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -8,20 +8,26 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("NullableProblems")
-public class BakedModelHourglass implements IBakedModel
+public class FinalBakedModelHourglass implements IBakedModel
 {
-    IBakedModel baseModel;
+    private IBakedModel baseModel;
+    private ArrayList<BakedQuad> quads;
 
-    public BakedModelHourglass(IBakedModel model){
-        this.baseModel = model;
+    public FinalBakedModelHourglass(IBakedModel baseModel, ArrayList<BakedQuad> quads)
+    {
+        this.baseModel = baseModel;
+        this.quads = quads;
     }
 
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-        return baseModel.getQuads(state, side, rand);
+        List<BakedQuad> ret = baseModel.getQuads(state, side, rand);
+        ret.addAll(quads);
+        return ret;
     }
 
     @Override
@@ -46,6 +52,6 @@ public class BakedModelHourglass implements IBakedModel
 
     @Override
     public ItemOverrideList getOverrides() {
-        return baseModel.getOverrides();
+        throw new UnsupportedOperationException(getClass().toString() + " should not receive override models.");
     }
 }

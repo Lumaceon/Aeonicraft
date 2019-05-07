@@ -31,7 +31,7 @@ public interface IHourglassFunction
     //void onUpdate(int ticksSinceLastUpdate);
 
     /**
-     * @return Model for the hourglass with this function.
+     * @return Location for the texture to be rendered over this function.
      */
-    ResourceLocation getModel();
+    ResourceLocation getTextureLocation();
 }

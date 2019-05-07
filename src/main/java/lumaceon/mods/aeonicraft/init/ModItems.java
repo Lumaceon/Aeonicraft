@@ -14,8 +14,14 @@ public class ModItems
     public static final Item ingotTemporal = init(new ItemAeonicraftOreDict(64, 100, "ingot_temporal", "ingotTemporal"));
     public static final Item ingotBrass = init(new ItemAeonicraftOreDict(64, 100, "ingot_brass", "ingotBrass"));
     public static final Item temporalHourglass = init(new ItemTemporalHourglass(1, 10000, "temporal_hourglass"));
-    public static final Item hgFuncExcavationOC = init(new ItemHourglassFunction(1, 10000, "hourglass_function_excavator",
-            "textures/hgf/hgf_excavation_OC"));
+    private static final String exName = "hourglass_function_excavator";
+    public static final Item hgFuncExcavation = init(new ItemHourglassFunction(1, 10000, exName,"item/" + exName));
+    private static final String fishName = "hourglass_function_fish";
+    public static final Item hgfuncFish = init(new ItemHourglassFunction(1, 10000, fishName,"item/" + fishName));
+    private static final String animalName = "hourglass_function_animal";
+    public static final Item hgFuncAnimal = init(new ItemHourglassFunction(1, 10000, animalName,"item/" + animalName));
+    private static final String travelName = "hourglass_function_travel";
+    public static final Item hgFuncTravel = init(new ItemHourglassFunction(1, 10000, travelName,"item/" + travelName));
 
     private static Item init(Item item) {
         ITEMS.add(item);

@@ -16,7 +16,6 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * A capability specifically for the Temporal Hourglass, and any container with similar functionality. Capability stores

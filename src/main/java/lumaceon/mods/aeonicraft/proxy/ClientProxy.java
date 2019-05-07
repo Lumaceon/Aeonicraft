@@ -3,6 +3,9 @@ package lumaceon.mods.aeonicraft.proxy;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.client.ModelRegistry;
 import lumaceon.mods.aeonicraft.client.gui.GuiHandler;
+import lumaceon.mods.aeonicraft.client.particle.ModParticles;
+import lumaceon.mods.aeonicraft.client.particle.ParticleTest;
+import lumaceon.mods.aeonicraft.lib.Particles;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,5 +54,21 @@ public class ClientProxy extends CommonProxy
             return context.getServerHandler().player.mcServer;
         }
         return null;
+    }
+
+    @Override
+    public void spawnParticle(Particles particleToSpawn, double x, double y, double z)
+    {
+        switch(particleToSpawn)
+        {
+            case TEST:
+            {
+                if(ModParticles.canSpawnParticle(x, y, z, 20))
+                {
+                    ModParticles.addParticle(new ParticleTest(Minecraft.getMinecraft().world, x, y, z));
+                }
+                break;
+            }
+        }
     }
 }

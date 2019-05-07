@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.proxy;
 
+import lumaceon.mods.aeonicraft.lib.Particles;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -29,4 +30,7 @@ public class ServerProxy extends CommonProxy
         }
         return null;
     }
+
+    @Override
+    public void spawnParticle(Particles particleToSpawn, double x, double y, double z) {}
 }

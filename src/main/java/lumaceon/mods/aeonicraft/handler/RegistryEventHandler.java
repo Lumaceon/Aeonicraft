@@ -1,17 +1,23 @@
 package lumaceon.mods.aeonicraft.handler;
 
+import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.AeonicraftAPIRegistry;
 import lumaceon.mods.aeonicraft.api.IHourglassFunction;
+import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.init.ModBlocks;
 import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.init.ModSounds;
 import lumaceon.mods.aeonicraft.tile.TileHourglassProgrammer;
 import lumaceon.mods.aeonicraft.util.IOreDict;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -23,6 +29,14 @@ import java.util.Objects;
 @Mod.EventBusSubscriber
 public class RegistryEventHandler
 {
+    @SubscribeEvent
+    public static void registerSounds(RegistryEvent.Register<SoundEvent> event)
+    {
+        event.getRegistry().register(ModSounds.create(new ResourceLocation(Aeonicraft.MOD_ID, "time_ding_short")));
+        event.getRegistry().register(ModSounds.create(new ResourceLocation(Aeonicraft.MOD_ID, "time_ding_medium")));
+        event.getRegistry().register(ModSounds.create(new ResourceLocation(Aeonicraft.MOD_ID, "time_ding_long")));
+    }
+
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
@@ -58,7 +72,7 @@ public class RegistryEventHandler
     public static void registerModels(ModelRegistryEvent event)
     {
         // register custom model loaders which will load custom IModels
-        //ModelLoaderRegistry.registerLoader(new AeonicraftModelLoader());
+        ModelLoaderRegistry.registerLoader(new AeonicraftModelLoader());
 
 
         for(Block block : ModBlocks.BLOCKS)

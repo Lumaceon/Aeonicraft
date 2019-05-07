@@ -4,6 +4,7 @@ import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.IHourglassFunction;
 import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.timelink.CapabilityTimeLink;
+import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
 import lumaceon.mods.aeonicraft.temporalcompression.ITemporalCompressorLinkableBlock;
@@ -184,6 +185,7 @@ public class ItemTemporalHourglass extends ItemAeonicraft
         if(!world.isRemote)
         {
             ItemStack stack = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, this);
+            assert stack != null;
             CapabilityHourglass.IHourglassHandler hg = stack.getCapability(HOURGLASS, null);
             if(hg != null)
             {
@@ -200,6 +202,8 @@ public class ItemTemporalHourglass extends ItemAeonicraft
                     Aeonicraft.logger.info("Compressor" + l.toString());
                 }
             }
+
+            world.spawnEntity(new EntityTravelGhost(world, player));
         }
         return EnumActionResult.PASS;
     }

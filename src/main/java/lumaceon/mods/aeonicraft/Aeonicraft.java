@@ -2,6 +2,7 @@ package lumaceon.mods.aeonicraft;
 
 import lumaceon.mods.aeonicraft.init.ModBlocks;
 import lumaceon.mods.aeonicraft.init.ModCapabilities;
+import lumaceon.mods.aeonicraft.init.ModEntities;
 import lumaceon.mods.aeonicraft.init.ModItems;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.proxy.IProxy;
@@ -60,6 +61,7 @@ public class Aeonicraft
     public void init(FMLInitializationEvent event)
     {
         //ModBlocks.initModels();
+        ModEntities.init();
         PacketHandler.init();
     }
 }

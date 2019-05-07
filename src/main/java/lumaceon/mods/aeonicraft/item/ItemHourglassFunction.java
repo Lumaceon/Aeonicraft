@@ -9,13 +9,11 @@ import javax.annotation.Nullable;
 
 public class ItemHourglassFunction extends ItemAeonicraft implements IHourglassFunction
 {
-    protected ResourceLocation hgFunctionTex;
-    protected ResourceLocation hgFunctionTexA;
+    protected ResourceLocation texture;
 
-    public ItemHourglassFunction(int maxStack, int maxDamage, String name, String hgFunctionTex) {
+    public ItemHourglassFunction(int maxStack, int maxDamage, String name, String texture) {
         super(maxStack, maxDamage, name);
-        this.hgFunctionTex = new ResourceLocation(Aeonicraft.MOD_ID, hgFunctionTex);
-        this.hgFunctionTexA = new ResourceLocation(Aeonicraft.MOD_ID, hgFunctionTex+"A");
+        this.texture = new ResourceLocation(Aeonicraft.MOD_ID, texture);
     }
 
     @Override
@@ -40,7 +38,7 @@ public class ItemHourglassFunction extends ItemAeonicraft implements IHourglassF
     }
 
     @Override
-    public ResourceLocation getModel() {
-        return null;
+    public ResourceLocation getTextureLocation() {
+        return texture;
     }
 }

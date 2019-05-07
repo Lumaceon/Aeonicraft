@@ -1,0 +1,38 @@
+{
+  "time_ding_short":
+  {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "aeonicraft.time_ding_short",
+        "type": "event",
+        "weight": 3
+      },
+      "aeonicraft:time_ding_short"
+    ]
+  },
+  "time_ding_medium":
+  {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "aeonicraft.time_ding_medium",
+        "type": "event",
+        "weight":  5
+      },
+      "aeonicraft:time_ding_medium"
+    ]
+  },
+  "time_ding_long":
+  {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "aeonicraft.time_ding_long",
+        "type": "event",
+        "weight": 6
+      },
+      "aeonicraft:time_ding_long"
+    ]
+  }
+}
