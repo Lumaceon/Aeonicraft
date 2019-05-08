@@ -6,6 +6,7 @@ import lumaceon.mods.aeonicraft.init.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.lib.Particles;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
+import lumaceon.mods.aeonicraft.util.ParticleHelper;
 import lumaceon.mods.aeonicraft.util.SoundHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -426,12 +427,8 @@ public class EntityTemporalFishHook extends EntityFishHook
                     ((ItemTemporalHourglass)hourglass.getItem()).consumeTime(angler, hourglass, world, InventoryHelper.getIndexOfStackInInventory(hourglass, angler.inventory), timeToCatchAFish);
                     this.ticksCatchable = 100;
 
-                    SoundHelper.playMediumTimeDing(angler, world, posX, posY, posZ);
-
-                    for(int n = 0; n < 20; n++)
-                    {
-                        Aeonicraft.proxy.spawnParticle(Particles.TEMPORAL_WISP, posX - 0.1F + rand.nextFloat() * 0.2F, posY - 0.1F + rand.nextFloat() * 0.2F, posZ - 0.1F + rand.nextFloat() * 0.2F);
-                    }
+                    SoundHelper.playMediumTimeDing(null, world, posX, posY, posZ);
+                    ParticleHelper.spawnTemporalBurstParticles(this.getPositionVector(), new Vec3d(0.2, 0.2, 0.2), 20);
                 }
             }
         }

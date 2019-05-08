@@ -3,6 +3,7 @@ package lumaceon.mods.aeonicraft.entity;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.capability.travelghost.CapabilityTravelGhost;
 import lumaceon.mods.aeonicraft.lib.Particles;
+import lumaceon.mods.aeonicraft.util.ParticleHelper;
 import lumaceon.mods.aeonicraft.util.SoundHelper;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -78,10 +79,7 @@ public class EntityTravelGhost extends EntityCreature
                 SoundHelper.playLongTimeDing(player, world, p.getX(), p.getY(), p.getZ());
 
                 Vec3d eyePos = player.getPositionEyes(player.getEyeHeight());
-                for(int n = 0; n < 100; n++)
-                {
-                    Aeonicraft.proxy.spawnParticle(Particles.TEMPORAL_WISP, eyePos.x - 4 + rand.nextFloat() * 8, eyePos.y - 1 + rand.nextFloat() * 2F, eyePos.z - 4 + rand.nextFloat() * 8);
-                }
+                ParticleHelper.spawnTemporalBurstParticles(eyePos, new Vec3d(8, 2, 8), 125);
             }
         }
 

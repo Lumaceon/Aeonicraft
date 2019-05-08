@@ -22,6 +22,8 @@ public class ModItems
     public static final Item hgFuncAnimal = init(new ItemHourglassFunction(1, 10000, animalName,"item/" + animalName));
     private static final String travelName = "hourglass_function_travel";
     public static final Item hgFuncTravel = init(new ItemHourglassFunction(1, 10000, travelName,"item/" + travelName));
+    private static final String generalName = "hourglass_function_general";
+    public static final Item hgFuncGeneral = init(new ItemHourglassFunction(1, 10000, generalName,"item/" + generalName));
 
     private static Item init(Item item) {
         ITEMS.add(item);

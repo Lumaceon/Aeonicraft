@@ -4,6 +4,7 @@ import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.client.ModelRegistry;
 import lumaceon.mods.aeonicraft.client.gui.GuiHandler;
 import lumaceon.mods.aeonicraft.client.particle.ModParticles;
+import lumaceon.mods.aeonicraft.client.particle.ParticleHourglassExplosion;
 import lumaceon.mods.aeonicraft.client.particle.ParticleTemporalWisp;
 import lumaceon.mods.aeonicraft.lib.Particles;
 import net.minecraft.block.Block;
@@ -63,9 +64,17 @@ public class ClientProxy extends CommonProxy
         {
             case TEMPORAL_WISP:
             {
-                if(ModParticles.canSpawnParticle(x, y, z, 20))
+                if(ModParticles.canSpawnParticle(x, y, z, 24))
                 {
                     ModParticles.addParticle(new ParticleTemporalWisp(Minecraft.getMinecraft().world, x, y, z));
+                }
+                break;
+            }
+            case TEMPORAL_EXPLOSION:
+            {
+                if(ModParticles.canSpawnParticle(x, y, z, 32))
+                {
+                    ModParticles.addParticle(new ParticleHourglassExplosion(Minecraft.getMinecraft().world, x, y, z));
                 }
                 break;
             }
