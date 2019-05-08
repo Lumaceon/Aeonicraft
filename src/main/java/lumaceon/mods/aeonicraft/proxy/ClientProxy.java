@@ -4,7 +4,7 @@ import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.client.ModelRegistry;
 import lumaceon.mods.aeonicraft.client.gui.GuiHandler;
 import lumaceon.mods.aeonicraft.client.particle.ModParticles;
-import lumaceon.mods.aeonicraft.client.particle.ParticleTest;
+import lumaceon.mods.aeonicraft.client.particle.ParticleTemporalWisp;
 import lumaceon.mods.aeonicraft.lib.Particles;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -61,11 +61,11 @@ public class ClientProxy extends CommonProxy
     {
         switch(particleToSpawn)
         {
-            case TEST:
+            case TEMPORAL_WISP:
             {
                 if(ModParticles.canSpawnParticle(x, y, z, 20))
                 {
-                    ModParticles.addParticle(new ParticleTest(Minecraft.getMinecraft().world, x, y, z));
+                    ModParticles.addParticle(new ParticleTemporalWisp(Minecraft.getMinecraft().world, x, y, z));
                 }
                 break;
             }

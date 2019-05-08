@@ -6,11 +6,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class ParticleTest extends Particle
+public class ParticleTemporalWisp extends Particle
 {
     public boolean isChild = false;
 
-    public ParticleTest(World worldIn, double posXIn, double posYIn, double posZIn) {
+    public ParticleTemporalWisp(World worldIn, double posXIn, double posYIn, double posZIn) {
         super(worldIn, posXIn, posYIn, posZIn);
         double truePosX = posXIn + (rand.nextFloat() - 0.5);
         double truePosY = posYIn + (rand.nextFloat() - 0.5);
@@ -29,7 +29,7 @@ public class ParticleTest extends Particle
         this.particleBlue = 1.0F;
     }
 
-    public ParticleTest(World worldIn, double posXIn, double posYIn, double posZIn, boolean isChild)
+    public ParticleTemporalWisp(World worldIn, double posXIn, double posYIn, double posZIn, boolean isChild)
     {
         super(worldIn, posXIn, posYIn, posZIn);
         this.setPosition(posXIn, posYIn, posZIn);
@@ -89,7 +89,7 @@ public class ParticleTest extends Particle
     {
         if(!isChild && particleAge % 4 == 0)
         {
-            ModParticles.addParticle(new ParticleTest(world, posX, posY, posZ, true));
+            ModParticles.addParticle(new ParticleTemporalWisp(world, posX, posY, posZ, true));
         }
         if(isChild)
         {

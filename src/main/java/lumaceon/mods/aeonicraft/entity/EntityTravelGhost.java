@@ -2,13 +2,12 @@ package lumaceon.mods.aeonicraft.entity;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.capability.travelghost.CapabilityTravelGhost;
-import lumaceon.mods.aeonicraft.init.ModSounds;
 import lumaceon.mods.aeonicraft.lib.Particles;
+import lumaceon.mods.aeonicraft.util.SoundHelper;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -27,6 +26,7 @@ public class EntityTravelGhost extends EntityCreature
     public EntityTravelGhost(World worldIn) {
         super(worldIn);
         this.setSize(0.6F, 1.95F);
+        this.stepHeight = 1.0F;
         this.player = Aeonicraft.proxy.getClientPlayer();
         if(player != null)
         {
@@ -73,11 +73,14 @@ public class EntityTravelGhost extends EntityCreature
             if(player != null && player.world.equals(this.world))
             {
                 player.setPositionAndUpdate(this.posX, this.posY, this.posZ);
-                this.world.playSound(player, player.getPosition().offset(player.getHorizontalFacing()), ModSounds.time_ding_long, SoundCategory.PLAYERS, 0.5F, rand.nextFloat() * 0.5F + 0.75F);
+
+                BlockPos p = player.getPosition().offset(player.getHorizontalFacing());
+                SoundHelper.playLongTimeDing(player, world, p.getX(), p.getY(), p.getZ());
+
                 Vec3d eyePos = player.getPositionEyes(player.getEyeHeight());
                 for(int n = 0; n < 100; n++)
                 {
-                    Aeonicraft.proxy.spawnParticle(Particles.TEST, eyePos.x - 4 + rand.nextFloat() * 8, eyePos.y - 1 + rand.nextFloat() * 2F, eyePos.z - 4 + rand.nextFloat() * 8);
+                    Aeonicraft.proxy.spawnParticle(Particles.TEMPORAL_WISP, eyePos.x - 4 + rand.nextFloat() * 8, eyePos.y - 1 + rand.nextFloat() * 2F, eyePos.z - 4 + rand.nextFloat() * 8);
                 }
             }
         }

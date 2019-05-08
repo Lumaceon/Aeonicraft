@@ -9,6 +9,7 @@ import lumaceon.mods.aeonicraft.init.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.lib.Particles;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
+import lumaceon.mods.aeonicraft.util.SoundHelper;
 import lumaceon.mods.aeonicraft.util.TimeCosts;
 import lumaceon.mods.aeonicraft.util.TimeParser;
 import net.minecraft.block.state.IBlockState;
@@ -60,11 +61,12 @@ public class PlayerEventHandler
                         }
                         hourglass.consumeTime(player, firstHourglass, player.world, hourglassSlotIndex, timeToBreakBlock);
                         event.setNewSpeed(Float.MAX_VALUE);
+
                         Random r = player.world.rand;
-                        player.world.playSound(player, event.getPos(), ModSounds.time_ding_short, SoundCategory.PLAYERS, 0.4F, r.nextFloat() * 0.5F + 0.75F);
+                        SoundHelper.playShortTimeDing(player, player.world, player.posX, player.posY, player.posZ);
                         for(int i = 0; i < 10; i++)
                         {
-                            Aeonicraft.proxy.spawnParticle(Particles.TEST, event.getPos().getX() + r.nextFloat(), event.getPos().getY() + r.nextFloat(), event.getPos().getZ() + r.nextFloat());
+                            Aeonicraft.proxy.spawnParticle(Particles.TEMPORAL_WISP, event.getPos().getX() + r.nextFloat(), event.getPos().getY() + r.nextFloat(), event.getPos().getZ() + r.nextFloat());
                         }
                     }
                     else
@@ -178,11 +180,15 @@ public class PlayerEventHandler
 
                             // either way, consume the time...
                             ((ItemTemporalHourglass) hourglass.getItem()).consumeTime(player, hourglass, player.world, InventoryHelper.getIndexOfStackInInventory(hourglass, player.inventory), timeToConsume);
+
                             Random r = player.world.rand;
-                            player.world.playSound(null, event.getPos(), ModSounds.time_ding_short, SoundCategory.PLAYERS, 0.5F, r.nextFloat() * 0.5F + 0.75F);
+                            BlockPos pos = event.getPos();
+
+                            SoundHelper.playShortTimeDing(player, player.world, pos.getX(), pos.getY(), pos.getZ());
+
                             for(int i = 0; i < 8; i++)
                             {
-                                Aeonicraft.proxy.spawnParticle(Particles.TEST, target.posX - 0.5F + r.nextFloat(), target.posY - 0.5F + r.nextFloat(), target.posZ - 0.5F + r.nextFloat());
+                                Aeonicraft.proxy.spawnParticle(Particles.TEMPORAL_WISP, target.posX - 0.5F + r.nextFloat(), target.posY - 0.5F + r.nextFloat(), target.posZ - 0.5F + r.nextFloat());
                             }
                         }
                     }

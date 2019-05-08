@@ -3,10 +3,10 @@ package lumaceon.mods.aeonicraft.handler;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.IHourglassFunction;
 import lumaceon.mods.aeonicraft.init.ModItems;
-import lumaceon.mods.aeonicraft.init.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.lib.Particles;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
+import lumaceon.mods.aeonicraft.util.SoundHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -88,10 +87,11 @@ public class LivingEventHandler
                             if (parentA.world.getGameRules().getBoolean("doMobLoot"))
                             {
                                 parentA.world.spawnEntity(new EntityXPOrb(parentA.world, parentA.posX, parentA.posY, parentA.posZ, r.nextInt(7) + 1));
-                                player.world.playSound(null, target.getPosition(), ModSounds.time_ding_long, SoundCategory.PLAYERS, 0.5F, r.nextFloat() * 0.5F + 0.75F);
+
+                                SoundHelper.playLongTimeDing(player, target.world, target.posX, target.posY, target.posZ);
                                 for(int i = 0; i < 50; i++)
                                 {
-                                    Aeonicraft.proxy.spawnParticle(Particles.TEST, target.posX - 0.75F + r.nextFloat() * 1.5F, target.posY - 0.75F + r.nextFloat() * 1.5F, target.posZ - 0.75F + r.nextFloat() * 1.5F);
+                                    Aeonicraft.proxy.spawnParticle(Particles.TEMPORAL_WISP, target.posX - 0.75F + r.nextFloat() * 1.5F, target.posY - 0.75F + r.nextFloat() * 1.5F, target.posZ - 0.75F + r.nextFloat() * 1.5F);
                                 }
                             }
                         }

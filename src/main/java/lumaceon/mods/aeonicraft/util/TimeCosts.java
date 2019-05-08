@@ -22,7 +22,7 @@ public class TimeCosts
             return Long.MAX_VALUE;
 
         float strength = tool.getItem().getDestroySpeed(tool, state);
-        float timeCostInTicks = state.getBlockHardness(world, pos) * 1.5F / strength;
+        float timeCostInTicks = state.getBlockHardness(world, pos) * 30F / strength;
         if(player.isInWater())
             timeCostInTicks *= 5.0F;
         if(player.isAirBorne)
