@@ -3,6 +3,7 @@ package lumaceon.mods.aeonicraft.proxy;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.client.ModelRegistry;
 import lumaceon.mods.aeonicraft.client.gui.GuiHandler;
+import lumaceon.mods.aeonicraft.client.init.ModHourglassGuiTabs;
 import lumaceon.mods.aeonicraft.client.particle.ModParticles;
 import lumaceon.mods.aeonicraft.client.particle.ParticleHourglassExplosion;
 import lumaceon.mods.aeonicraft.client.particle.ParticleTemporalWisp;
@@ -22,6 +23,7 @@ public class ClientProxy extends CommonProxy
     public void preInit() {
         OBJLoader.INSTANCE.addDomain(Aeonicraft.MOD_ID);
         new GuiHandler();
+        ModHourglassGuiTabs.init();
     }
 
     @Override

@@ -1,10 +1,8 @@
 package lumaceon.mods.aeonicraft.handler;
 
-import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
 import lumaceon.mods.aeonicraft.init.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
-import lumaceon.mods.aeonicraft.lib.Particles;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
 import lumaceon.mods.aeonicraft.util.ParticleHelper;
 import lumaceon.mods.aeonicraft.util.SoundHelper;

@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft;
 
+import lumaceon.mods.aeonicraft.compat.ModCompatProxyRegistry;
 import lumaceon.mods.aeonicraft.init.ModBlocks;
 import lumaceon.mods.aeonicraft.init.ModCapabilities;
 import lumaceon.mods.aeonicraft.init.ModEntities;
@@ -12,10 +13,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Aeonicraft.MOD_ID, name = Aeonicraft.NAME, version = Aeonicraft.VERSION)
+@Mod(modid = Aeonicraft.MOD_ID, name = Aeonicraft.NAME, version = Aeonicraft.VERSION)//, dependencies = "required:betteradvancements;")
 public class Aeonicraft
 {
     public static final String MOD_ID = "aeonicraft"; //Also in resources/mcmod.info
@@ -51,6 +53,7 @@ public class Aeonicraft
 
         proxy.preInit();
 
+
         ModBlocks.initTE();
         ModCapabilities.init();
 
@@ -63,5 +66,11 @@ public class Aeonicraft
         //ModBlocks.initModels();
         ModEntities.init();
         PacketHandler.init();
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+        ModCompatProxyRegistry.init();
     }
 }

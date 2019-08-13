@@ -2,7 +2,7 @@ package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.AeonicraftAPIRegistry;
-import lumaceon.mods.aeonicraft.api.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
 import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.init.ModBlocks;
 import lumaceon.mods.aeonicraft.init.ModItems;

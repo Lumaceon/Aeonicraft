@@ -1,6 +1,0 @@
-{
-    "parent": "aeonicraft:item/aeonicraft_tool",
-    "textures": {
-        "layer0": "aeonicraft:item/temporal_hourglass"
-    }
-}

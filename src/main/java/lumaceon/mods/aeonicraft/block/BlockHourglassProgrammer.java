@@ -1,6 +1,6 @@
 package lumaceon.mods.aeonicraft.block;
 
-import lumaceon.mods.aeonicraft.api.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
 import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.init.ModItems;
 import lumaceon.mods.aeonicraft.tile.TileHourglassProgrammer;

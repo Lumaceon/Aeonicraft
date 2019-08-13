@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.client.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
 import lumaceon.mods.aeonicraft.capability.travelghost.CapabilityTravelGhost;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.init.ModItems;

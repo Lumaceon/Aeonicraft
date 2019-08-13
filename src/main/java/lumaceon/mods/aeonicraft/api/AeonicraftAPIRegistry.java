@@ -1,5 +1,7 @@
 package lumaceon.mods.aeonicraft.api;
 
+import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
+
 import java.util.HashMap;
 
 public class AeonicraftAPIRegistry

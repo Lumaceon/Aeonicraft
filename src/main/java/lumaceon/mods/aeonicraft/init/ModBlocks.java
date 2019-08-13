@@ -2,6 +2,7 @@ package lumaceon.mods.aeonicraft.init;
 
 import lumaceon.mods.aeonicraft.block.BlockHourglassProgrammer;
 import lumaceon.mods.aeonicraft.block.BlockTemporalCompressor;
+import lumaceon.mods.aeonicraft.block.BlockTemporalConnectionAmplifier;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
@@ -12,6 +13,7 @@ public class ModBlocks
     public static final ArrayList<Block> BLOCKS = new ArrayList<>();
 
     public static final Block temporalCompressor = init(new BlockTemporalCompressor(Material.IRON, "temporal_compressor"));
+    public static final Block temporalConnectionAmplifier = init(new BlockTemporalConnectionAmplifier(Material.IRON, "temporal_connection_amplifier"));
     public static final Block hourglassProgrammer = init(new BlockHourglassProgrammer(Material.IRON, "hourglass_programmer"));
     //public static final Block blockBrass = init(new BlockAeonicraft(64, 100, "ingot_brass", "ingotBrass"));
 

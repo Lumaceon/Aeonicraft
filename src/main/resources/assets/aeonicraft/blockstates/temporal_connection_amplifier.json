@@ -1,0 +1,27 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"__comment": "flip v to correct UVs for obj models",
+		"custom": { "flip-v": true },
+		"model": "aeonicraft:obj/temporal_connection_amplifier_single.obj",
+		"transform": "forge:default-block"
+    },
+	"variants": {
+		"normal": [{}],
+		"inventory": [{}],
+		"connections": {
+			"single": {
+				"model": "aeonicraft:obj/temporal_connection_amplifier_single.obj"
+			},
+			"middle": {
+				"model": "aeonicraft:obj/temporal_connection_amplifier.obj"
+			},
+			"top": {
+				"model": "aeonicraft:obj/temporal_connection_amplifier_top.obj"
+			},
+			"bottom": {
+				"model": "aeonicraft:obj/temporal_connection_amplifier_bottom.obj"
+			}
+		}
+    }
+}

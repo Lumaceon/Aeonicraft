@@ -1,10 +1,10 @@
 package lumaceon.mods.aeonicraft.item;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
 import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.timelink.CapabilityTimeLink;
-import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
+import lumaceon.mods.aeonicraft.lib.GUIs;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
 import lumaceon.mods.aeonicraft.temporalcompression.ITemporalCompressorLinkableBlock;
@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -171,6 +172,26 @@ public class ItemTemporalHourglass extends ItemAeonicraft
     }
 
     @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+    {
+        ItemStack stack = playerIn.getHeldItem(handIn);
+        CapabilityHourglass.IHourglassHandler hg = stack.getCapability(HOURGLASS, null);
+        if(hg != null)
+        {
+            IHourglassFunction func = hg.getActiveFunction();
+            if(func != null)
+            {
+                return func.onHourglassRightClick(worldIn, playerIn, handIn);
+            }
+            else
+            {
+                playerIn.openGui(Aeonicraft.instance, GUIs.TEMPORAL_HOURGLASS.ordinal(), worldIn, (int) playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ);
+            }
+        }
+        return new ActionResult<>(EnumActionResult.PASS, stack);
+    }
+
+    @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         Block block = world.getBlockState(pos).getBlock();
@@ -182,29 +203,27 @@ public class ItemTemporalHourglass extends ItemAeonicraft
             return EnumActionResult.SUCCESS;
         }
 
+        ItemStack stack = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, this);
+        assert stack != null;
+        CapabilityHourglass.IHourglassHandler hg = stack.getCapability(HOURGLASS, null);
+
         if(!world.isRemote)
         {
-            ItemStack stack = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, this);
-            assert stack != null;
-            CapabilityHourglass.IHourglassHandler hg = stack.getCapability(HOURGLASS, null);
             if(hg != null)
             {
                 Aeonicraft.logger.info(hg.getActiveFunction());
             }
-
-
-            CapabilityTimeLink.ITimeLinkHandler cap = stack.getCapability(TIME_LINK, null);
-            if(cap != null) {
-                Aeonicraft.logger.info("Time (server): " + cap.getTimeServer(world));
-                Aeonicraft.logger.info("Should be 0: " + cap.getTimeClient());
-                for(BlockLoc l : cap.getCompressorLocations())
-                {
-                    Aeonicraft.logger.info("Compressor" + l.toString());
-                }
-            }
-
-            world.spawnEntity(new EntityTravelGhost(world, player));
         }
+
+        if(hg != null)
+        {
+            IHourglassFunction func = hg.getActiveFunction();
+            if(func != null)
+            {
+                return func.onHourglassBlockRightClick(player, world, pos, hand, facing, hitX, hitY, hitZ);
+            }
+        }
+
         return EnumActionResult.PASS;
     }
 
@@ -234,7 +253,7 @@ public class ItemTemporalHourglass extends ItemAeonicraft
                     }
                     else
                     {
-                        Aeonicraft.logger.info("Hourglass searched for null compressor at: ("+loc.toString()+")");
+                        //Aeonicraft.logger.info("Hourglass searched for null compressor at: ("+loc.toString()+")");
                     }
                 }
 

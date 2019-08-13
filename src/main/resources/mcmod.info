@@ -9,7 +9,7 @@
   "updateUrl": "",
   "authorList": ["Lumaceon"],
   "credits": "",
-  "logoFile": "",
+  "logoFile": "logo.png",
   "screenshots": [],
   "dependencies": []
 }

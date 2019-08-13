@@ -1,0 +1,32 @@
+# Blender MTL File: 'temporal_hourglass.blend'
+# Material Count: 3
+
+newmtl ConditionalGold
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:item/null
+
+newmtl Module
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:item/null
+
+newmtl Glass
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:item/hourglass_center
+
+newmtl Gold
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:item/gold_texture_thing
+
+newmtl TemporalBase
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:item/temporal_hourglass_t
+
+newmtl TemporalDoodles
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:item/temporal_dots

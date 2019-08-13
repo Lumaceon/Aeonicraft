@@ -1,0 +1,24 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "__comment": "flip v to correct UVs for obj models",
+        "custom": { "flip-v": true },
+        "model": "aeonicraft:obj/temporal_hourglass.obj",
+        "transform": {
+            "thirdperson": {
+                "translation": [ 0, 0.125, -0.1 ],
+                "rotation": [ {"x":0}, {"y":45}, {"z":180} ],
+                "scale": [ 0.375, 0.375, 0.375 ]
+            },
+            "firstperson": {
+                "translation": [ -0.55, 0.52, -1 ],
+                "rotation": [ {"x":0}, {"y":0}, {"z":180} ],
+                "scale": [ 0.7, 0.7, 0.7 ]
+            }
+        }
+    },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{}]
+    }
+}

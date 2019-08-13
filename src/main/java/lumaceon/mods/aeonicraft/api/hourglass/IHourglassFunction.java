@@ -1,7 +1,10 @@
-package lumaceon.mods.aeonicraft.api;
+package lumaceon.mods.aeonicraft.api.hourglass;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
@@ -11,6 +14,20 @@ import javax.annotation.Nullable;
  */
 public interface IHourglassFunction
 {
+    /**
+     * Called when a block is right-clicked with the containing hourglass.
+     */
+    default EnumActionResult onHourglassBlockRightClick(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return EnumActionResult.PASS;
+    }
+
+    /**
+     * Called on right-click with the containing hourglass. May also call onHourglassBlockRightClick.
+     */
+    default ActionResult<ItemStack> onHourglassRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        return new ActionResult<>(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
+    }
+
     String getRegistryIDString();
 
     /**

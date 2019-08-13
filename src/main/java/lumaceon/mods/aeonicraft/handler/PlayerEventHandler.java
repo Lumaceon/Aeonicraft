@@ -1,6 +1,6 @@
 package lumaceon.mods.aeonicraft.handler;
 
-import lumaceon.mods.aeonicraft.api.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
 import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.entity.EntityTemporalFishHook;
 import lumaceon.mods.aeonicraft.init.ModItems;
@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,6 +29,12 @@ import java.util.Random;
 @Mod.EventBusSubscriber
 public class PlayerEventHandler
 {
+    @SubscribeEvent
+    public static void onAdvancementCompleted(AdvancementEvent event)
+    {
+
+    }
+
     @SubscribeEvent
     public static void onBlockAboutToBeBroken(PlayerEvent.BreakSpeed event)
     {
@@ -79,7 +86,7 @@ public class PlayerEventHandler
             if(cap != null)
             {
                 IHourglassFunction func = cap.getActiveFunction();
-                if(func != null && func.equals(ModItems.hgfuncFish) && !(player.fishEntity instanceof EntityTemporalFishHook))
+                if(func != null && func.equals(ModItems.hgFuncFish) && !(player.fishEntity instanceof EntityTemporalFishHook))
                 {
                     player.fishEntity.setDead();
                     EntityTemporalFishHook fishHook = new EntityTemporalFishHook(player.world, player);
