@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.handler;
 
+import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
 import lumaceon.mods.aeonicraft.init.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
@@ -23,7 +24,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Random;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = Aeonicraft.MOD_ID)
 public class LivingEventHandler
 {
     @SubscribeEvent

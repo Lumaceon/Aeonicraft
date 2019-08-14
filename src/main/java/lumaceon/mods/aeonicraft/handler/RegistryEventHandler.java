@@ -26,7 +26,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Objects;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = Aeonicraft.MOD_ID)
 public class RegistryEventHandler
 {
     @SubscribeEvent

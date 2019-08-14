@@ -1,6 +1,7 @@
 package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
+import lumaceon.mods.aeonicraft.capability.timestorage.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.capability.travelghost.CapabilityTravelGhost;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +12,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = Aeonicraft.MOD_ID)
 public class CapabilityAttachHandler
 {
     @CapabilityInject(CapabilityTravelGhost.ITravelGhostHandler.class)
@@ -23,10 +24,10 @@ public class CapabilityAttachHandler
         Entity entity = event.getObject();
         if(entity instanceof EntityPlayer)
         {
-            if(!entity.hasCapability(CapabilityTravelGhost.TRAVEL_GHOST, null))
-            {
+            if(!entity.hasCapability(TRAVEL_GHOST, null))
                 event.addCapability(new ResourceLocation(Aeonicraft.MOD_ID + ":travel_ghost"), new CapabilityTravelGhost.Provider());
-            }
+            if(!entity.hasCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null))
+                event.addCapability(new ResourceLocation(Aeonicraft.MOD_ID + ":timestroage"), new CapabilityTimeStorage.Provider());
         }
     }
 }

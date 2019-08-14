@@ -1,15 +1,21 @@
 package lumaceon.mods.aeonicraft.handler;
 
+import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
 import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
+import lumaceon.mods.aeonicraft.capability.timestorage.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.entity.EntityTemporalFishHook;
 import lumaceon.mods.aeonicraft.init.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
+import lumaceon.mods.aeonicraft.lib.ConfigValues;
+import lumaceon.mods.aeonicraft.network.PacketHandler;
+import lumaceon.mods.aeonicraft.network.message.MessagePlayerTCUpdate;
 import lumaceon.mods.aeonicraft.util.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
@@ -24,9 +30,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.HashMap;
 import java.util.Random;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = Aeonicraft.MOD_ID)
 public class PlayerEventHandler
 {
     @SubscribeEvent
@@ -75,11 +82,33 @@ public class PlayerEventHandler
         }
     }
 
+    public static HashMap<EntityPlayer, Integer> updateCount = new HashMap<>();
+
     @SubscribeEvent
     public static void onPlayerUpdate(TickEvent.PlayerTickEvent event)
     {
         EntityPlayer player = event.player;
-        if(!player.world.isRemote && player.fishEntity != null)
+
+        if(player.world.isRemote)
+            return;
+
+        int currentUpdateCount = updateCount.getOrDefault(player, -1) + 1;
+
+        // Handle player-bound TC generation...
+        CapabilityTimeStorage.ITimeStorage timeStorage = player.getCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null);
+        if(timeStorage != null)
+        {
+            // TODO proper time generation logic
+            timeStorage.insertTime(1);
+            if(currentUpdateCount % ConfigValues.SECONDS_BETWEEN_PLAYER_TC_UPDATE_PACKET * 20 == 0)
+            {
+                currentUpdateCount = 0;
+                PacketHandler.INSTANCE.sendTo(new MessagePlayerTCUpdate(timeStorage.getTimeInTicks(), 50, CapabilityTimeStorage.TimeStorage.UpdateSpeed.SLOW), (EntityPlayerMP) player);
+            }
+        }
+
+        // Modify fish hook if the appropriate hourglass module is active...
+        if(player.fishEntity != null)
         {
             ItemStack stack = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, ModItems.temporalHourglass);
             CapabilityHourglass.IHourglassHandler cap = stack.getCapability(CapabilityHourglass.HOURGLASS, null);
@@ -96,6 +125,8 @@ public class PlayerEventHandler
                 }
             }
         }
+
+        updateCount.put(player, currentUpdateCount);
     }
 
 

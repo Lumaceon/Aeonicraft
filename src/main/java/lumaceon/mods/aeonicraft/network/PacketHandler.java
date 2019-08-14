@@ -4,9 +4,11 @@ import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassFunctionChange;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassRequestTCUpdate;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
+import lumaceon.mods.aeonicraft.network.message.MessagePlayerTCUpdate;
 import lumaceon.mods.aeonicraft.network.message.handler.HandlerHourglassFunctionChange;
 import lumaceon.mods.aeonicraft.network.message.handler.HandlerHourglassRequestTCUpdate;
 import lumaceon.mods.aeonicraft.network.message.handler.HandlerHourglassTCUpdate;
+import lumaceon.mods.aeonicraft.network.message.handler.HandlerPlayerTCUpdate;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -22,6 +24,7 @@ public class PacketHandler
     {
         //Note: the side passed in is the RECEIVING side.
         registerMessage(HandlerHourglassTCUpdate.class, MessageHourglassTCUpdate.class, Side.CLIENT);
+        registerMessage(HandlerPlayerTCUpdate.class, MessagePlayerTCUpdate.class, Side.CLIENT);
         registerMessage(HandlerHourglassFunctionChange.class, MessageHourglassFunctionChange.class, Side.SERVER);
         registerMessage(HandlerHourglassRequestTCUpdate.class, MessageHourglassRequestTCUpdate.class, Side.SERVER);
     }
