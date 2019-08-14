@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.init;
 
+import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraftOreDict;
 import lumaceon.mods.aeonicraft.item.ItemHourglassFunction;
@@ -10,12 +11,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.ArrayList;
 
+@GameRegistry.ObjectHolder(Aeonicraft.MOD_ID)
 public class ModItems
 {
-    public static final ArrayList<Item> ITEMS = new ArrayList<>();
+    private static final ArrayList<Item> ITEMS = new ArrayList<>();
+    public static ArrayList<Item> getItems() {
+        return ITEMS;
+    }
 
     public static final Item ingotTemporal = init(new ItemAeonicraftOreDict(64, 100, "ingot_temporal", "ingotTemporal"));
     public static final Item ingotBrass = init(new ItemAeonicraftOreDict(64, 100, "ingot_brass", "ingotBrass"));

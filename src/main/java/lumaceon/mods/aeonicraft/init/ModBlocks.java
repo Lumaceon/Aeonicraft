@@ -1,16 +1,22 @@
 package lumaceon.mods.aeonicraft.init;
 
+import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.block.BlockHourglassProgrammer;
 import lumaceon.mods.aeonicraft.block.BlockTemporalCompressor;
 import lumaceon.mods.aeonicraft.block.BlockTemporalConnectionAmplifier;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.ArrayList;
 
+@GameRegistry.ObjectHolder(Aeonicraft.MOD_ID)
 public class ModBlocks
 {
-    public static final ArrayList<Block> BLOCKS = new ArrayList<>();
+    private static final ArrayList<Block> BLOCKS = new ArrayList<>();
+    public static ArrayList<Block> getBlocks() {
+        return BLOCKS;
+    }
 
     public static final Block temporalCompressor = init(new BlockTemporalCompressor(Material.IRON, "temporal_compressor"));
     public static final Block temporalConnectionAmplifier = init(new BlockTemporalConnectionAmplifier(Material.IRON, "temporal_connection_amplifier"));

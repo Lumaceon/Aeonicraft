@@ -40,16 +40,16 @@ public class RegistryEventHandler
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
-        event.getRegistry().registerAll(ModBlocks.BLOCKS.toArray(new Block[0]));
+        event.getRegistry().registerAll(ModBlocks.getBlocks().toArray(new Block[0]));
         GameRegistry.registerTileEntity(TileHourglassProgrammer.class, Objects.requireNonNull(ModBlocks.hourglassProgrammer.getRegistryName()));
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
-        event.getRegistry().registerAll( ModItems.ITEMS.toArray(new Item[0]));
+        event.getRegistry().registerAll( ModItems.getItems().toArray(new Item[0]));
 
-        for(Item item : ModItems.ITEMS)
+        for(Item item : ModItems.getItems())
         {
             if(item instanceof IOreDict)
             {
@@ -62,7 +62,7 @@ public class RegistryEventHandler
             }
         }
 
-        for(Block block : ModBlocks.BLOCKS)
+        for(Block block : ModBlocks.getBlocks())
         {
             event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
         }
@@ -75,12 +75,12 @@ public class RegistryEventHandler
         ModelLoaderRegistry.registerLoader(new AeonicraftModelLoader());
 
 
-        for(Block block : ModBlocks.BLOCKS)
+        for(Block block : ModBlocks.getBlocks())
         {
             ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(Objects.requireNonNull(block.getRegistryName()), "inventory"));
         }
 
-        for(Item item : ModItems.ITEMS)
+        for(Item item : ModItems.getItems())
         {
             ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Objects.requireNonNull(item.getRegistryName()), "inventory"));
         }
