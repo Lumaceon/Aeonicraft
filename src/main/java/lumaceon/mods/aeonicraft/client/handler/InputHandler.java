@@ -36,10 +36,10 @@ public class InputHandler
 
                 if(input.forwardKeyDown)
                 {
-                    ItemStack hourglass = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, ModItems.temporalHourglass);
+                    ItemStack hourglass = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, ModItems.temporal_hourglass);
                     IHourglassFunction func = InventoryHelper.getHourglassFunctionFromHourglass(hourglass);
 
-                    if(func != null && func.equals(ModItems.hgFuncTravel) && hourglass.getItem() instanceof ItemTemporalHourglass)
+                    if(func != null && func.equals(ModItems.hourglass_function_travel) && hourglass.getItem() instanceof ItemTemporalHourglass)
                     {
                         ItemTemporalHourglass hg = (ItemTemporalHourglass) hourglass.getItem();
                         if(hg.availableTime(hourglass, player.world, Side.CLIENT) >= TimeParser.SECOND * 6)

@@ -24,7 +24,7 @@ public class MouseHandler
             if(player != null)
             {
                 ItemStack itemInHand = player.inventory.getCurrentItem();
-                if(itemInHand.getItem().equals(ModItems.temporalHourglass))
+                if(itemInHand.getItem().equals(ModItems.temporal_hourglass))
                 {
                     CapabilityHourglass.IHourglassHandler cap = itemInHand.getCapability(CapabilityHourglass.HOURGLASS, null);
                     if(cap != null)

@@ -1,17 +1,14 @@
 package lumaceon.mods.aeonicraft.network.message.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.timelink.CapabilityTimeLink;
 import lumaceon.mods.aeonicraft.init.ModItems;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
-import lumaceon.mods.aeonicraft.network.message.MessageHourglassFunctionChange;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassRequestTCUpdate;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
 import lumaceon.mods.aeonicraft.temporalcompression.TemporalCompressor;
 import lumaceon.mods.aeonicraft.util.BlockLoc;
 import lumaceon.mods.aeonicraft.worlddata.ExtendedWorldData;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -39,7 +36,7 @@ public class HandlerHourglassRequestTCUpdate implements IMessageHandler<MessageH
                         return;
 
                     ItemStack targetItem = player.inventory.getStackInSlot(message.stackIndex);
-                    if(targetItem.getItem().equals(ModItems.temporalHourglass))
+                    if(targetItem.getItem().equals(ModItems.temporal_hourglass))
                     {
                         CapabilityTimeLink.ITimeLinkHandler cap = targetItem.getCapability(CapabilityTimeLink.TIME_LINK, null);
                         if(cap != null)

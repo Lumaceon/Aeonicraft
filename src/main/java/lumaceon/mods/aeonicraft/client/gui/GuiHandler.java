@@ -23,7 +23,7 @@ public class GuiHandler implements IGuiHandler
         if(ID == GUIs.TEMPORAL_HOURGLASS.ordinal())
         {
             ItemStack hg = player.inventory.getCurrentItem();
-            if(hg.getItem().equals(ModItems.temporalHourglass))
+            if(hg.getItem().equals(ModItems.temporal_hourglass))
                 return new ContainerTemporalHourglass(hg);
         }
         return null;
@@ -35,7 +35,7 @@ public class GuiHandler implements IGuiHandler
         if(ID == GUIs.TEMPORAL_HOURGLASS.ordinal())
         {
             ItemStack hg = player.inventory.getCurrentItem();
-            if(hg.getItem().equals(ModItems.temporalHourglass))
+            if(hg.getItem().equals(ModItems.temporal_hourglass))
                 return new GuiTemporalHourglass(hg, ModCompatProxyRegistry.betterAdvancementsCompat.getAdvancementsGuiScreen());
         }
         return null;

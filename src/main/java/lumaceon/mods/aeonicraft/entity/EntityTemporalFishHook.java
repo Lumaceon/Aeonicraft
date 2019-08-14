@@ -1,10 +1,7 @@
 package lumaceon.mods.aeonicraft.entity;
 
-import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.init.ModItems;
-import lumaceon.mods.aeonicraft.init.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
-import lumaceon.mods.aeonicraft.lib.Particles;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
 import lumaceon.mods.aeonicraft.util.ParticleHelper;
 import lumaceon.mods.aeonicraft.util.SoundHelper;
@@ -28,7 +25,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -415,7 +411,7 @@ public class EntityTemporalFishHook extends EntityFishHook
         // if this would have failed to catch a fish, but we have a valid hourglass, consume time and auto-succeed
         if(this.ticksCatchable <= 0)
         {
-            ItemStack hourglass = InventoryHelper.getFirstStackOfTypeInInventory(angler.inventory, ModItems.temporalHourglass);
+            ItemStack hourglass = InventoryHelper.getFirstStackOfTypeInInventory(angler.inventory, ModItems.temporal_hourglass);
             int timeToCatchAFish = MathHelper.getInt(this.rand, 5000, 30000);
             timeToCatchAFish -= this.lureSpeed * 20 * 5;
 

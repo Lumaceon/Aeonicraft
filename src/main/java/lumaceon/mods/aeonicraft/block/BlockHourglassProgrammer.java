@@ -53,7 +53,7 @@ public class BlockHourglassProgrammer extends BlockAeonicraft implements ITileEn
             }
             else
             {
-                if(stackInHand.getItem().equals(ModItems.temporalHourglass))
+                if(stackInHand.getItem().equals(ModItems.temporal_hourglass))
                 {
                     hourglassProgrammer.hourglass = stackInHand;
                     playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, ItemStack.EMPTY);

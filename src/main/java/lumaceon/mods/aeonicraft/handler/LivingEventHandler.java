@@ -33,12 +33,12 @@ public class LivingEventHandler
         EntityPlayer player = event.getCausedByPlayer();
         if(player != null && !player.world.isRemote)
         {
-            ItemStack hourglass = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, ModItems.temporalHourglass);
+            ItemStack hourglass = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, ModItems.temporal_hourglass);
             assert hourglass != null;
             if(!hourglass.isEmpty())
             {
                 IHourglassFunction function = InventoryHelper.getHourglassFunctionFromHourglass(hourglass);
-                if(function != null && function.equals(ModItems.hgFuncAnimal))
+                if(function != null && function.equals(ModItems.hourglass_function_animal))
                 {
                     EntityAgeable target = event.getChild();
                     if(target != null && event.getParentA() instanceof EntityAnimal && event.getParentB() instanceof EntityAnimal)

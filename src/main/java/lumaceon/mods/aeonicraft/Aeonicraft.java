@@ -1,7 +1,6 @@
 package lumaceon.mods.aeonicraft;
 
 import lumaceon.mods.aeonicraft.compat.ModCompatProxyRegistry;
-import lumaceon.mods.aeonicraft.init.ModBlocks;
 import lumaceon.mods.aeonicraft.init.ModCapabilities;
 import lumaceon.mods.aeonicraft.init.ModEntities;
 import lumaceon.mods.aeonicraft.init.ModItems;
@@ -40,7 +39,7 @@ public class Aeonicraft
         @Override
         public ItemStack getTabIconItem() {
             if(CREATIVE_TAB_DISPLAY_ITEMSTACK == null)
-                CREATIVE_TAB_DISPLAY_ITEMSTACK = new ItemStack(ModItems.ingotTemporal);
+                CREATIVE_TAB_DISPLAY_ITEMSTACK = new ItemStack(ModItems.ingot_temporal);
             return CREATIVE_TAB_DISPLAY_ITEMSTACK;
         }
     };
@@ -53,8 +52,6 @@ public class Aeonicraft
 
         proxy.preInit();
 
-
-        ModBlocks.initTE();
         ModCapabilities.init();
 
         //GameRegistry.registerWorldGenerator(oreGenerator, 0);

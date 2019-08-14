@@ -23,19 +23,19 @@ public class ModHourglassGuiTabs
         HourglassGuiTabs.HOURGLASS_GUI_TABS.add(new HourglassGuiTabFactory() {
             @Override
             public IHourglassGuiTab createNewHourglassGuiTab(GuiScreen hourglassGui) {
-                return new GuiHourglassTabAdvancementsProxy(new ItemStack(ModItems.temporalHourglass), "Test 2");
+                return new GuiHourglassTabAdvancementsProxy(new ItemStack(ModItems.temporal_hourglass), "Test 2");
             }
         });
         HourglassGuiTabs.HOURGLASS_GUI_TABS.add(new HourglassGuiTabFactory() {
             @Override
             public IHourglassGuiTab createNewHourglassGuiTab(GuiScreen hourglassGui) {
-                return new GuiHourglassTabAdvancementsProxy(new ItemStack(ModItems.hgFuncFish), "Test 3");
+                return new GuiHourglassTabAdvancementsProxy(new ItemStack(ModItems.hourglass_function_fish), "Test 3");
             }
         });
         HourglassGuiTabs.HOURGLASS_GUI_TABS.add(new HourglassGuiTabFactory() {
             @Override
             public IHourglassGuiTab createNewHourglassGuiTab(GuiScreen hourglassGui) {
-                return new GuiHourglassTabAdvancementsProxy(new ItemStack(ModItems.ingotBrass), "Test 4");
+                return new GuiHourglassTabAdvancementsProxy(new ItemStack(ModItems.ingot_brass), "Test 4");
             }
         });
     }

@@ -29,7 +29,7 @@ public class HandlerHourglassFunctionChange implements IMessageHandler<MessageHo
                         return;
 
                     ItemStack currentItem = player.inventory.getCurrentItem();
-                    if(currentItem.getItem().equals(ModItems.temporalHourglass))
+                    if(currentItem.getItem().equals(ModItems.temporal_hourglass))
                     {
                         CapabilityHourglass.IHourglassHandler cap = currentItem.getCapability(CapabilityHourglass.HOURGLASS, null);
                         if(cap != null)
