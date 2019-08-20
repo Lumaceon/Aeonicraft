@@ -3,6 +3,7 @@ package lumaceon.mods.aeonicraft.registry.custom;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockableCategory;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,6 +27,12 @@ public class HandlerNewRegistry
         RegistryBuilder<HourglassUnlockable> b2 = new RegistryBuilder<>();
         b2.setName(new ResourceLocation(Aeonicraft.MOD_ID, "hourglass_unlockable_registry"));
         b2.setType(HourglassUnlockable.class);
-        IForgeRegistry<HourglassUnlockable> registry = b2.create();
+        b2.create();
+
+        // Hourglass Functions
+        RegistryBuilder<HourglassFunction> b3 = new RegistryBuilder<>();
+        b3.setName(new ResourceLocation(Aeonicraft.MOD_ID, "hourglass_zfunction_registry")); // because alphabetical order...
+        b3.setType(HourglassFunction.class);
+        b3.create();
     }
 }

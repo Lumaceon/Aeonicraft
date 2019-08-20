@@ -1,6 +1,6 @@
 package lumaceon.mods.aeonicraft.util;
 
-import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -39,7 +39,7 @@ public class InventoryHelper
     }
 
     @Nullable
-    public static IHourglassFunction getHourglassFunctionFromHourglass(ItemStack hourglass)
+    public static HourglassFunction getHourglassFunctionFromHourglass(ItemStack hourglass)
     {
         CapabilityHourglass.IHourglassHandler cap = hourglass.getCapability(HOURGLASS, null);
         if(cap != null)

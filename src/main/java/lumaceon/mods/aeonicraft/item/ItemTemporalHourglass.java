@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.item;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeLink;
 import lumaceon.mods.aeonicraft.lib.GUIs;
@@ -51,8 +51,31 @@ public class ItemTemporalHourglass extends ItemAeonicraft
         super(maxStack, maxDamage, name);
     }
 
+    /**
+     * Changes the current function of the hourglass.
+     * @param shift Relative number to shift forward (or backward if negative).
+     */
+    public void shiftFunction(EntityPlayer player, ItemStack stack, int shift)
+    {
+        CapabilityHourglass.IHourglassHandler cap = stack.getCapability(HOURGLASS, null);
+        if(cap != null)
+        {
+            while(shift > 0)
+            {
+                cap.cycleActiveFunction(player, true);
+                shift--;
+            }
+
+            while(shift < 0)
+            {
+                cap.cycleActiveFunction(player, false);
+                shift++;
+            }
+        }
+    }
+
     @Nullable
-    public IHourglassFunction getActiveHourglassFunction(ItemStack stack)
+    public HourglassFunction getActiveHourglassFunction(ItemStack stack)
     {
         CapabilityHourglass.IHourglassHandler cap = stack.getCapability(HOURGLASS, null);
         if(cap != null)
@@ -142,11 +165,11 @@ public class ItemTemporalHourglass extends ItemAeonicraft
         CapabilityHourglass.IHourglassHandler hg = stack.getCapability(HOURGLASS, null);
         if(hg != null)
         {
-            IHourglassFunction hourglassFunction = hg.getActiveFunction();
+            HourglassFunction hourglassFunction = hg.getActiveFunction();
             if(hourglassFunction != null)
             {
                 return I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name").trim()
-                        + " " + I18n.translateToLocal(hourglassFunction.getRegistryIDString() + ".name").trim();
+                        + " " + I18n.translateToLocal(hourglassFunction.getRegistryName().toString() + ".name").trim();
             }
         }
         return I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name").trim();
@@ -178,7 +201,7 @@ public class ItemTemporalHourglass extends ItemAeonicraft
         CapabilityHourglass.IHourglassHandler hg = stack.getCapability(HOURGLASS, null);
         if(hg != null)
         {
-            IHourglassFunction func = hg.getActiveFunction();
+            HourglassFunction func = hg.getActiveFunction();
             if(func != null)
             {
                 return func.onHourglassRightClick(worldIn, playerIn, handIn);
@@ -217,7 +240,7 @@ public class ItemTemporalHourglass extends ItemAeonicraft
 
         if(hg != null)
         {
-            IHourglassFunction func = hg.getActiveFunction();
+            HourglassFunction func = hg.getActiveFunction();
             if(func != null)
             {
                 return func.onHourglassBlockRightClick(player, world, pos, hand, facing, hitX, hitY, hitZ);

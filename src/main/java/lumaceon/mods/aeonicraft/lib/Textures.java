@@ -19,6 +19,5 @@ public class Textures
 
     // Itemstacks for visual display...
     public static final ItemStack STACK_HOURGLASS = new ItemStack(ModItems.temporal_hourglass);
-    public static final ItemStack STACK_HOURGLASS_FUNC_EXCAVATE = new ItemStack(ModItems.hourglass_function_excavator);
     public static final ItemStack STACK_COMPRESSOR = new ItemStack(ModBlocks.temporal_compressor);
 }

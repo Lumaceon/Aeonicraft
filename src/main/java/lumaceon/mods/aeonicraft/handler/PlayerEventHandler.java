@@ -1,10 +1,11 @@
 package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.entity.EntityTemporalFishHook;
+import lumaceon.mods.aeonicraft.registry.ModHourglassFunctions;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.lib.ConfigValues;
@@ -52,8 +53,8 @@ public class PlayerEventHandler
             if(firstHourglass != null)
             {
                 ItemTemporalHourglass hourglass = (ItemTemporalHourglass) firstHourglass.getItem();
-                IHourglassFunction hourglassFunction = hourglass.getActiveHourglassFunction(firstHourglass);
-                if(hourglassFunction != null && hourglassFunction.equals(ModItems.hourglass_function_excavator))
+                HourglassFunction hourglassFunction = hourglass.getActiveHourglassFunction(firstHourglass);
+                if(hourglassFunction != null && hourglassFunction.equals(ModHourglassFunctions.excavation_overclocker))
                 {
                     long timeToBreakBlock = TimeCosts.getTimeToBreakBlock(player.world, event.getPos(), event.getState(), player, player.inventory.getCurrentItem());
                     if(hourglass.availableTime(firstHourglass, player.world, player.world.isRemote ? Side.CLIENT : Side.SERVER) >= timeToBreakBlock)
@@ -114,8 +115,8 @@ public class PlayerEventHandler
             CapabilityHourglass.IHourglassHandler cap = stack.getCapability(CapabilityHourglass.HOURGLASS, null);
             if(cap != null)
             {
-                IHourglassFunction func = cap.getActiveFunction();
-                if(func != null && func.equals(ModItems.hourglass_function_fish) && !(player.fishEntity instanceof EntityTemporalFishHook))
+                HourglassFunction func = cap.getActiveFunction();
+                if(func != null && func.equals(ModHourglassFunctions.aquatic_lure_overclocker) && !(player.fishEntity instanceof EntityTemporalFishHook))
                 {
                     player.fishEntity.setDead();
                     EntityTemporalFishHook fishHook = new EntityTemporalFishHook(player.world, player);
@@ -142,7 +143,7 @@ public class PlayerEventHandler
                 EntitySheep sheep = (EntitySheep) target;
                 ItemStack stackInHand = player.inventory.getCurrentItem();
                 ItemStack hourglass = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, ModItems.temporal_hourglass);
-                IHourglassFunction func = InventoryHelper.getHourglassFunctionFromHourglass(hourglass);
+                HourglassFunction func = InventoryHelper.getHourglassFunctionFromHourglass(hourglass);
                 BlockPos centralPosition = event.getPos();
                 int foundGrass = 0;
                 BlockPos firstGrass = null;
@@ -164,7 +165,7 @@ public class PlayerEventHandler
                 }
                 if (
                         func != null
-                        && func.equals(ModItems.hourglass_function_animal)
+                        && func.equals(ModHourglassFunctions.livestock_overclocker)
                         && hourglass.getItem() instanceof ItemTemporalHourglass
                         && sheep.isShearable(stackInHand, player.world, event.getPos())
                         && stackInHand.getItem() instanceof ItemShears

@@ -1,7 +1,8 @@
 package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
+import lumaceon.mods.aeonicraft.registry.ModHourglassFunctions;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
@@ -37,8 +38,8 @@ public class LivingEventHandler
             assert hourglass != null;
             if(!hourglass.isEmpty())
             {
-                IHourglassFunction function = InventoryHelper.getHourglassFunctionFromHourglass(hourglass);
-                if(function != null && function.equals(ModItems.hourglass_function_animal))
+                HourglassFunction function = InventoryHelper.getHourglassFunctionFromHourglass(hourglass);
+                if(function != null && function.equals(ModHourglassFunctions.livestock_overclocker))
                 {
                     EntityAgeable target = event.getChild();
                     if(target != null && event.getParentA() instanceof EntityAnimal && event.getParentB() instanceof EntityAnimal)

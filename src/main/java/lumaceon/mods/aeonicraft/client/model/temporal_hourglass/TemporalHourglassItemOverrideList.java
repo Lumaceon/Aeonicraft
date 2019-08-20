@@ -2,7 +2,7 @@ package lumaceon.mods.aeonicraft.client.model.temporal_hourglass;
 
 import com.google.common.collect.ImmutableMap;
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,7 +35,7 @@ public class TemporalHourglassItemOverrideList extends ItemOverrideList
         CapabilityHourglass.IHourglassHandler cap = stack.getCapability(HOURGLASS, null);
         if(cap != null)
         {
-            IHourglassFunction hourglassFunction = cap.getActiveFunction();
+            HourglassFunction hourglassFunction = cap.getActiveFunction();
 
             if(hourglassFunction == null)
                 return originalModel;

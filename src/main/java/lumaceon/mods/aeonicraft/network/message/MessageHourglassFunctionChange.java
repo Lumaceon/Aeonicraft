@@ -1,38 +1,26 @@
 package lumaceon.mods.aeonicraft.network.message;
 
 import io.netty.buffer.ByteBuf;
-import lumaceon.mods.aeonicraft.api.AeonicraftAPIRegistry;
-import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class MessageHourglassFunctionChange implements IMessage
 {
-    public IHourglassFunction targetFunction;
+    public int relativeShift = 0;
 
-    public MessageHourglassFunctionChange() {
-        targetFunction = null;
-    }
+    public MessageHourglassFunctionChange() {}
 
-    public MessageHourglassFunctionChange(IHourglassFunction targetFunction)
+    public MessageHourglassFunctionChange(int relativeShift)
     {
-        this.targetFunction = targetFunction;
+        this.relativeShift = relativeShift;
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        if(targetFunction != null)
-            ByteBufUtils.writeUTF8String(buf, targetFunction.getRegistryIDString());
-        else
-            ByteBufUtils.writeUTF8String(buf, "");
+        buf.writeInt(relativeShift);
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        String s = ByteBufUtils.readUTF8String(buf);
-        if(s.isEmpty())
-            targetFunction = null;
-        else
-            targetFunction = AeonicraftAPIRegistry.getHourglassFunction(s);
+        this.relativeShift = buf.readInt();
     }
 }

@@ -6,6 +6,7 @@ import lumaceon.mods.aeonicraft.api.client.IHourglassGuiTab;
 import lumaceon.mods.aeonicraft.client.gui.hourglass.GuiHourglassTabAdvancementsProxy;
 import lumaceon.mods.aeonicraft.client.gui.hourglass.GuiHourglassTabTCSummary;
 import lumaceon.mods.aeonicraft.client.gui.hourglass.GuiHourglassTabUnlocks;
+import lumaceon.mods.aeonicraft.registry.ModBlocks;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
@@ -29,7 +30,7 @@ public class ModHourglassGuiTabs
         HourglassGuiTabs.HOURGLASS_GUI_TABS.add(new HourglassGuiTabFactory() {
             @Override
             public IHourglassGuiTab createNewHourglassGuiTab(GuiScreen hourglassGui) {
-                return new GuiHourglassTabAdvancementsProxy(new ItemStack(ModItems.hourglass_function_fish), "Test 3");
+                return new GuiHourglassTabAdvancementsProxy(new ItemStack(ModBlocks.temporal_connection_amplifier), "Test 3");
             }
         });
         HourglassGuiTabs.HOURGLASS_GUI_TABS.add(new HourglassGuiTabFactory() {

@@ -1,6 +1,7 @@
 package lumaceon.mods.aeonicraft.client.handler;
 
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
+import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassFunctionChange;
@@ -35,20 +36,19 @@ public class MouseHandler
                         int dWheel = event.getDwheel();
                         while(dWheel <= -120)
                         {
-                            cap.cycleActiveFunction(true);
                             dWheel += 120;
                             change++;
                         }
 
                         while(dWheel >= 120)
                         {
-                            cap.cycleActiveFunction(false);
                             dWheel -= 120;
-                            change++;
+                            change--;
                         }
 
-                        if(change > 0)
-                            PacketHandler.INSTANCE.sendToServer(new MessageHourglassFunctionChange(cap.getActiveFunction()));
+                        if(change != 0)
+                            PacketHandler.INSTANCE.sendToServer(new MessageHourglassFunctionChange(change));
+                        ((ItemTemporalHourglass) itemInHand.getItem()).shiftFunction(player, itemInHand, change);
                     }
                 }
             }

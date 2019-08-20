@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.api;
 
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockableCategory;
 
 /**
@@ -14,6 +15,11 @@ public class HourglassUnlocks
     public static HourglassUnlockableCategory categoryProgression = null;
     public static HourglassUnlockableCategory categoryHourglassFunction = null;
     public static HourglassUnlockableCategory categoryTemporalMachination = null;
+
+    public static HourglassUnlockable hourglassFunctionExcavation = null;
+    public static HourglassUnlockable hourglassFunctionLivestock = null;
+    public static HourglassUnlockable hourglassFunctionAquaticLure = null;
+    public static HourglassUnlockable hourglassFunctionTraveller = null;
 
 
     public static void increaseTotalTimeRequiredToAllUnlocks(long increase) {

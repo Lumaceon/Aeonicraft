@@ -2,6 +2,7 @@ package lumaceon.mods.aeonicraft.network.message.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
+import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassFunctionChange;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,14 +30,9 @@ public class HandlerHourglassFunctionChange implements IMessageHandler<MessageHo
                         return;
 
                     ItemStack currentItem = player.inventory.getCurrentItem();
+
                     if(currentItem.getItem().equals(ModItems.temporal_hourglass))
-                    {
-                        CapabilityHourglass.IHourglassHandler cap = currentItem.getCapability(CapabilityHourglass.HOURGLASS, null);
-                        if(cap != null)
-                        {
-                            cap.setActiveFunction(message.targetFunction);
-                        }
-                    }
+                        ((ItemTemporalHourglass) currentItem.getItem()).shiftFunction(player, currentItem, message.relativeShift);
                 }
         );
 
