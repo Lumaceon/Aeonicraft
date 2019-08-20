@@ -1,11 +1,11 @@
 package lumaceon.mods.aeonicraft.init;
 
 
-import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
-import lumaceon.mods.aeonicraft.capability.timelink.CapabilityTimeLink;
-import lumaceon.mods.aeonicraft.capability.timestorage.CapabilityTimeStorage;
-import lumaceon.mods.aeonicraft.capability.toggle.CapabilityToggle;
-import lumaceon.mods.aeonicraft.capability.travelghost.CapabilityTravelGhost;
+import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeLink;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
+import lumaceon.mods.aeonicraft.capability.CapabilityToggle;
+import lumaceon.mods.aeonicraft.capability.CapabilityTravelGhost;
 
 public class ModCapabilities
 {

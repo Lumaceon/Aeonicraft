@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.network.message;
 
 import io.netty.buffer.ByteBuf;
-import lumaceon.mods.aeonicraft.capability.timestorage.CapabilityTimeStorage;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class MessagePlayerTCUpdate implements IMessage

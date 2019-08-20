@@ -3,7 +3,7 @@ package lumaceon.mods.aeonicraft.client.gui;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.compat.ModCompatProxyRegistry;
 import lumaceon.mods.aeonicraft.container.ContainerTemporalHourglass;
-import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.lib.GUIs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

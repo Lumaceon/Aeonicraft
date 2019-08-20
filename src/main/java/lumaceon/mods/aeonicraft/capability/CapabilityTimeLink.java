@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.capability.timelink;
+package lumaceon.mods.aeonicraft.capability;
 
 import lumaceon.mods.aeonicraft.temporalcompression.TemporalCompressor;
 import lumaceon.mods.aeonicraft.util.BlockLoc;

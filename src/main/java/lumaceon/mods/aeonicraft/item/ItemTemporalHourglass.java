@@ -2,8 +2,8 @@ package lumaceon.mods.aeonicraft.item;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
-import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
-import lumaceon.mods.aeonicraft.capability.timelink.CapabilityTimeLink;
+import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeLink;
 import lumaceon.mods.aeonicraft.lib.GUIs;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;

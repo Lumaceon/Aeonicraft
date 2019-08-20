@@ -1,8 +1,8 @@
 package lumaceon.mods.aeonicraft.network.message.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
-import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
+import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassFunctionChange;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

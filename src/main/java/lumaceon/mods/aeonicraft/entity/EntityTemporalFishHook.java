@@ -1,6 +1,6 @@
 package lumaceon.mods.aeonicraft.entity;
 
-import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
 import lumaceon.mods.aeonicraft.util.ParticleHelper;

@@ -1,9 +1,10 @@
 package lumaceon.mods.aeonicraft;
 
+import lumaceon.mods.aeonicraft.api.HourglassUnlocks;
 import lumaceon.mods.aeonicraft.compat.ModCompatProxyRegistry;
 import lumaceon.mods.aeonicraft.init.ModCapabilities;
 import lumaceon.mods.aeonicraft.init.ModEntities;
-import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.proxy.IProxy;
 import net.minecraft.creativetab.CreativeTabs;

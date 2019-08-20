@@ -1,8 +1,8 @@
 package lumaceon.mods.aeonicraft.network.message.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.timelink.CapabilityTimeLink;
-import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeLink;
+import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassRequestTCUpdate;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;

@@ -3,7 +3,7 @@ package lumaceon.mods.aeonicraft.client.model.temporal_hourglass;
 import com.google.common.collect.ImmutableMap;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
-import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
+import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;

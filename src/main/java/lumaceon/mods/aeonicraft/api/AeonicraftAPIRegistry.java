@@ -8,7 +8,6 @@ public class AeonicraftAPIRegistry
 {
     private static final HashMap<String, IHourglassFunction> HOURGLASS_FUNCTION_REGISTRY = new HashMap<>();
 
-
     /**
      * Adds the hourglass function to the registry map. Hourglass functions are serialized as NBTTagCompounds mapped to
      * strings.

@@ -66,6 +66,83 @@ public class GuiHelper
         tessellator.draw();
     }
 
+    /**
+     * Draws the bound texture by stretching it over the specified width and height.
+     */
+    public static void drawTexturedModalRectWithUVs(int x, int y, double zLevel, int width, int height, float minU, float minV, float maxU, float maxV)
+    {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder renderer = tessellator.getBuffer();
+        renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        renderer.pos((double)(x), (double)(y + height), zLevel).tex(minU, maxV).endVertex();
+        renderer.pos((double)(x + width), (double)(y + height), zLevel).tex(maxU, maxV).endVertex();
+        renderer.pos((double)(x + width), (double)(y), zLevel).tex(maxU, minV).endVertex();
+        renderer.pos((double)(x), (double)(y), zLevel).tex(minU, minV).endVertex();
+        tessellator.draw();
+    }
+
+    /**
+     * Draws the bound texture by stretching it over the specified width and height.
+     */
+    public static void drawTexturedModalRectWithRotatedUVs(int x, int y, double zLevel, int width, int height, float minU, float minV, float maxU, float maxV, int timesRotated)
+    {
+        float u1, u2, u3, u4;
+        float v1, v2, v3, v4;
+
+        switch(timesRotated % 4)
+        {
+            default:
+                u1 = minU;
+                u2 = maxU;
+                u3 = maxU;
+                u4 = minU;
+                v1 = maxV;
+                v2 = maxV;
+                v3 = minV;
+                v4 = minV;
+                break;
+            case 1:
+                u1 = minU;
+                u2 = minU;
+                u3 = maxU;
+                u4 = maxU;
+                v1 = minV;
+                v2 = maxV;
+                v3 = maxV;
+                v4 = minV;
+                break;
+            case 2:
+                u1 = maxU;
+                u2 = minU;
+                u3 = minU;
+                u4 = maxU;
+                v1 = minV;
+                v2 = minV;
+                v3 = maxV;
+                v4 = maxV;
+                break;
+            case 3:
+                u1 = maxU;
+                u2 = maxU;
+                u3 = minU;
+                u4 = minU;
+                v1 = maxV;
+                v2 = minV;
+                v3 = minV;
+                v4 = maxV;
+                break;
+        }
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder renderer = tessellator.getBuffer();
+        renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        renderer.pos((double)(x), (double)(y + height), zLevel).tex(u1, v1).endVertex();
+        renderer.pos((double)(x + width), (double)(y + height), zLevel).tex(u2, v2).endVertex();
+        renderer.pos((double)(x + width), (double)(y), zLevel).tex(u3, v3).endVertex();
+        renderer.pos((double)(x), (double)(y), zLevel).tex(u4, v4).endVertex();
+        tessellator.draw();
+    }
+
     public static void drawTexturedModalRectCutTop(int x, int y, double zLevel, int width, int fullHeight, int currentHeight)
     {
         float height = fullHeight - (currentHeight);

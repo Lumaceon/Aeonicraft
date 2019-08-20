@@ -5,9 +5,9 @@ import lumaceon.mods.aeonicraft.api.client.HourglassGuiTabs;
 import lumaceon.mods.aeonicraft.api.client.IHourglassGuiTab;
 import lumaceon.mods.aeonicraft.client.gui.hourglass.GuiHourglassTabAdvancementsProxy;
 import lumaceon.mods.aeonicraft.client.gui.hourglass.GuiHourglassTabTCSummary;
-import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.client.gui.hourglass.GuiHourglassTabUnlocks;
+import lumaceon.mods.aeonicraft.registry.ModItems;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 public class ModHourglassGuiTabs
@@ -17,13 +17,13 @@ public class ModHourglassGuiTabs
         HourglassGuiTabs.HOURGLASS_GUI_TABS.add(new HourglassGuiTabFactory() {
             @Override
             public IHourglassGuiTab createNewHourglassGuiTab(GuiScreen hourglassGui) {
-                return new GuiHourglassTabTCSummary(new ItemStack(Items.CLOCK), "aeonicraft:hggui.summary");
+                return new GuiHourglassTabTCSummary(new ItemStack(ModItems.temporal_hourglass), "aeonicraft:hggui.summary");
             }
         });
         HourglassGuiTabs.HOURGLASS_GUI_TABS.add(new HourglassGuiTabFactory() {
             @Override
             public IHourglassGuiTab createNewHourglassGuiTab(GuiScreen hourglassGui) {
-                return new GuiHourglassTabAdvancementsProxy(new ItemStack(ModItems.temporal_hourglass), "Test 2");
+                return new GuiHourglassTabUnlocks(new ItemStack(ModItems.temporal_hourglass), "aeonicraft:hggui.unlocks");
             }
         });
         HourglassGuiTabs.HOURGLASS_GUI_TABS.add(new HourglassGuiTabFactory() {

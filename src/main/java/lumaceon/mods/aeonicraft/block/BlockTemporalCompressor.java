@@ -1,18 +1,16 @@
 package lumaceon.mods.aeonicraft.block;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.timelink.CapabilityTimeLink;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeLink;
 import lumaceon.mods.aeonicraft.temporalcompression.ITemporalCompressorLinkableBlock;
 import lumaceon.mods.aeonicraft.temporalcompression.TemporalCompressor;
 import lumaceon.mods.aeonicraft.util.BlockLoc;
 import lumaceon.mods.aeonicraft.worlddata.ExtendedWorldData;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -20,8 +18,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-
-import javax.annotation.Nullable;
 
 @SuppressWarnings("NullableProblems")
 public class BlockTemporalCompressor extends BlockAeonicraft implements ITemporalCompressorLinkableBlock

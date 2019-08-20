@@ -22,10 +22,9 @@ public interface IHourglassGuiTab
     ItemStack stackToRender();
 
     void initGui();
+    void setParentGuiSize(int x, int y, int xSize, int ySize);
     void drawScreen(int mouseX, int mouseY, float partialTicks);
-    void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY);
     void drawGuiContainerForegroundLayer(int mouseX, int mouseY);
-    void drawHoveringText(String text, int x, int y);
     void setFocused(boolean hasFocusedControlIn);
     boolean isFocused();
     boolean handleComponentClick(ITextComponent component);
@@ -41,4 +40,7 @@ public interface IHourglassGuiTab
     void drawBackground(int tint);
     void confirmClicked(boolean result, int id);
     void onResize(Minecraft mcIn, int w, int h);
+    void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException;
+    void mouseReleased(int mouseX, int mouseY, int state);
+    void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick);
 }

@@ -1,8 +1,7 @@
 package lumaceon.mods.aeonicraft.entity;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.travelghost.CapabilityTravelGhost;
-import lumaceon.mods.aeonicraft.lib.Particles;
+import lumaceon.mods.aeonicraft.capability.CapabilityTravelGhost;
 import lumaceon.mods.aeonicraft.util.ParticleHelper;
 import lumaceon.mods.aeonicraft.util.SoundHelper;
 import net.minecraft.entity.EntityCreature;

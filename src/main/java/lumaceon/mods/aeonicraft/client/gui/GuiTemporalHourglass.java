@@ -6,8 +6,10 @@ import lumaceon.mods.aeonicraft.api.client.IHourglassGuiTab;
 import lumaceon.mods.aeonicraft.container.ContainerTemporalHourglass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -25,10 +27,14 @@ public class GuiTemporalHourglass extends GuiContainer
     private static int subGUISizeX = 290;
     private static int subGUISizeY = 189;
 
+    private boolean resolutionIsDirty = true;
+    private ScaledResolution scaledResolution;
+
     private IHourglassGuiTab[] hourglassTabs;
 
     private int selectedTabIndex = 0;
     private int tabPage = 0;
+    private int iClickedOnDatOne = -1;
 
     private IHourglassGuiTab currentTab;
 
@@ -56,6 +62,8 @@ public class GuiTemporalHourglass extends GuiContainer
     {
         IHourglassGuiTab newTab = hourglassTabs[newTabIndex];
         newTab.initGui();
+        newTab.setWorldAndResolution(Minecraft.getMinecraft(), subGUISizeX, subGUISizeY);
+        newTab.setParentGuiSize(this.guiLeft, this.guiTop, this.xSize, this.ySize);
         selectedTabIndex = newTabIndex;
         currentTab = newTab;
     }
@@ -69,11 +77,21 @@ public class GuiTemporalHourglass extends GuiContainer
             int j = mouseY - this.guiTop;
 
             for(int n = 0; n < hourglassTabs.length; n++)
+            {
                 if (isMouseOverTab(hourglassTabs[n], n, i, j))
+                {
+                    iClickedOnDatOne = n;
                     return;
+                }
+            }
+            iClickedOnDatOne = -1;
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
+
+        int subGUITranslationX = this.guiLeft + 5;
+        int subGUITranslationY = this.guiTop + 36;
+        this.currentTab.mouseClicked(mouseX - subGUITranslationX, mouseY - subGUITranslationY, mouseButton);
     }
 
     /**
@@ -89,7 +107,7 @@ public class GuiTemporalHourglass extends GuiContainer
 
             for(int n = 0; n < hourglassTabs.length; n++)
             {
-                if (n != this.selectedTabIndex && isMouseOverTab(hourglassTabs[n], n, i, j))
+                if (n != this.selectedTabIndex && iClickedOnDatOne == n && isMouseOverTab(hourglassTabs[n], n, i, j))
                 {
                     this.changeTab(n);
                     return;
@@ -98,6 +116,20 @@ public class GuiTemporalHourglass extends GuiContainer
         }
 
         super.mouseReleased(mouseX, mouseY, state);
+
+        int subGUITranslationX = this.guiLeft + 5;
+        int subGUITranslationY = this.guiTop + 36;
+        this.currentTab.mouseReleased(mouseX - subGUITranslationX, mouseY - subGUITranslationY, state);
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
+    {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+
+        int subGUITranslationX = this.guiLeft + 5;
+        int subGUITranslationY = this.guiTop + 36;
+        this.currentTab.mouseClickMove(mouseX - subGUITranslationX, mouseY - subGUITranslationY, clickedMouseButton, timeSinceLastClick);
     }
 
     private boolean isMouseOverTab(IHourglassGuiTab tab, int tabIndex, int mouseX, int mouseY)
@@ -138,15 +170,22 @@ public class GuiTemporalHourglass extends GuiContainer
     public void initGui()
     {
         super.initGui();
-        this.currentTab.initGui();
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
+        this.currentTab.setParentGuiSize(this.guiLeft, this.guiTop, this.xSize, this.ySize);
+        this.currentTab.initGui();
         buttonList.clear();
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        if(resolutionIsDirty)
+        {
+            this.scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+            resolutionIsDirty = false;
+        }
+
         int subGUITranslationX = this.guiLeft + 5;
         int subGUITranslationY = this.guiTop + 36;
 
@@ -162,16 +201,20 @@ public class GuiTemporalHourglass extends GuiContainer
         super.drawScreen(mouseX, mouseY, partialTicks);
         GlStateManager.popAttrib();
 
-        this.renderHoveredToolTip(mouseX, mouseY);
-
         int tabStartX = guiLeft + 20;
         int tabStartY = guiTop;
 
         for(int i = 10 * tabPage; i < hourglassTabs.length; i++)
         {
+            GlStateManager.pushAttrib();
             IHourglassGuiTab tab = hourglassTabs[i];
             drawItemStack(tab.stackToRender(), tabStartX+6 + i*28, tabStartY + (i == selectedTabIndex ? 8 : 10), "");
+            GlStateManager.popAttrib();
         }
+
+        //int scaledMouseX = mouseX * scaledResolution.getScaleFactor();
+        //int scaledMouseY = mouseY * scaledResolution.getScaleFactor();
+        this.renderHoveredToolTip(mouseX, mouseY);
         this.renderHourglassTabTooltips(mouseX, mouseY);
     }
 
@@ -200,6 +243,8 @@ public class GuiTemporalHourglass extends GuiContainer
         int textureCoordX;
         int textureCoordY;
         Minecraft.getMinecraft().renderEngine.bindTexture(HOURGLASS_TABS);
+        RenderHelper.disableStandardItemLighting();
+
         for(int i = tabPage*10; i < hourglassTabs.length; i++)
         {
             if(i%10 == 0)
@@ -235,7 +280,6 @@ public class GuiTemporalHourglass extends GuiContainer
 
     @Override
     public void drawHoveringText(String text, int x, int y) {
-        this.currentTab.drawHoveringText(text, x, y);
         super.drawHoveringText(text, x, y);
     }
 
@@ -274,6 +318,8 @@ public class GuiTemporalHourglass extends GuiContainer
     {
         super.setWorldAndResolution(mc, width, height);
         this.currentTab.setWorldAndResolution(mc, subGUISizeX, subGUISizeY);
+        this.currentTab.setParentGuiSize(this.guiLeft, this.guiTop, this.xSize, this.ySize);
+        this.resolutionIsDirty = true;
     }
 
     @Override
@@ -281,6 +327,7 @@ public class GuiTemporalHourglass extends GuiContainer
     {
         super.setGuiSize(w, h);
         this.currentTab.setGuiSize(subGUISizeX, subGUISizeY);
+        this.currentTab.setParentGuiSize(this.guiLeft, this.guiTop, this.xSize, this.ySize);
     }
 
     @Override
@@ -337,5 +384,6 @@ public class GuiTemporalHourglass extends GuiContainer
     {
         super.onResize(mcIn, w, h);
         this.currentTab.onResize(mcIn, subGUISizeX, subGUISizeY);
+        this.currentTab.setParentGuiSize(this.guiLeft, this.guiTop, this.xSize, this.ySize);
     }
 }

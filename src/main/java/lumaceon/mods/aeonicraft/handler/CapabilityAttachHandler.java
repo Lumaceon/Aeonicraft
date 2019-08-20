@@ -1,8 +1,8 @@
 package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.timestorage.CapabilityTimeStorage;
-import lumaceon.mods.aeonicraft.capability.travelghost.CapabilityTravelGhost;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
+import lumaceon.mods.aeonicraft.capability.CapabilityTravelGhost;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;

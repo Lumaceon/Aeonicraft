@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.client.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.timestorage.CapabilityTimeStorage;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.client.particle.ModParticles;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.capabilities.Capability;

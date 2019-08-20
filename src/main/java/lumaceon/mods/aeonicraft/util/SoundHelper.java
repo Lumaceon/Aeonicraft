@@ -1,6 +1,6 @@
 package lumaceon.mods.aeonicraft.util;
 
-import lumaceon.mods.aeonicraft.init.ModSounds;
+import lumaceon.mods.aeonicraft.registry.ModSounds;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;

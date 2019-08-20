@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.capability.travelghost;
+package lumaceon.mods.aeonicraft.capability;
 
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import net.minecraft.nbt.NBTBase;

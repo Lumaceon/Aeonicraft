@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.capability.hourglass;
+package lumaceon.mods.aeonicraft.capability;
 
 import lumaceon.mods.aeonicraft.api.AeonicraftAPIRegistry;
 import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;

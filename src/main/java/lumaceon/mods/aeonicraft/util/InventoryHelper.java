@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.util;
 
 import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
-import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
+import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

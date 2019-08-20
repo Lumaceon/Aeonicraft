@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.capability.timestorage;
+package lumaceon.mods.aeonicraft.capability;
 
 import lumaceon.mods.aeonicraft.lib.ConfigValues;
 import lumaceon.mods.aeonicraft.util.TimeParser;

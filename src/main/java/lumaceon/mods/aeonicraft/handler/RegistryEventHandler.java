@@ -2,14 +2,19 @@ package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.AeonicraftAPIRegistry;
+import lumaceon.mods.aeonicraft.api.HourglassUnlocks;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockableCategory;
 import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
+import lumaceon.mods.aeonicraft.api.util.Icon;
 import lumaceon.mods.aeonicraft.block.BlockHourglassProgrammer;
 import lumaceon.mods.aeonicraft.block.BlockTemporalCompressor;
 import lumaceon.mods.aeonicraft.block.BlockTemporalConnectionAmplifier;
 import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
-import lumaceon.mods.aeonicraft.init.ModItems;
-import lumaceon.mods.aeonicraft.init.ModSounds;
+import lumaceon.mods.aeonicraft.lib.Textures;
+import lumaceon.mods.aeonicraft.registry.ModItems;
+import lumaceon.mods.aeonicraft.registry.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
 import lumaceon.mods.aeonicraft.item.ItemHourglassFunction;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
@@ -31,6 +36,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -55,12 +61,9 @@ public class RegistryEventHandler
         return item;
     }
 
-    @SubscribeEvent
-    public static void registerSounds(RegistryEvent.Register<SoundEvent> event)
-    {
-        event.getRegistry().register(ModSounds.create(new ResourceLocation(Aeonicraft.MOD_ID, "time_ding_short")));
-        event.getRegistry().register(ModSounds.create(new ResourceLocation(Aeonicraft.MOD_ID, "time_ding_medium")));
-        event.getRegistry().register(ModSounds.create(new ResourceLocation(Aeonicraft.MOD_ID, "time_ding_long")));
+    private static HourglassUnlockableCategory hgULCat(HourglassUnlockableCategory cat, RegistryEvent.Register<HourglassUnlockableCategory> event) {
+        event.getRegistry().register(cat);
+        return cat;
     }
 
     @SubscribeEvent
@@ -115,6 +118,46 @@ public class RegistryEventHandler
         {
             event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
         }
+    }
+
+    @SubscribeEvent
+    public static void registerSounds(RegistryEvent.Register<SoundEvent> event)
+    {
+        event.getRegistry().register(ModSounds.create(new ResourceLocation(Aeonicraft.MOD_ID, "time_ding_short")));
+        event.getRegistry().register(ModSounds.create(new ResourceLocation(Aeonicraft.MOD_ID, "time_ding_medium")));
+        event.getRegistry().register(ModSounds.create(new ResourceLocation(Aeonicraft.MOD_ID, "time_ding_long")));
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void registerHourglassUnlockableCategories(RegistryEvent.Register<HourglassUnlockableCategory> event)
+    {
+        HourglassUnlocks.categoryProgression = hgULCat(new HourglassUnlockableCategory(
+                        new ResourceLocation(Aeonicraft.MOD_ID, "progression"),
+                        new Icon(Textures.STACK_HOURGLASS),
+                        Aeonicraft.MOD_ID + ":" + "category_des.progression",
+                        new ResourceLocation(Aeonicraft.MOD_ID, "textures/gui/hgcat/progression.png"),
+                        32, 48
+                ), event);
+        HourglassUnlocks.categoryHourglassFunction = hgULCat(new HourglassUnlockableCategory(
+                        new ResourceLocation(Aeonicraft.MOD_ID, "hourglass_functions"),
+                        new Icon(Textures.STACK_HOURGLASS_FUNC_EXCAVATE),
+                        Aeonicraft.MOD_ID + ":" + "category_des.hourglass_functions",
+                        new ResourceLocation(Aeonicraft.MOD_ID, "textures/gui/hgcat/hourglass_functions.png"),
+                        32, 32
+                ), event);
+        HourglassUnlocks.categoryTemporalMachination = hgULCat(new HourglassUnlockableCategory(
+                        new ResourceLocation(Aeonicraft.MOD_ID, "temporal_machination"),
+                        new Icon(Textures.STACK_COMPRESSOR),
+                        Aeonicraft.MOD_ID + ":" + "category_des.temporal_machination",
+                        new ResourceLocation(Aeonicraft.MOD_ID, "textures/gui/hgcat/temporal_machination.png"),
+                        32, 32
+                ), event);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void registerHourglassUnlockables(RegistryEvent.Register<HourglassUnlockable> event)
+    {
+        Aeonicraft.logger.info(event.getName());
     }
 
     @SubscribeEvent

@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.capability.toggle;
+package lumaceon.mods.aeonicraft.capability;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

@@ -2,10 +2,10 @@ package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.IHourglassFunction;
-import lumaceon.mods.aeonicraft.capability.hourglass.CapabilityHourglass;
-import lumaceon.mods.aeonicraft.capability.timestorage.CapabilityTimeStorage;
+import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.entity.EntityTemporalFishHook;
-import lumaceon.mods.aeonicraft.init.ModItems;
+import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.lib.ConfigValues;
 import lumaceon.mods.aeonicraft.network.PacketHandler;

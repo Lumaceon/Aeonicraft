@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.network.message.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.timestorage.CapabilityTimeStorage;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.network.message.MessagePlayerTCUpdate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.capabilities.Capability;
