@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.handler;
 
+import com.google.common.base.Predicate;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.HourglassUnlocks;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
@@ -15,9 +16,15 @@ import lumaceon.mods.aeonicraft.lib.Textures;
 import lumaceon.mods.aeonicraft.registry.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
+import lumaceon.mods.aeonicraft.util.BlockLoc;
+import lumaceon.mods.aeonicraft.util.ParticleHelper;
+import lumaceon.mods.aeonicraft.util.SoundHelper;
+import lumaceon.mods.aeonicraft.util.SpawnHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -27,6 +34,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -37,7 +46,9 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Aeonicraft.MOD_ID)
@@ -146,6 +157,7 @@ public class RegistryEventHandler
         hgUL(new HourglassUnlockableHGFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_aquatic_lure_overclocker"), 5, 5), event);
         hgUL(new HourglassUnlockableHGFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_livestock_overclocker"), 5, 5), event);
         hgUL(new HourglassUnlockableHGFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_proxy_traveller"), 15, 15), event);
+        hgUL(new HourglassUnlockableHGFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_endattractor"), 50, 20), event);
 
         // Misc
 
@@ -165,6 +177,30 @@ public class RegistryEventHandler
                     worldIn.spawnEntity(new EntityTravelGhost(worldIn, playerIn));
                 }
                 return super.onHourglassRightClick(worldIn, playerIn, handIn);
+            }
+        }, event);
+        hgFunc(new HourglassFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_endattractor"))
+        {
+            @Override
+            public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
+            {
+                if(!world.isRemote)
+                {
+                    if(world.getTotalWorldTime() % 10 == 0)
+                    {
+                        List<EntityEnderman> enders = world.getEntities(EntityEnderman.class, input -> input != null && input.getDistance(entity) < 32F);
+                        if(enders.size() < 3)
+                        {
+                            EntityEnderman newEntity = new EntityEnderman(world);
+                            SpawnHelper.spawnEntityNearby(newEntity, world, entity.getPosition());
+                            if(entity instanceof EntityPlayer)
+                            {
+                                ParticleHelper.spawnTemporalBurstParticles(new Vec3d(newEntity.posX, newEntity.posY + newEntity.height*0.5, newEntity.posZ), new Vec3d(1.5, newEntity.height, 1.5), 75);
+                                SoundHelper.playMediumTimeDing(null, world, newEntity.posX, newEntity.posY, newEntity.posZ);
+                            }
+                        }
+                    }
+                }
             }
         }, event);
     }

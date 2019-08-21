@@ -2,6 +2,7 @@ package lumaceon.mods.aeonicraft.item;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeLink;
 import lumaceon.mods.aeonicraft.lib.GUIs;
@@ -287,9 +288,14 @@ public class ItemTemporalHourglass extends ItemAeonicraft
             }
         }
         CapabilityHourglass.IHourglassHandler hgcap = stack.getCapability(HOURGLASS, null);
-        if(hgcap != null && world.isRemote)
+        if(hgcap != null)
         {
-            hgcap.checkForUpdatesClientSide(itemSlot);
+            if(world.isRemote)
+                hgcap.checkForUpdatesClientSide(itemSlot);
+
+            HourglassFunction function = hgcap.getActiveFunction();
+            if(function != null)
+                function.onUpdate(stack, world, entity, itemSlot, isSelected);
         }
     }
 

@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.api.hourglass;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -40,8 +41,16 @@ public class HourglassFunction extends IForgeRegistryEntry.Impl<HourglassFunctio
         return new ActionResult<>(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
     }
 
-    //Removed update ticks: feature out of scope for hourglass functions.
-    //void onUpdate(int ticksSinceLastUpdate);
+    /**
+     * Called each tick from Item::onUpdate if this is the active hourglass function.
+     *
+     * @param stack ItemStack to represent the hourglass.
+     * @param world The relevant world.
+     * @param entity The relevant entity (usually the player).
+     * @param itemSlot The slot of the entity's inventory this is in.
+     * @param isSelected True if and only if the hourglass is currently being held in a selected slot.
+     */
+    public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {}
 
     /**
      * Requires a path to a loaded texture. Resource path should be relative to the textures folder of your mod.
