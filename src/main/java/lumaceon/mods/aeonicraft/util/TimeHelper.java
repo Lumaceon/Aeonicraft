@@ -1,14 +1,39 @@
 package lumaceon.mods.aeonicraft.util;
 
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TimeCosts
+public class TimeHelper
 {
+    public static long getTime(Entity entity)
+    {
+        CapabilityTimeStorage.ITimeStorage cap = entity.getCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null);
+        if(cap != null)
+        {
+            return cap.getTimeInTicks();
+        }
+        return 0;
+    }
+
+    /**
+     * @return Time consumed.
+     */
+    public static long consumeTime(Entity entity, long amountToConsume)
+    {
+        CapabilityTimeStorage.ITimeStorage cap = entity.getCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null);
+        if(cap != null)
+        {
+            return cap.extractTime(amountToConsume);
+        }
+        return 0;
+    }
+
     /**
      * Gets the time to break the block in milliseconds.
      * @param state The state of the block to break.

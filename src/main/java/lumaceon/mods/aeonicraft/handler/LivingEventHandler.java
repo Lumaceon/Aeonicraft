@@ -2,12 +2,14 @@ package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
+import lumaceon.mods.aeonicraft.lib.TimeCosts;
 import lumaceon.mods.aeonicraft.registry.ModHourglassFunctions;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
 import lumaceon.mods.aeonicraft.util.ParticleHelper;
 import lumaceon.mods.aeonicraft.util.SoundHelper;
+import lumaceon.mods.aeonicraft.util.TimeHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -44,10 +46,9 @@ public class LivingEventHandler
                     EntityAgeable target = event.getChild();
                     if(target != null && event.getParentA() instanceof EntityAnimal && event.getParentB() instanceof EntityAnimal)
                     {
-                        long timeAvailable = ((ItemTemporalHourglass)hourglass.getItem()).availableTime(hourglass, player.world, player.world.isRemote ? Side.CLIENT : Side.SERVER);
-                        if(timeAvailable >= 1200000)
+                        if(TimeHelper.getTime(player) >= TimeCosts.AUTO_ADULT_BREED)
                         {
-                            ((ItemTemporalHourglass)hourglass.getItem()).consumeTime(player, hourglass, player.world, InventoryHelper.getIndexOfStackInInventory(hourglass, player.inventory), 1200000);
+                            TimeHelper.consumeTime(player, TimeCosts.AUTO_ADULT_BREED);
 
                             // because the post-event logic resets the baby entity's age, we have to spawn manually...
                             event.setCanceled(true);

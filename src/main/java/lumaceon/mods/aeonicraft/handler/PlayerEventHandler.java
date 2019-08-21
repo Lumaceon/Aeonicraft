@@ -6,6 +6,7 @@ import lumaceon.mods.aeonicraft.capability.CapabilityAeonicraftProgression;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.entity.EntityTemporalFishHook;
+import lumaceon.mods.aeonicraft.lib.TimeCosts;
 import lumaceon.mods.aeonicraft.registry.ModHourglassFunctions;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
@@ -76,8 +77,8 @@ public class PlayerEventHandler
                 HourglassFunction hourglassFunction = hourglass.getActiveHourglassFunction(firstHourglass);
                 if(hourglassFunction != null && hourglassFunction.equals(ModHourglassFunctions.excavation_overclocker))
                 {
-                    long timeToBreakBlock = TimeCosts.getTimeToBreakBlock(player.world, event.getPos(), event.getState(), player, player.inventory.getCurrentItem());
-                    if(hourglass.availableTime(firstHourglass, player.world, player.world.isRemote ? Side.CLIENT : Side.SERVER) >= timeToBreakBlock)
+                    long timeToBreakBlock = TimeHelper.getTimeToBreakBlock(player.world, event.getPos(), event.getState(), player, player.inventory.getCurrentItem());
+                    if(TimeHelper.getTime(player) >= timeToBreakBlock)
                     {
                         int hourglassSlotIndex = -1;
                         for(int i = 0; i < player.inventory.getSizeInventory(); i++)
@@ -88,7 +89,7 @@ public class PlayerEventHandler
                                 break;
                             }
                         }
-                        hourglass.consumeTime(player, firstHourglass, player.world, hourglassSlotIndex, timeToBreakBlock);
+                        TimeHelper.consumeTime(player, timeToBreakBlock);
                         event.setNewSpeed(Float.MAX_VALUE);
 
                         SoundHelper.playShortTimeDing(player, player.world, player.posX, player.posY, player.posZ);
@@ -136,7 +137,7 @@ public class PlayerEventHandler
             if(cap != null)
             {
                 HourglassFunction func = cap.getActiveFunction();
-                if(func != null && func.equals(ModHourglassFunctions.aquatic_lure_overclocker) && !(player.fishEntity instanceof EntityTemporalFishHook))
+                if(func != null && func.equals(ModHourglassFunctions.aquatic_lure_overclocker) && !(player.fishEntity instanceof EntityTemporalFishHook) && TimeHelper.getTime(player) >= TimeCosts.INSTANT_FISH_MAX)
                 {
                     player.fishEntity.setDead();
                     EntityTemporalFishHook fishHook = new EntityTemporalFishHook(player.world, player);
@@ -193,7 +194,7 @@ public class PlayerEventHandler
                 )
                 {
 
-                    long availableTime = ((ItemTemporalHourglass) hourglass.getItem()).availableTime(hourglass, player.world, player.world.isRemote ? Side.CLIENT : Side.SERVER);
+                    long availableTime = TimeHelper.getTime(player);
 
                     // do we have time to shear a sheep MY WAY...?
                     if(availableTime >= 20000)
@@ -228,9 +229,8 @@ public class PlayerEventHandler
                             }
 
                             // either way, consume the time...
-                            ((ItemTemporalHourglass) hourglass.getItem()).consumeTime(player, hourglass, player.world, InventoryHelper.getIndexOfStackInInventory(hourglass, player.inventory), timeToConsume);
+                            TimeHelper.consumeTime(player, timeToConsume);
 
-                            Random r = player.world.rand;
                             BlockPos pos = event.getPos();
 
                             SoundHelper.playShortTimeDing(null, player.world, pos.getX(), pos.getY(), pos.getZ());

@@ -9,17 +9,16 @@ import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.util.Icon;
 import lumaceon.mods.aeonicraft.block.BlockTemporalCompressor;
 import lumaceon.mods.aeonicraft.block.BlockTemporalConnectionAmplifier;
+import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.hourglassunlockable.HourglassUnlockableHGFunction;
 import lumaceon.mods.aeonicraft.lib.Textures;
+import lumaceon.mods.aeonicraft.lib.TimeCosts;
 import lumaceon.mods.aeonicraft.registry.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
-import lumaceon.mods.aeonicraft.util.BlockLoc;
-import lumaceon.mods.aeonicraft.util.ParticleHelper;
-import lumaceon.mods.aeonicraft.util.SoundHelper;
-import lumaceon.mods.aeonicraft.util.SpawnHelper;
+import lumaceon.mods.aeonicraft.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -174,7 +173,10 @@ public class RegistryEventHandler
             @Override
             public ActionResult<ItemStack> onHourglassRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
                 if(!worldIn.isRemote) {
-                    worldIn.spawnEntity(new EntityTravelGhost(worldIn, playerIn));
+                    if(TimeHelper.getTime(playerIn) >= TimeCosts.TRAVEL_GHOST) {
+                        TimeHelper.consumeTime(playerIn, TimeCosts.TRAVEL_GHOST);
+                        worldIn.spawnEntity(new EntityTravelGhost(worldIn, playerIn));
+                    }
                 }
                 return super.onHourglassRightClick(worldIn, playerIn, handIn);
             }
@@ -188,15 +190,21 @@ public class RegistryEventHandler
                 {
                     if(world.getTotalWorldTime() % 10 == 0)
                     {
-                        List<EntityEnderman> enders = world.getEntities(EntityEnderman.class, input -> input != null && input.getDistance(entity) < 32F);
-                        if(enders.size() < 3)
+                        if(TimeHelper.getTime(entity) >= TimeCosts.ENDATTRACTOR_SPAWN)
                         {
-                            EntityEnderman newEntity = new EntityEnderman(world);
-                            SpawnHelper.spawnEntityNearby(newEntity, world, entity.getPosition());
-                            if(entity instanceof EntityPlayer)
+                            List<EntityEnderman> enders = world.getEntities(EntityEnderman.class, input -> input != null && input.getDistance(entity) < 32F);
+                            if(enders.size() < 3)
                             {
-                                ParticleHelper.spawnTemporalBurstParticles(new Vec3d(newEntity.posX, newEntity.posY + newEntity.height*0.5, newEntity.posZ), new Vec3d(1.5, newEntity.height, 1.5), 75);
-                                SoundHelper.playMediumTimeDing(null, world, newEntity.posX, newEntity.posY, newEntity.posZ);
+                                EntityEnderman newEntity = new EntityEnderman(world);
+                                if(SpawnHelper.spawnEntityNearby(newEntity, world, entity.getPosition()))
+                                {
+                                    TimeHelper.consumeTime(entity, TimeCosts.ENDATTRACTOR_SPAWN);
+                                    if(entity instanceof EntityPlayer)
+                                    {
+                                        ParticleHelper.spawnTemporalBurstParticles(new Vec3d(newEntity.posX, newEntity.posY + newEntity.height*0.5, newEntity.posZ), new Vec3d(1.5, newEntity.height, 1.5), 75);
+                                        SoundHelper.playMediumTimeDing(null, world, newEntity.posX, newEntity.posY, newEntity.posZ);
+                                    }
+                                }
                             }
                         }
                     }

@@ -1,10 +1,12 @@
 package lumaceon.mods.aeonicraft.entity;
 
+import lumaceon.mods.aeonicraft.lib.TimeCosts;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
 import lumaceon.mods.aeonicraft.util.ParticleHelper;
 import lumaceon.mods.aeonicraft.util.SoundHelper;
+import lumaceon.mods.aeonicraft.util.TimeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -411,21 +413,17 @@ public class EntityTemporalFishHook extends EntityFishHook
         // if this would have failed to catch a fish, but we have a valid hourglass, consume time and auto-succeed
         if(this.ticksCatchable <= 0)
         {
-            ItemStack hourglass = InventoryHelper.getFirstStackOfTypeInInventory(angler.inventory, ModItems.temporal_hourglass);
-            int timeToCatchAFish = MathHelper.getInt(this.rand, 5000, 30000);
+            int timeToCatchAFish = MathHelper.getInt(this.rand, (int) TimeCosts.INSTANT_FISH_MIN, (int) TimeCosts.INSTANT_FISH_MAX);
             timeToCatchAFish -= this.lureSpeed * 20 * 5;
 
-            assert hourglass != null;
-            if(!hourglass.isEmpty())
-            {
-                if(((ItemTemporalHourglass)hourglass.getItem()).availableTime(hourglass, world, world.isRemote ? Side.CLIENT : Side.SERVER) > timeToCatchAFish)
-                {
-                    ((ItemTemporalHourglass)hourglass.getItem()).consumeTime(angler, hourglass, world, InventoryHelper.getIndexOfStackInInventory(hourglass, angler.inventory), timeToCatchAFish);
-                    this.ticksCatchable = 100;
 
-                    SoundHelper.playMediumTimeDing(null, world, posX, posY, posZ);
-                    ParticleHelper.spawnTemporalBurstParticles(this.getPositionVector(), new Vec3d(0.2, 0.2, 0.2), 20);
-                }
+            if(angler != null && TimeHelper.getTime(angler) > timeToCatchAFish)
+            {
+                TimeHelper.consumeTime(angler, timeToCatchAFish);
+                this.ticksCatchable = 100;
+
+                SoundHelper.playMediumTimeDing(null, world, posX, posY, posZ);
+                ParticleHelper.spawnTemporalBurstParticles(this.getPositionVector(), new Vec3d(0.2, 0.2, 0.2), 20);
             }
         }
 
