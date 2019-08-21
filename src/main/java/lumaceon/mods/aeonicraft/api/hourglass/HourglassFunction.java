@@ -8,20 +8,22 @@ import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
- * Implement on Item class overrides to allow the temporal hourglass (and possibly other systems) to accept and use it.
- * Each unique implementation of this should be registered via AeonicraftAPIRegistry.
+ * Class for hourglass functions, which can be cycled through to give a variety of passive/active effects once unlocked.
+ *
+ * If the same ResourceLocation (or two, equal instances) are used as a registry name for both a registered
+ * HourglassFunction and HourglassUnlockable, Aeonicraft automatically associates them during the post-init phase by
+ * setting the requiredUnlockable field.
  */
 public class HourglassFunction extends IForgeRegistryEntry.Impl<HourglassFunction>
 {
     public ResourceLocation textureLocation;
     public HourglassUnlockable requiredUnlockable;
 
-    public HourglassFunction(ResourceLocation registryName, HourglassUnlockable requiredUnlockable)
+    public HourglassFunction(ResourceLocation registryName)
     {
         this.setRegistryName(registryName);
         ResourceLocation temp = this.getRegistryName();
         this.textureLocation = new ResourceLocation(temp.getResourceDomain(), "hourglassfunction/" + temp.getResourcePath());
-        this.requiredUnlockable = requiredUnlockable;
     }
 
     /**

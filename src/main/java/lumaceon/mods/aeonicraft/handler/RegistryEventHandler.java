@@ -140,19 +140,19 @@ public class RegistryEventHandler
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerHourglassUnlockables(RegistryEvent.Register<HourglassUnlockable> event)
     {
-        HourglassUnlocks.hourglassFunctionExcavation = hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hg_func_excavate"),10, 10), event);
-        HourglassUnlocks.hourglassFunctionAquaticLure = hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hg_func_aqua"),5, 5), event);
-        HourglassUnlocks.hourglassFunctionLivestock = hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hg_func_livestock"),5, 5), event);
-        HourglassUnlocks.hourglassFunctionTraveller = hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hg_func_travel"),15, 15), event);
+        hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_excavation_overclocker"),10, 10), event);
+        hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_aquatic_lure_overclocker"),5, 5), event);
+        hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_livestock_overclocker"),5, 5), event);
+        hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_proxy_traveller"),15, 15), event);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerHourglassFunctions(RegistryEvent.Register<HourglassFunction> event)
     {
-        hgFunc(new HourglassFunction(new ResourceLocation(Aeonicraft.MOD_ID, "excavation_overclocker"), HourglassUnlocks.hourglassFunctionExcavation), event);
-        hgFunc(new HourglassFunction(new ResourceLocation(Aeonicraft.MOD_ID, "aquatic_lure_overclocker"), HourglassUnlocks.hourglassFunctionAquaticLure), event);
-        hgFunc(new HourglassFunction(new ResourceLocation(Aeonicraft.MOD_ID, "livestock_overclocker"), HourglassUnlocks.hourglassFunctionLivestock), event);
-        hgFunc(new HourglassFunction(new ResourceLocation(Aeonicraft.MOD_ID, "proxy_traveller"), HourglassUnlocks.hourglassFunctionTraveller)
+        hgFunc(new HourglassFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_excavation_overclocker")), event);
+        hgFunc(new HourglassFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_aquatic_lure_overclocker")), event);
+        hgFunc(new HourglassFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_livestock_overclocker")), event);
+        hgFunc(new HourglassFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_proxy_traveller"))
         {
             @Override
             public ActionResult<ItemStack> onHourglassRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {

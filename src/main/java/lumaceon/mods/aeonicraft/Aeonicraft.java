@@ -1,6 +1,8 @@
 package lumaceon.mods.aeonicraft;
 
 import lumaceon.mods.aeonicraft.api.HourglassUnlocks;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.compat.ModCompatProxyRegistry;
 import lumaceon.mods.aeonicraft.init.ModCapabilities;
 import lumaceon.mods.aeonicraft.init.ModEntities;
@@ -15,6 +17,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Aeonicraft.MOD_ID, name = Aeonicraft.NAME, version = Aeonicraft.VERSION)//, dependencies = "required:betteradvancements;")
@@ -70,5 +74,19 @@ public class Aeonicraft
     public void postInit(FMLPostInitializationEvent event)
     {
         ModCompatProxyRegistry.init();
+        this.linkHourglassFunctionsToUnlockables();
+    }
+
+    private void linkHourglassFunctionsToUnlockables()
+    {
+        IForgeRegistry<HourglassUnlockable> registry = GameRegistry.findRegistry(HourglassUnlockable.class);
+        HourglassUnlockable unlockable;
+        for(HourglassFunction function : GameRegistry.findRegistry(HourglassFunction.class).getValuesCollection())
+        {
+            if((unlockable = registry.getValue(function.getRegistryName())) != null)
+            {
+                function.requiredUnlockable = unlockable;
+            }
+        }
     }
 }
