@@ -10,6 +10,7 @@ import lumaceon.mods.aeonicraft.block.BlockTemporalCompressor;
 import lumaceon.mods.aeonicraft.block.BlockTemporalConnectionAmplifier;
 import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
+import lumaceon.mods.aeonicraft.hourglassunlockable.HourglassUnlockableHGFunction;
 import lumaceon.mods.aeonicraft.lib.Textures;
 import lumaceon.mods.aeonicraft.registry.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
@@ -140,10 +141,14 @@ public class RegistryEventHandler
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerHourglassUnlockables(RegistryEvent.Register<HourglassUnlockable> event)
     {
-        hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_excavation_overclocker"),10, 10), event);
-        hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_aquatic_lure_overclocker"),5, 5), event);
-        hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_livestock_overclocker"),5, 5), event);
-        hgUL(new HourglassUnlockable(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_proxy_traveller"),15, 15), event);
+        // Hourglass Functions
+        hgUL(new HourglassUnlockableHGFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_excavation_overclocker"),10, 10), event);
+        hgUL(new HourglassUnlockableHGFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_aquatic_lure_overclocker"), 5, 5), event);
+        hgUL(new HourglassUnlockableHGFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_livestock_overclocker"), 5, 5), event);
+        hgUL(new HourglassUnlockableHGFunction(new ResourceLocation(Aeonicraft.MOD_ID, "hgf_proxy_traveller"), 15, 15), event);
+
+        // Misc
+
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)

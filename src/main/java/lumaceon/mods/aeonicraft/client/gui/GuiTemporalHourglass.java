@@ -3,6 +3,7 @@ package lumaceon.mods.aeonicraft.client.gui;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.client.HourglassGuiTabs;
 import lumaceon.mods.aeonicraft.api.client.IHourglassGuiTab;
+import lumaceon.mods.aeonicraft.client.gui.util.GuiHelper;
 import lumaceon.mods.aeonicraft.container.ContainerTemporalHourglass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

@@ -34,7 +34,10 @@ public class CapabilityAeonicraftProgression
 
     public interface IAeonicraftProgressionHandler
     {
-        void unlock(HourglassUnlockable unlockable);
+        /**
+         * @return True if successfully unlocked, false otherwise.
+         */
+        boolean unlock(HourglassUnlockable unlockable);
 
         boolean isUnlocked(HourglassUnlockable unlockable);
 
@@ -56,9 +59,14 @@ public class CapabilityAeonicraftProgression
         }
 
         @Override
-        public void unlock(HourglassUnlockable unlockable) {
+        public boolean unlock(HourglassUnlockable unlockable)
+        {
             if(!isUnlocked(unlockable))
+            {
                 unlocksStateString += "|" + unlockable.getRegistryName().toString() + ";";
+                return true;
+            }
+            return false;
         }
 
         @Override

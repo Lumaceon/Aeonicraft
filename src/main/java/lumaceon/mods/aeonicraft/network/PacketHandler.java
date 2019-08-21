@@ -1,14 +1,8 @@
 package lumaceon.mods.aeonicraft.network;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.network.message.MessageHourglassFunctionChange;
-import lumaceon.mods.aeonicraft.network.message.MessageHourglassRequestTCUpdate;
-import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
-import lumaceon.mods.aeonicraft.network.message.MessagePlayerTCUpdate;
-import lumaceon.mods.aeonicraft.network.message.handler.HandlerHourglassFunctionChange;
-import lumaceon.mods.aeonicraft.network.message.handler.HandlerHourglassRequestTCUpdate;
-import lumaceon.mods.aeonicraft.network.message.handler.HandlerHourglassTCUpdate;
-import lumaceon.mods.aeonicraft.network.message.handler.HandlerPlayerTCUpdate;
+import lumaceon.mods.aeonicraft.network.message.*;
+import lumaceon.mods.aeonicraft.network.message.handler.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -25,8 +19,10 @@ public class PacketHandler
         //Note: the side passed in is the RECEIVING side.
         registerMessage(HandlerHourglassTCUpdate.class, MessageHourglassTCUpdate.class, Side.CLIENT);
         registerMessage(HandlerPlayerTCUpdate.class, MessagePlayerTCUpdate.class, Side.CLIENT);
+        registerMessage(HandlerLoginDataSync.class, MessageLoginDataSync.class, Side.CLIENT);
         registerMessage(HandlerHourglassFunctionChange.class, MessageHourglassFunctionChange.class, Side.SERVER);
         registerMessage(HandlerHourglassRequestTCUpdate.class, MessageHourglassRequestTCUpdate.class, Side.SERVER);
+        registerMessage(HandlerGainUnlock.class, MessageGainUnlock.class, Side.SERVER);
     }
 
     private static <REQ extends IMessage, REPLY extends IMessage> void registerMessage(Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType, Side side) {

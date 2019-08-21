@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.client.gui;
+package lumaceon.mods.aeonicraft.client.gui.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -92,44 +93,20 @@ public class GuiHelper
         switch(timesRotated % 4)
         {
             default:
-                u1 = minU;
-                u2 = maxU;
-                u3 = maxU;
-                u4 = minU;
-                v1 = maxV;
-                v2 = maxV;
-                v3 = minV;
-                v4 = minV;
+                u1 = minU; u2 = maxU; u3 = maxU; u4 = minU;
+                v1 = maxV; v2 = maxV; v3 = minV; v4 = minV;
                 break;
             case 1:
-                u1 = minU;
-                u2 = minU;
-                u3 = maxU;
-                u4 = maxU;
-                v1 = minV;
-                v2 = maxV;
-                v3 = maxV;
-                v4 = minV;
+                u1 = minU; u2 = minU; u3 = maxU; u4 = maxU;
+                v1 = minV; v2 = maxV; v3 = maxV; v4 = minV;
                 break;
             case 2:
-                u1 = maxU;
-                u2 = minU;
-                u3 = minU;
-                u4 = maxU;
-                v1 = minV;
-                v2 = minV;
-                v3 = maxV;
-                v4 = maxV;
+                u1 = maxU; u2 = minU; u3 = minU; u4 = maxU;
+                v1 = minV; v2 = minV; v3 = maxV; v4 = maxV;
                 break;
             case 3:
-                u1 = maxU;
-                u2 = maxU;
-                u3 = minU;
-                u4 = minU;
-                v1 = maxV;
-                v2 = minV;
-                v3 = minV;
-                v4 = maxV;
+                u1 = maxU; u2 = maxU; u3 = minU; u4 = minU;
+                v1 = maxV; v2 = minV; v3 = minV; v4 = maxV;
                 break;
         }
 
@@ -206,5 +183,56 @@ public class GuiHelper
             actualHeight = actualHeight - width;
             ++pass;
         }
+    }
+
+    /**
+     * Draws the registered texture. Useful for cases such as animated sprites and fluids.
+     * Doesn't loop with UVs, unlike most of these other methods.
+     */
+    public static void bindAndDrawRegisteredTexture(int x, int y, double zLevel, int width, int height, float minU, float minV, float maxU, float maxV, int timesRotated, Minecraft mc, ResourceLocation textureLocation)
+    {
+        TextureAtlasSprite textureUV = mc.getTextureMapBlocks().getTextureExtry(textureLocation.toString());
+        if(textureUV == null)
+            return;
+
+        mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        float uDifference = textureUV.getMaxU() - textureUV.getMinU();
+        float vDifference = textureUV.getMaxU() - textureUV.getMinU();
+        minU = textureUV.getMinU() + uDifference * minU;
+        maxU = textureUV.getMaxU() - uDifference * (1F-maxU);
+        minV = textureUV.getMinV() + vDifference * minV;
+        maxV = textureUV.getMaxV() - vDifference * (1F-maxV);
+
+        float u1, u2, u3, u4;
+        float v1, v2, v3, v4;
+
+        switch(timesRotated % 4)
+        {
+            default:
+                u1 = minU; u2 = maxU; u3 = maxU; u4 = minU;
+                v1 = maxV; v2 = maxV; v3 = minV; v4 = minV;
+                break;
+            case 1:
+                u1 = minU; u2 = minU; u3 = maxU; u4 = maxU;
+                v1 = minV; v2 = maxV; v3 = maxV; v4 = minV;
+                break;
+            case 2:
+                u1 = maxU; u2 = minU; u3 = minU; u4 = maxU;
+                v1 = minV; v2 = minV; v3 = maxV; v4 = maxV;
+                break;
+            case 3:
+                u1 = maxU; u2 = maxU; u3 = minU; u4 = minU;
+                v1 = maxV; v2 = minV; v3 = minV; v4 = maxV;
+                break;
+        }
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder renderer = tessellator.getBuffer();
+        renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        renderer.pos((double)(x), (double)(y + height), zLevel).tex(u1, v1).endVertex();
+        renderer.pos((double)(x + width), (double)(y + height), zLevel).tex(u2, v2).endVertex();
+        renderer.pos((double)(x + width), (double)(y), zLevel).tex(u3, v3).endVertex();
+        renderer.pos((double)(x), (double)(y), zLevel).tex(u4, v4).endVertex();
+        tessellator.draw();
     }
 }

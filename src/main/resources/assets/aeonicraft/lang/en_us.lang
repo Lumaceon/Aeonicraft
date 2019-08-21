@@ -164,6 +164,16 @@ itemGroup.Aeonicraft=Aeonicraft
 key.clockworkphase2.category=Clockwork Phase 2
 key.clockworkphase2.activate=General Activation Key
 key.clockworkphase2.toolbelt=Temporal Toolbelt Swap
+
+aeonicraft:progression=Progression
+aeonicraft:hourglass_functions=Hourglass Functions
+aeonicraft:temporal_machination=Temporal Machination
+
+aeonicraft:hgf_livestock_overclocker=Livestock Overclocker
+aeonicraft:hgf_aquatic_lure_overclocker=Aquatic Overclocker
+aeonicraft:hgf_excavation_overclocker=Excavation Overclocker
+aeonicraft:hgf_proxy_traveller=Proxy Traveller
+
 aeonicraft:hourglass_function_excavator.name=(Excavate)
 aeonicraft:hggui.summary=TC Generators
 aeonicraft:hggui.unlocks=Temporal Boons

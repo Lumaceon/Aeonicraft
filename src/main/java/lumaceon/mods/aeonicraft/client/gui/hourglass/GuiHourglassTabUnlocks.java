@@ -2,11 +2,14 @@ package lumaceon.mods.aeonicraft.client.gui.hourglass;
 
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockableCategory;
-import lumaceon.mods.aeonicraft.client.gui.GuiHelper;
+import lumaceon.mods.aeonicraft.api.util.Icon;
+import lumaceon.mods.aeonicraft.client.gui.util.GuiHelper;
+import lumaceon.mods.aeonicraft.client.gui.util.UnlockableGUIDefinition;
 import lumaceon.mods.aeonicraft.lib.Textures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -16,24 +19,31 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class GuiHourglassTabUnlocks extends GuiHourglassTab
 {
-    private Collection<HourglassUnlockableCategory> categories;
+    private HashMap<HourglassUnlockableCategory, Integer> categoryIndecies;
+    private EntityPlayer player;
+
+    private Collection<HourglassUnlockableCategory> categories; // All categories and lists for them are bottom to top
+    private Collection<HourglassUnlockable> unlockables;
     private boolean resolutionIsDirty = true;
 
-    /** The Y coordinate of the top of each category, listed from bottom to top (same order as categories) **/
-    protected int[] categoryYLevels;
+    protected CategoryGUIDefinition[] categoryDefinitions;
+    protected HashMap<HourglassUnlockable, UnlockableGUIDefinition> unlockableDefinitions;
 
-    protected float scrollX = 0;
-    protected float scrollY = 0;
-    protected float maxX = 1000F;
-    protected float maxY = 0F;
+    protected float scrollX;
+    protected float scrollY;
+    protected float maxX;
+    protected float maxY;
     private int totalWidth;
     private int totalHeight;
 
-    public GuiHourglassTabUnlocks(ItemStack stackToRender, String unlocalizedDisplayName) {
+    public GuiHourglassTabUnlocks(ItemStack stackToRender, String unlocalizedDisplayName)
+    {
         super(stackToRender, unlocalizedDisplayName, new Container() {
             @Override
             public boolean canInteractWith(EntityPlayer playerIn) {
@@ -41,17 +51,31 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
             }
         });
 
+
+        // Some basic field updates...
         this.width = 290;
         this.height = 189;
         this.mc = Minecraft.getMinecraft();
+        this.player = this.mc.player;
         this.scrollAtLastClickX = this.scrollX;
         this.scrollAtLastClickY = this.scrollY;
-
-        maxY = 2F - this.height;
         categories = GameRegistry.findRegistry(HourglassUnlockableCategory.class).getValuesCollection();
+        categoryDefinitions = new CategoryGUIDefinition[categories.size()];
+        categoryIndecies = new HashMap<>(categories.size());
+        unlockables = GameRegistry.findRegistry(HourglassUnlockable.class).getValuesCollection();
+        unlockableDefinitions = new HashMap<>(unlockables.size());
+        int i;
+
+
+        // Set up height from the available categories and other initial set ups for each category...
+        i = 0;
+        maxY = 2F - this.height;
         for(HourglassUnlockableCategory category : categories)
         {
             maxY += category.textureHeight() + 2;
+            categoryDefinitions[i] = new CategoryGUIDefinition();
+            categoryIndecies.put(category, i);
+            i++;
         }
 
         if(maxY < 0)
@@ -59,15 +83,53 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
 
         this.scrollY = maxY;
 
+
+        // Organize unlockables and set up width based on the longest category...
+        int catIndex;
+        HourglassUnlockableCategory cat;
+        UnlockableGUIDefinition definition;
+        for(HourglassUnlockable unlockable : unlockables)
+        {
+            definition = new UnlockableGUIDefinition(unlockable, player);
+            cat = unlockable.getCategory();
+            if(cat != null)
+            {
+                catIndex = categoryIndecies.getOrDefault(cat, -1);
+                if(catIndex != -1)
+                {
+                    CategoryGUIDefinition catDef = categoryDefinitions[catIndex];
+                    catDef.addUnlockable(unlockable);
+                    definition.setBaseX(catDef.unlockables.size()*32 + 4);
+                    unlockableDefinitions.put(unlockable, definition);
+                }
+            }
+        }
+
+        int greatestCategoryWidth = 0;
+        for(CategoryGUIDefinition c : categoryDefinitions)
+            greatestCategoryWidth = Math.max(greatestCategoryWidth, c.width);
+
+        this.maxX = greatestCategoryWidth - this.width;
+        if(this.maxX < 0)
+            this.maxX = 0;
+
+        this.scrollX = 0;
+
+
+        // Some final set up...
         this.totalWidth = (int) this.maxX + this.width;
         this.totalHeight = (int) this.maxY + this.height;
 
-        categoryYLevels = new int[categories.size()];
-        int i = 0;
         int lastHeight = totalHeight;
+        i = 0;
         for(HourglassUnlockableCategory category : categories)
         {
-            lastHeight = categoryYLevels[i] = lastHeight - (category.textureHeight() + 2);
+            lastHeight = categoryDefinitions[i].topPos = lastHeight - (category.textureHeight() + 2);
+            for(HourglassUnlockable unlockable : categoryDefinitions[i].unlockables)
+            {
+                UnlockableGUIDefinition ulDef = unlockableDefinitions.get(unlockable);
+                ulDef.setBaseY(lastHeight + 4);
+            }
             i++;
         }
     }
@@ -108,11 +170,22 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
         super.drawScreen(mouseX, mouseY, partialTicks);
         GlStateManager.popAttrib();
 
-        // ==Draw a category bar that doesn't scroll horizontally but only vertical==
+        this.renderUnlockables(mouseX, mouseY);
 
-        // Re-translate x back to normal position
+        // Re-translate x back to normal position for category bar
         GlStateManager.translate(scrollX, 0, 0);
 
+        this.renderCategoryBar(mouseX, mouseY);
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        GlStateManager.popMatrix();
+
+        this.renderCategoryTooltips(mouseX, mouseY);
+        this.renderUnlockTooltips(mouseX, mouseY);
+    }
+
+    private void renderCategoryBar(int mouseX, int mouseY)
+    {
         int currentHeight = this.totalHeight;
         for(HourglassUnlockableCategory category : categories)
         {
@@ -132,12 +205,31 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
             drawItemStack(category.getIcon().getStackToRender(), 8, currentHeight + (category.textureHeight() / 2) - 8, "");
             GlStateManager.popAttrib();
         }
+    }
 
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
-        GlStateManager.popMatrix();
-
-        this.renderCategoryTooltips(mouseX, mouseY);
-        this.renderUnlockTooltips(mouseX, mouseY);
+    private void renderUnlockables(int mouseX, int mouseY)
+    {
+        for(UnlockableGUIDefinition def : unlockableDefinitions.values())
+        {
+            float brightness = (isOverUnlockable(def, mouseX, mouseY) ?  0.85F : 0.5F);
+            if(def.isUnlocked) brightness = 1;
+            GlStateManager.color(brightness, brightness, brightness, 1.0F);
+            Minecraft.getMinecraft().renderEngine.bindTexture(Textures.HOURGLASS_UL_CAT_BG);
+            GuiHelper.drawTexturedModalRectWithUVs(def.getLeft(), def.getTop(), this.zLevel, 24, 24, 0, 0, 0.5F, 1);
+            Icon icon = def.unlockable.getIcon();
+            if(icon != null)
+            {
+                ItemStack stack = icon.getStackToRender();
+                if(stack != null)
+                {
+                    drawItemStack(icon.getStackToRender(), def.getLeft() + 4, def.getTop() + 4, "");
+                }
+                else
+                {
+                    GuiHelper.bindAndDrawRegisteredTexture(def.getLeft() + 4, def.getTop() + 4, this.zLevel, 16, 16, 0, 0, 1, 1, 0, mc, icon.getTexture());
+                }
+            }
+        }
     }
 
     protected void renderCategoryTooltips(int mouseX, int mouseY)
@@ -147,7 +239,7 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
         {
             if(isOverCategory(category, i, mouseX, mouseY))
             {
-                this.drawHoveringText(category.getRegistryName().toString(), mouseX, mouseY);
+                this.drawHoveringText(I18n.format(category.getRegistryName().toString()), mouseX, mouseY);
             }
             i++;
         }
@@ -155,15 +247,30 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
 
     protected void renderUnlockTooltips(int mouseX, int mouseY)
     {
-
+        for(HourglassUnlockable unlockable : unlockables)
+        {
+            UnlockableGUIDefinition def = unlockableDefinitions.get(unlockable);
+            if(isOverUnlockable(def, mouseX, mouseY))
+            {
+                ArrayList<String> textLines  = new ArrayList<>(1);
+                String toolTip = I18n.format(unlockable.getRegistryName().toString());
+                textLines.add(toolTip);
+                textLines.add("AP cost: " + unlockable.getAdvancementCostWeight());
+                textLines.add("TC cost: " + unlockable.getTimeCostWeight());
+                int w = mc.fontRenderer.getStringWidth(toolTip) + 16;
+                int x = (int) (def.getLeft() + 12 - w*0.5F);
+                net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(textLines, x, def.getTop() - 25, width, height, -1, this.fontRenderer);
+                //this.drawHoveringText(I18n.format(unlockable.getRegistryName().toString()), mouseX, mouseY);
+            }
+        }
     }
 
     private boolean isOverCategory(HourglassUnlockableCategory category, int categoryIndex, int mouseX, int mouseY)
     {
-        if(mouseX < this.guiLeft || mouseX > this.guiLeft + 32 || mouseY < this.guiTop | mouseY > this.guiTop + this.ySize)
+        if(mouseX < this.guiLeft || mouseX > this.guiLeft + 32 || mouseY < this.guiTop || mouseY > this.guiTop + this.ySize)
             return false;
 
-        int localY = (int) (categoryYLevels[categoryIndex] - scrollY);
+        int localY = (int) (categoryDefinitions[categoryIndex].topPos - scrollY);
 
         if(mouseY < localY || mouseY >= localY + category.textureHeight())
             return false;
@@ -171,9 +278,18 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
         return true;
     }
 
-    private boolean isOverUnlockable(HourglassUnlockable unlockable, int unlockableIndex, int mouseX, int mouseY)
+    private boolean isOverUnlockable(UnlockableGUIDefinition unlockable, int mouseX, int mouseY)
     {
-        return false;
+        if(mouseX < this.guiLeft + 32 || mouseX > this.guiLeft + this.xSize || mouseY < this.guiTop || mouseY > this.guiTop + this.ySize)
+            return false;
+
+        int localX = (int) (unlockable.getLeft() - scrollY);
+        int localY = (int) (unlockable.getTop() - scrollY);
+
+        if(mouseY < localY + 4 || mouseY >= localY + 24)
+            return false;
+
+        return mouseX > localX && mouseX < localX + 24;
     }
 
     private void drawItemStack(ItemStack stack, int x, int y, String altText)
@@ -258,6 +374,7 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
     private float scrollAtLastClickY;
     private boolean scrollingVertically = false;
     private boolean scrollingHorizontally = false;
+    private HourglassUnlockable unlockableLastClicked = null;
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
@@ -288,6 +405,9 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
         {
             scrollingHorizontally = true;
             scrollingVertically = true;
+            for(UnlockableGUIDefinition def : unlockableDefinitions.values())
+                if(isOverUnlockable(def, mouseX, mouseY))
+                    this.unlockableLastClicked = def.unlockable;
         }
         else
         {
@@ -299,6 +419,14 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
+        if(this.unlockableLastClicked != null)
+        {
+            UnlockableGUIDefinition def = this.unlockableDefinitions.get(unlockableLastClicked);
+            if(isOverUnlockable(def, mouseX, mouseY) && Math.sqrt(Math.pow(mouseX - mouseLastClickedX, 2) + Math.pow(mouseY - mouseLastClickedY, 2)) < 12)
+            {
+                def.onClicked(this.mc);
+            }
+        }
     }
 
     @Override
@@ -353,5 +481,23 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
         GlStateManager.blendFunc(GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GuiHelper.drawTexturedModalRectStretched(this.guiLeft, this.guiTop, this.zLevel, this.xSize, this.ySize);
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);*/
+    }
+
+    public class CategoryGUIDefinition
+    {
+        int topPos = 0;
+        int width = 32;
+        final ArrayList<HourglassUnlockable> unlockables;
+
+        public CategoryGUIDefinition()
+        {
+            unlockables = new ArrayList<>();
+        }
+
+        public void addUnlockable(HourglassUnlockable unlockable)
+        {
+            unlockables.add(unlockable);
+            width += 32;
+        }
     }
 }

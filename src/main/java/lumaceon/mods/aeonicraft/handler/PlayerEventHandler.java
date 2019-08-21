@@ -2,6 +2,7 @@ package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
+import lumaceon.mods.aeonicraft.capability.CapabilityAeonicraftProgression;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.entity.EntityTemporalFishHook;
@@ -37,6 +38,25 @@ import java.util.Random;
 @Mod.EventBusSubscriber(modid = Aeonicraft.MOD_ID)
 public class PlayerEventHandler
 {
+    /**
+     * Copies data to the new player when respawning after death.
+     */
+    @SubscribeEvent
+    public void onPlayerRespawning(PlayerEvent.Clone event)
+    {
+        if(event.isWasDeath())
+        {
+            EntityPlayer original = event.getOriginal();
+            EntityPlayer newPlayer = event.getEntityPlayer();
+            CapabilityAeonicraftProgression.IAeonicraftProgressionHandler cap = original.getCapability(CapabilityAeonicraftProgression.AEONICRAFT_PROGRESSION_CAPABILITY, null);
+            CapabilityAeonicraftProgression.IAeonicraftProgressionHandler capNew = newPlayer.getCapability(CapabilityAeonicraftProgression.AEONICRAFT_PROGRESSION_CAPABILITY, null);
+            if(cap != null && capNew != null)
+            {
+                capNew.loadFromNBT(cap.saveToNBT());
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void onAdvancementCompleted(AdvancementEvent event)
     {

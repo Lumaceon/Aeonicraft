@@ -176,7 +176,7 @@ public class ItemTemporalHourglass extends ItemAeonicraft
     }
 
     public boolean showDurabilityBar(ItemStack stack) {
-        return true;
+        return false;
     }
 
     /**

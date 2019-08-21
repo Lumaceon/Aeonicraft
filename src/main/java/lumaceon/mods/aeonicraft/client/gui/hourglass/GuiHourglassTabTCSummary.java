@@ -2,7 +2,7 @@ package lumaceon.mods.aeonicraft.client.gui.hourglass;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
-import lumaceon.mods.aeonicraft.client.gui.GuiHelper;
+import lumaceon.mods.aeonicraft.client.gui.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;

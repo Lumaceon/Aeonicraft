@@ -6,12 +6,14 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class HourglassUnlockable extends IForgeRegistryEntry.Impl<HourglassUnlockable>
 {
-    private int timeCostWeight;
-    private int advancementCostWeight;
+    protected HourglassUnlockableCategory category;
+    protected int timeCostWeight;
+    protected int advancementCostWeight;
 
-    public HourglassUnlockable(ResourceLocation registryName, int timeCostWeight, int advancementCostWeight)
+    public HourglassUnlockable(ResourceLocation registryName, HourglassUnlockableCategory category, int timeCostWeight, int advancementCostWeight)
     {
         this.setRegistryName(registryName);
+        this.category = category;
         this.timeCostWeight = timeCostWeight;
         this.advancementCostWeight = advancementCostWeight;
     }
@@ -40,6 +42,6 @@ public class HourglassUnlockable extends IForgeRegistryEntry.Impl<HourglassUnloc
     }
 
     public HourglassUnlockableCategory getCategory() {
-        return null;
+        return category;
     }
 }
