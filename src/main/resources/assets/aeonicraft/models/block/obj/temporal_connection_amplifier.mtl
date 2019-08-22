@@ -1,0 +1,12 @@
+# Blender MTL File: 'temporal_connection_amplifier.blend'
+# Material Count: 2
+
+newmtl Material.001
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:block/temporal_connection_amplifier
+
+newmtl Material.002
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:block/brass_trim1
