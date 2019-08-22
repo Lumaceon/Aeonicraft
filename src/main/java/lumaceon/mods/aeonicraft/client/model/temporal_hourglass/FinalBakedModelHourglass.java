@@ -3,6 +3,7 @@ package lumaceon.mods.aeonicraft.client.model.temporal_hourglass;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
@@ -53,5 +54,15 @@ public class FinalBakedModelHourglass implements IBakedModel
     @Override
     public ItemOverrideList getOverrides() {
         throw new UnsupportedOperationException(getClass().toString() + " should not receive override models.");
+    }
+
+    @Override
+    public org.apache.commons.lang3.tuple.Pair<? extends IBakedModel, javax.vecmath.Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+        if(cameraTransformType.equals(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND)
+        || cameraTransformType.equals(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
+        || cameraTransformType.equals(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
+        || cameraTransformType.equals(ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND))
+            return null;
+        return net.minecraftforge.client.ForgeHooksClient.handlePerspective(this, cameraTransformType);
     }
 }

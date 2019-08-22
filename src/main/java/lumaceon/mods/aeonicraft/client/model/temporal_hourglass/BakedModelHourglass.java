@@ -1,6 +1,7 @@
 package lumaceon.mods.aeonicraft.client.model.temporal_hourglass;
 
 import com.google.common.collect.ImmutableMap;
+import lumaceon.mods.aeonicraft.client.model.DummyNullModel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -26,6 +27,8 @@ import java.util.function.Function;
 @SuppressWarnings("NullableProblems")
 public class BakedModelHourglass implements IBakedModel
 {
+    private static final DummyNullModel NULL_MODEL = new DummyNullModel();
+
     private final IBakedModel proxyModel;
     private final ModelTemporalHourglass model;
 
@@ -80,6 +83,11 @@ public class BakedModelHourglass implements IBakedModel
 
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+        if(cameraTransformType.equals(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND)
+                || cameraTransformType.equals(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
+                || cameraTransformType.equals(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
+                || cameraTransformType.equals(ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND))
+            return Pair.of(NULL_MODEL, null);
         return proxyModel.handlePerspective(cameraTransformType);
     }
 }

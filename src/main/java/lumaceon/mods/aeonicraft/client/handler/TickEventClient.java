@@ -3,7 +3,9 @@ package lumaceon.mods.aeonicraft.client.handler;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.client.particle.ModParticles;
+import lumaceon.mods.aeonicraft.registry.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.Mod;
@@ -32,6 +34,12 @@ public class TickEventClient
             if(cap != null)
             {
                 cap.renderUpdateTick(event.renderTickTime);
+
+                ItemStack heldItem = player.inventory.getCurrentItem();
+                if(heldItem.getItem().equals(ModItems.temporal_hourglass))
+                {
+
+                }
             }
         }
     }
