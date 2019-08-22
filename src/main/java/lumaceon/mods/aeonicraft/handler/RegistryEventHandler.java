@@ -18,6 +18,7 @@ import lumaceon.mods.aeonicraft.lib.TimeCosts;
 import lumaceon.mods.aeonicraft.registry.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
+import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -80,6 +81,11 @@ public class RegistryEventHandler
     private static HourglassFunction hgFunc(HourglassFunction func, RegistryEvent.Register<HourglassFunction> event) {
         event.getRegistry().register(func);
         return func;
+    }
+
+    private static TemporalCompressorComponent tCompComponent(TemporalCompressorComponent component, RegistryEvent.Register<TemporalCompressorComponent> event) {
+        event.getRegistry().register(component);
+        return component;
     }
 
     @SubscribeEvent
@@ -211,6 +217,16 @@ public class RegistryEventHandler
                 }
             }
         }, event);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void registerTemporalCompressorComponent(RegistryEvent.Register<TemporalCompressorComponent> event)
+    {
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test1")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test2")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test3")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test4")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test5")), event);
     }
 
     @SubscribeEvent
