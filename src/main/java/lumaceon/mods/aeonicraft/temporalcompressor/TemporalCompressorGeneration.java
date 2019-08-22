@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.temporalcompressor;
 
+import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.util.TimeParser;
 
 /**
@@ -15,7 +16,16 @@ public class TemporalCompressorGeneration
     public static TemporalCompressorStats calculateStatsPerTickFromCompressor(TemporalCompressorMatrix componentMatrix)
     {
         // TODO - Make this work gud.
-        return new TemporalCompressorStats(TimeParser.SECOND * 0);
+        long gain = 0;
+
+        for (int x = 0; x < componentMatrix.matrix.length; x++) {
+            for (int y = 0; y < componentMatrix.matrix[x].length; y++) {
+                TemporalCompressorComponent component = componentMatrix.getComponentForCoordinates(x,y);
+                gain += component.TCGen;
+            }
+        }
+
+        return new TemporalCompressorStats(TimeParser.SECOND * gain);
     }
 
     public static class TemporalCompressorStats

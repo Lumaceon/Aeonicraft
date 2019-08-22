@@ -8,7 +8,10 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  */
 public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<TemporalCompressorComponent>
 {
-    public TemporalCompressorComponent(ResourceLocation registryName) {
+    public final float TCGen;
+
+    public TemporalCompressorComponent(ResourceLocation registryName, float amount) {
+        TCGen = amount;
         this.setRegistryName(registryName);
     }
 }

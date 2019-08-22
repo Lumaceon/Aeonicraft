@@ -5,8 +5,8 @@ import net.minecraft.world.World;
 
 public class TemporalCompressorComponentUpdatable extends TemporalCompressorComponent
 {
-    public TemporalCompressorComponentUpdatable(ResourceLocation registryName) {
-        super(registryName);
+    public TemporalCompressorComponentUpdatable(ResourceLocation registryName, float amount) {
+        super(registryName,amount);
     }
 
     public void onUpdateTick(World world) {}
