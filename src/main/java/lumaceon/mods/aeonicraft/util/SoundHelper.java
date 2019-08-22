@@ -12,18 +12,17 @@ public class SoundHelper
     private static float lastValueClient = -50.0F;
     private static float lastValueServer = -50.0F;
     private static final Scale IONIAN_MODE_SCALE = new Scale( new float[] { // standard major scale
-            0.0F, 2.0F/12F, 4.0F/12F, 5.0F/12F, 7.0F/12F, 9.0F/12F, 11.0F/12F
+            0.5F+0.0F, 0.5F+2.0F/12F, 0.5F+4.0F/12F, 0.5F+5.0F/12F, 0.5F+7.0F/12F, 0.5F+9.0F/12F, 0.5F+11.0F/12F
     });
     private static final Scale DORIAN_MODE_SCALE = new Scale( new float[] {
-            0.0F, 2.0F/12F, 3.0F/12F, 5.0F/12F, 7.0F/12F, 9.0F/12F, 10.0F/12F
+            0.5F+0.0F, 0.5F+2.0F/12F, 0.5F+3.0F/12F, 0.5F+5.0F/12F, 0.5F+7.0F/12F, 0.5F+9.0F/12F, 0.5F+10.0F/12F
     });
     private static final Scale LYDIAN_MODE_SCALE = new Scale( new float[] {
-            0.0F, 2.0F/12F, 4.0F/12F, 6.0F/12F, 7.0F/12F, 9.0F/12F, 11.0F/12F
+            0.5F+0.0F, 0.5F+2.0F/12F, 0.5F+4.0F/12F, 0.5F+6.0F/12F, 0.5F+7.0F/12F, 0.5F+9.0F/12F, 0.5F+11.0F/12F
     });
     private static final Scale AEOLIAN_MODE_SCALE = new Scale( new float[] {
-            0.0F, 2.0F/12F, 3.0F/12F, 5.0F/12F, 7.0F/12F, 8.0F/12F, 10.0F/12F
+            0.5F+0.0F, 0.5F+2.0F/12F, 0.5F+3.0F/12F, 0.5F+5.0F/12F, 0.5F+7.0F/12F, 0.5F+8.0F/12F, 0.5F+10.0F/12F
     });
-
 
     public static void playShortTimeDing(EntityPlayer player, World world, double x, double y, double z)
     {
@@ -32,12 +31,12 @@ public class SoundHelper
 
     public static void playMediumTimeDing(EntityPlayer player, World world, double x, double y, double z)
     {
-        world.playSound(player, x, y, z, ModSounds.time_ding_medium, SoundCategory.PLAYERS, 0.75F, world.rand.nextFloat() * 0.5F + 0.75F);
+        world.playSound(player, x, y, z, ModSounds.time_ding_medium, SoundCategory.PLAYERS, 0.75F, randomNoteScaleShift(world.isRemote, 5000, LYDIAN_MODE_SCALE, AEOLIAN_MODE_SCALE, DORIAN_MODE_SCALE));
     }
 
     public static void playLongTimeDing(EntityPlayer player, World world, double x, double y, double z)
     {
-        world.playSound(player, x, y, z, ModSounds.time_ding_long, SoundCategory.PLAYERS, 0.5F, world.rand.nextFloat() * 0.5F + 0.75F);
+        world.playSound(player, x, y, z, ModSounds.time_ding_long, SoundCategory.PLAYERS, 0.5F, randomNoteScaleShift(world.isRemote, 5000, LYDIAN_MODE_SCALE, AEOLIAN_MODE_SCALE, DORIAN_MODE_SCALE));
     }
 
     private static float randomNote(boolean isClient, Scale scale)

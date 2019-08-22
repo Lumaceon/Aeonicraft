@@ -25,7 +25,7 @@ public class CapabilityTimeStorage
             public NBTBase writeNBT(Capability<ITimeStorage> capability, ITimeStorage instance, EnumFacing side)
             {
                 NBTTagCompound nbt = new NBTTagCompound();
-                nbt.setLong("ticks_stored", instance.getTimeInTicks());
+                nbt.setLong("time_stored", instance.getTimeInMilliseconds());
                 nbt.setLong("max_capacity", instance.getMaxCapacity());
                 return nbt;
             }
@@ -34,7 +34,7 @@ public class CapabilityTimeStorage
             public void readNBT(Capability<ITimeStorage> capability, ITimeStorage instance, EnumFacing side, NBTBase base)
             {
                 instance.setMaxCapacity(((NBTTagCompound) base).getLong("max_capacity"));
-                instance.insertTime(((NBTTagCompound) base).getLong("ticks_stored"));
+                instance.insertTime(((NBTTagCompound) base).getLong("time_stored"));
             }
         }, TimeStorage::new);
     }
@@ -43,23 +43,23 @@ public class CapabilityTimeStorage
     {
         /**
          * Inserts the given amount of time into this storage.
-         * @param ticksToInsert The time, in ticks, to insert into this storage.
-         * @return The amount of ticks accepted into this storage.
+         * @param timeToInsert The time, in milliseconds, to insert into this storage.
+         * @return The amount of time accepted into this storage.
          */
-        long insertTime(long ticksToInsert);
+        long insertTime(long timeToInsert);
 
         /**
          * Extracts the given amount of time out of this storage.
-         * @param ticksToExtract The time, in ticks, to extract out of this storage.
-         * @return The amount of ticks removed from this storage.
+         * @param timeToExtract The time, in milliseconds, to extract out of this storage.
+         * @return The amount of time removed from this storage.
          */
-        long extractTime(long ticksToExtract);
+        long extractTime(long timeToExtract);
 
         /**
          * Returns the actual time stored.
          * @return How much time is currently stored.
          */
-        long getTimeInTicks();
+        long getTimeInMilliseconds();
 
         /**
          * How much time can currently be stored in here?
@@ -106,23 +106,23 @@ public class CapabilityTimeStorage
         }
 
         @Override
-        public long insertTime(long ticksToInsert)
+        public long insertTime(long timeToInsert)
         {
-            long timeAccepted = Math.min(capacity - timeStored, ticksToInsert);
+            long timeAccepted = Math.min(capacity - timeStored, timeToInsert);
             timeStored += timeAccepted;
             return timeAccepted;
         }
 
         @Override
-        public long extractTime(long ticksToExtract)
+        public long extractTime(long timeToExtract)
         {
-            long timeRemoved = Math.min(timeStored, ticksToExtract);
+            long timeRemoved = Math.min(timeStored, timeToExtract);
             timeStored -= timeRemoved;
             return timeRemoved;
         }
 
         @Override
-        public long getTimeInTicks() {
+        public long getTimeInMilliseconds() {
             return timeStored;
         }
 
@@ -134,7 +134,7 @@ public class CapabilityTimeStorage
          * the interpolated value between the previous update value and the current (real) value.
          * @return How much time the client should tell the player is stored.
          */
-        public long getTimeInTicksForDisplay()
+        public long getTimeInMillisecondsForDisplay()
         {
             long ret;
             if(speed == UpdateSpeed.SLOW)
@@ -252,7 +252,7 @@ public class CapabilityTimeStorage
         public NBTTagCompound serializeNBT() {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setLong("capacity", implementation.getMaxCapacity());
-            nbt.setLong("time", implementation.getTimeInTicks());
+            nbt.setLong("time", implementation.getTimeInMilliseconds());
             return nbt;
         }
 

@@ -16,7 +16,7 @@ public class TimeHelper
         CapabilityTimeStorage.ITimeStorage cap = entity.getCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null);
         if(cap != null)
         {
-            return cap.getTimeInTicks();
+            return cap.getTimeInMilliseconds();
         }
         return 0;
     }

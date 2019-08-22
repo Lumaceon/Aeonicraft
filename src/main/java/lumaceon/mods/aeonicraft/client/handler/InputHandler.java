@@ -40,7 +40,7 @@ public class InputHandler
                     ItemStack hourglass = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, ModItems.temporal_hourglass);
                     HourglassFunction func = InventoryHelper.getHourglassFunctionFromHourglass(hourglass);
 
-                    if(func != null && func.equals(ModHourglassFunctions.proxy_traveller))
+                    if(func != null && func.equals(ModHourglassFunctions.hgf_proxy_traveller))
                     {
                         ItemTemporalHourglass hg = (ItemTemporalHourglass) hourglass.getItem();
                         if(hg.availableTime(hourglass, player.world, Side.CLIENT) >= TimeParser.SECOND * 6)

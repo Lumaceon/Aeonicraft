@@ -48,7 +48,7 @@ public class GuiHourglassTabTCSummary extends GuiHourglassTab
             if(cap instanceof CapabilityTimeStorage.TimeStorage)
             {
                 CapabilityTimeStorage.TimeStorage ts = (CapabilityTimeStorage.TimeStorage) cap;
-                this.drawHoveringText(I18n.format(Long.toString(ts.getTimeInTicksForDisplay())), mouseX, mouseY);
+                this.drawHoveringText(I18n.format(Long.toString(ts.getTimeInMillisecondsForDisplay())), mouseX, mouseY);
             }
         }
     }

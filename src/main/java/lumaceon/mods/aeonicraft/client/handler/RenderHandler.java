@@ -4,6 +4,8 @@ import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.client.particle.ModParticles;
 import lumaceon.mods.aeonicraft.registry.ModItems;
+import lumaceon.mods.aeonicraft.util.TimeHelper;
+import lumaceon.mods.aeonicraft.util.TimeParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
@@ -130,14 +132,14 @@ public class RenderHandler
                     }
                     else
                     {
-                        if(Math.abs(previousHourglassPosX - targetX) > 0.01F)
-                            targetX = previousHourglassPosX - (previousHourglassPosX - targetX) * event.getPartialTicks() * 0.2F / event.getPartialTicks();
-                        if(Math.abs(previousHourglassPosY - targetY) > 0.01F)
-                            targetY = previousHourglassPosY - (previousHourglassPosY - targetY) * event.getPartialTicks() * 0.2F / event.getPartialTicks();
-                        if(Math.abs(previousHourglassPosZ - targetZ) > 0.01F)
-                            targetZ = previousHourglassPosZ - (previousHourglassPosZ - targetZ) * event.getPartialTicks() * 0.2F / event.getPartialTicks();
-                        if(Math.abs(previousHourglassRotationAngle - targetRotAngle) > 1)
-                            targetRotAngle = previousHourglassRotationAngle - (previousHourglassRotationAngle - targetRotAngle) * 0.15F / event.getPartialTicks();
+                        if(Math.abs(previousHourglassPosX - targetX) > 0.0025F)
+                            targetX = previousHourglassPosX - (previousHourglassPosX - targetX) * 0.1F;
+                        if(Math.abs(previousHourglassPosY - targetY) > 0.0025F)
+                            targetY = previousHourglassPosY - (previousHourglassPosY - targetY) * 0.1F;
+                        if(Math.abs(previousHourglassPosZ - targetZ) > 0.0025F)
+                            targetZ = previousHourglassPosZ - (previousHourglassPosZ - targetZ) * 0.1F;
+                        if(Math.abs(targetRotAngle - previousHourglassRotationAngle) > 0.0025F)
+                            targetRotAngle = previousHourglassRotationAngle + (targetRotAngle - previousHourglassRotationAngle) * 0.1F;
 
                         previousHourglassPosX = targetX;
                         previousHourglassPosY = targetY;
@@ -145,10 +147,18 @@ public class RenderHandler
                         previousHourglassRotationAngle = targetRotAngle;
                     }
 
+                    GlStateManager.pushMatrix();
                     GlStateManager.translate(targetX, targetY, targetZ);
                     GlStateManager.scale(0.5F, 0.5F, 0.5F);
                     GlStateManager.rotate(targetRotAngle, 0, 1, 0);
-                    MC.getRenderItem().renderItem(heldItem, player, ItemCameraTransforms.TransformType.GROUND, false);
+                    MC.getRenderItem().renderItem(heldItem, player, ItemCameraTransforms.TransformType.FIXED, false);
+
+                    String renderString = TimeParser.parseTimeValue(TimeHelper.getTime(player), 2);
+                    GlStateManager.scale(0.02F, 0.02F, 0.02F);
+                    GlStateManager.translate(-MC.fontRenderer.getStringWidth(renderString) * 0.5F, 25.F, 30);
+                    GlStateManager.rotate(180, 1, 0, 0);
+                    MC.fontRenderer.drawString(renderString, 0, 0, 0xFFFFFF, false);
+                    GlStateManager.popMatrix();
                 }
                 else
                     hourglassRenderedLastTick = false;

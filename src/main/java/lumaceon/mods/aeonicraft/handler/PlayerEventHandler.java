@@ -31,10 +31,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.HashMap;
-import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = Aeonicraft.MOD_ID)
 public class PlayerEventHandler
@@ -75,7 +73,7 @@ public class PlayerEventHandler
             {
                 ItemTemporalHourglass hourglass = (ItemTemporalHourglass) firstHourglass.getItem();
                 HourglassFunction hourglassFunction = hourglass.getActiveHourglassFunction(firstHourglass);
-                if(hourglassFunction != null && hourglassFunction.equals(ModHourglassFunctions.excavation_overclocker))
+                if(hourglassFunction != null && hourglassFunction.equals(ModHourglassFunctions.hgf_excavation_overclocker))
                 {
                     long timeToBreakBlock = TimeHelper.getTimeToBreakBlock(player.world, event.getPos(), event.getState(), player, player.inventory.getCurrentItem());
                     if(TimeHelper.getTime(player) >= timeToBreakBlock)
@@ -125,7 +123,7 @@ public class PlayerEventHandler
             if(currentUpdateCount % ConfigValues.SECONDS_BETWEEN_PLAYER_TC_UPDATE_PACKET * 20 == 0)
             {
                 currentUpdateCount = 0;
-                PacketHandler.INSTANCE.sendTo(new MessagePlayerTCUpdate(timeStorage.getTimeInTicks(), 50, CapabilityTimeStorage.TimeStorage.UpdateSpeed.SLOW), (EntityPlayerMP) player);
+                PacketHandler.INSTANCE.sendTo(new MessagePlayerTCUpdate(timeStorage.getTimeInMilliseconds(), 50, CapabilityTimeStorage.TimeStorage.UpdateSpeed.SLOW), (EntityPlayerMP) player);
             }
         }
 
@@ -137,7 +135,7 @@ public class PlayerEventHandler
             if(cap != null)
             {
                 HourglassFunction func = cap.getActiveFunction();
-                if(func != null && func.equals(ModHourglassFunctions.aquatic_lure_overclocker) && !(player.fishEntity instanceof EntityTemporalFishHook) && TimeHelper.getTime(player) >= TimeCosts.INSTANT_FISH_MAX)
+                if(func != null && func.equals(ModHourglassFunctions.hgf_aquatic_lure_overclocker) && !(player.fishEntity instanceof EntityTemporalFishHook) && TimeHelper.getTime(player) >= TimeCosts.INSTANT_FISH_MAX)
                 {
                     player.fishEntity.setDead();
                     EntityTemporalFishHook fishHook = new EntityTemporalFishHook(player.world, player);
@@ -186,7 +184,7 @@ public class PlayerEventHandler
                 }
                 if (
                         func != null
-                        && func.equals(ModHourglassFunctions.livestock_overclocker)
+                        && func.equals(ModHourglassFunctions.hgf_livestock_overclocker)
                         && hourglass.getItem() instanceof ItemTemporalHourglass
                         && sheep.isShearable(stackInHand, player.world, event.getPos())
                         && stackInHand.getItem() instanceof ItemShears

@@ -5,7 +5,6 @@ import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.lib.TimeCosts;
 import lumaceon.mods.aeonicraft.registry.ModHourglassFunctions;
 import lumaceon.mods.aeonicraft.registry.ModItems;
-import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
 import lumaceon.mods.aeonicraft.util.ParticleHelper;
 import lumaceon.mods.aeonicraft.util.SoundHelper;
@@ -23,7 +22,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Random;
 
@@ -41,7 +39,7 @@ public class LivingEventHandler
             if(!hourglass.isEmpty())
             {
                 HourglassFunction function = InventoryHelper.getHourglassFunctionFromHourglass(hourglass);
-                if(function != null && function.equals(ModHourglassFunctions.livestock_overclocker))
+                if(function != null && function.equals(ModHourglassFunctions.hgf_livestock_overclocker))
                 {
                     EntityAgeable target = event.getChild();
                     if(target != null && event.getParentA() instanceof EntityAnimal && event.getParentB() instanceof EntityAnimal)
