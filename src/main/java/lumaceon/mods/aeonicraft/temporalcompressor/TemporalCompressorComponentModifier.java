@@ -1,16 +1,21 @@
 package lumaceon.mods.aeonicraft.temporalcompressor;
 
 //VOP stands for ValueOperatorPair
-public class TemporalCompressorComponentVOP {
+public class TemporalCompressorComponentModifier implements Comparable<TemporalCompressorComponentModifier> {
 
 
     private float Value;
     private final TemporalCompressorComponentOperator operator;
+
     public boolean isGlobal = false;
+    //Only used for isGlobal. -value executes the priority queue before neighbour modifiers. Otherwise after.
+    //Higher number has priority. so -100  will be executed before -50. 100 will be executed before 50.
+    public int priority = 0;
+
     public ModifyLevel modifyLevel = ModifyLevel.BASE;
 
 
-    public TemporalCompressorComponentVOP(float value, TemporalCompressorComponentOperator operator) {
+    public TemporalCompressorComponentModifier(float value, TemporalCompressorComponentOperator operator) {
         this.Value = value;
         this.operator = operator;
     }
@@ -31,6 +36,11 @@ public class TemporalCompressorComponentVOP {
     }
     public float execute(float v1){
         return operator.execute(v1, Value);
+    }
+
+    @Override
+    public int compareTo(TemporalCompressorComponentModifier o) {
+        return Integer.compare(this.priority,o.priority);
     }
 
     public enum ModifyLevel{
