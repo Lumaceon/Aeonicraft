@@ -1,10 +1,10 @@
 package lumaceon.mods.aeonicraft.api.temporalcompression;
 
-import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentVOP;
+import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentModifier;
 import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorMatrix;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentVOP.ModifyLevel;
+import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentModifier.ModifyLevel;
 
 import javax.vecmath.Point2i;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<TemporalCompressorComponent>
 {
 
-    public ArrayList<TemporalCompressorComponentVOP> TCModifiers = new ArrayList<TemporalCompressorComponentVOP>();
+    public ArrayList<TemporalCompressorComponentModifier> TCModifiers = new ArrayList<TemporalCompressorComponentModifier>();
     public float oTCValue = 0;
     public float bTCValue = 0;
     public float mTCValue = 0;
@@ -27,7 +27,7 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
     TemporalCompressorComponentNeighbours neighbours;
 
     //Create modifiers and add them to specific components via this.
-    public TemporalCompressorComponent addTCModifier(TemporalCompressorComponentVOP modifier){
+    public TemporalCompressorComponent addTCModifier(TemporalCompressorComponentModifier modifier){
         TCModifiers.add(modifier);
         return this;
     }
@@ -38,23 +38,22 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
 
     public void doStuff(ModifyLevel modifyLevel){
         modify(modifyLevel);
-        //Todo: Properly setting the basic, modified, and final values
     }
-
 
 
     //Modify the temporalCompressorsComponentsStats based on which modifyLevel is given
     private void modify(ModifyLevel modifyLevel){
 
-        ArrayList<TemporalCompressorComponentVOP> TCModifiers;
-        ArrayList<TemporalCompressorComponentVOP> tempTCModifiers = new ArrayList<>();
 
         //Skipped if component is not modifable
         if(!isModifiable){
             return;
         }
 
-        //Looks into each neighbour and gets relevant modifiers
+
+        ArrayList<TemporalCompressorComponentModifier> TCModifiers;
+        ArrayList<TemporalCompressorComponentModifier> tempTCModifiers = new ArrayList<>();
+        //Looks into each neighbour and gets relevant modifiers into a list
         for (TemporalCompressorComponent neighbour : neighbours.NEIGHBOURS) {
             if(neighbour == null){
                 continue;
@@ -87,9 +86,12 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
             switch (modifyLevel) {
                 case BASE:
                     bTCValue = TCModifiers.get(i).execute(bTCValue);
+                    mTCValue = bTCValue;
+                    fTCValue = bTCValue;
                     break;
                 case MODIFIED:
                     mTCValue = TCModifiers.get(i).execute(mTCValue);
+                    fTCValue = mTCValue;
                     break;
                 case FINAL:
                     fTCValue = TCModifiers.get(i).execute(fTCValue);
@@ -98,12 +100,36 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
         }
     }
 
+    public void getGlobified(ModifyLevel modifyLevel, TemporalCompressorComponentModifier modifier){
+
+        //Skipped if component is not modifable or wrong modifier
+        if(!(modifier.modifyLevel == modifyLevel) || !isModifiable){
+            return;
+        }
+
+
+            switch (modifyLevel) {
+                case BASE:
+                    bTCValue = modifier.execute(bTCValue);
+                    mTCValue = bTCValue;
+                    fTCValue = bTCValue;
+                    break;
+                case MODIFIED:
+                    mTCValue =  modifier.execute(mTCValue);
+                    fTCValue = mTCValue;
+                    break;
+                case FINAL:
+                    fTCValue =  modifier.execute(fTCValue);
+                    break;
+            }
+        }
+
     //Sorts the given TemporalcompressorComponentVOP by Multiplication/Division first and then Addition/Subtraction
-    private ArrayList<TemporalCompressorComponentVOP> getSortedList(ArrayList<TemporalCompressorComponentVOP> tempMod){
-        ArrayList<TemporalCompressorComponentVOP> returnValue = new ArrayList<>();
+    private ArrayList<TemporalCompressorComponentModifier> getSortedList(ArrayList<TemporalCompressorComponentModifier> tempMod){
+        ArrayList<TemporalCompressorComponentModifier> returnValue = new ArrayList<>();
 
         for (int i = tempMod.size()-1 ; i >0; i--){
-            TemporalCompressorComponentVOP modifier = tempMod.get(i);
+            TemporalCompressorComponentModifier modifier = tempMod.get(i);
             if(modifier.multiOrDiv()){
                 returnValue.add(modifier);
                 tempMod.remove(modifier);
@@ -149,13 +175,13 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
 
 
     //returns arrayList that modify the neighbours equal the modifyLevel.
-    public ArrayList<TemporalCompressorComponentVOP> getNeighbourTCModifiers(ModifyLevel modifyLevel){
+    public ArrayList<TemporalCompressorComponentModifier> getNeighbourTCModifiers(ModifyLevel modifyLevel){
 
         //ArrayList that will be returned
-        ArrayList<TemporalCompressorComponentVOP> returnValue = new ArrayList<>();
+        ArrayList<TemporalCompressorComponentModifier> returnValue = new ArrayList<>();
 
 
-        for (TemporalCompressorComponentVOP modifier : TCModifiers) {
+        for (TemporalCompressorComponentModifier modifier : TCModifiers) {
             if(!modifier.isGlobal && modifier.modifyLevel == modifyLevel){
                     returnValue.add(modifier);
             }
@@ -171,7 +197,7 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
 
 
 
-    public TemporalCompressorComponent setTCValue(TemporalCompressorComponentVOP value){
+    public TemporalCompressorComponent setTCValue(TemporalCompressorComponentModifier value){
         //this.oTCValue = value;
         return this;
     }
