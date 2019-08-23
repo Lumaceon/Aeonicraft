@@ -1,0 +1,6 @@
+{
+    "parent": "aeonicraft:item/aeonicraft_standard",
+    "textures": {
+        "layer0": "aeonicraft:item/gear_iron"
+    }
+}

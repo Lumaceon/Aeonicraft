@@ -3,14 +3,17 @@ package lumaceon.mods.aeonicraft;
 import lumaceon.mods.aeonicraft.api.HourglassUnlocks;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
+import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.compat.ModCompatProxyRegistry;
 import lumaceon.mods.aeonicraft.init.ModCapabilities;
 import lumaceon.mods.aeonicraft.init.ModEntities;
+import lumaceon.mods.aeonicraft.item.ItemTemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.proxy.IProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -80,6 +83,7 @@ public class Aeonicraft
 
     private void linkHourglassFunctionsToUnlockables()
     {
+        // Link hourglass functions to unlockables of the same registry name
         IForgeRegistry<HourglassUnlockable> registry = GameRegistry.findRegistry(HourglassUnlockable.class);
         HourglassUnlockable unlockable;
         for(HourglassFunction function : GameRegistry.findRegistry(HourglassFunction.class).getValuesCollection())
@@ -87,6 +91,17 @@ public class Aeonicraft
             if((unlockable = registry.getValue(function.getRegistryName())) != null)
             {
                 function.requiredUnlockable = unlockable;
+            }
+        }
+
+        // Link temporal compressor components to Items of the same name
+        IForgeRegistry<Item> itemRegistry = GameRegistry.findRegistry(Item.class);
+        for(TemporalCompressorComponent component : GameRegistry.findRegistry(TemporalCompressorComponent.class))
+        {
+            Item item = itemRegistry.getValue(component.getRegistryName());
+            if(item instanceof ItemTemporalCompressorComponent)
+            {
+                ((ItemTemporalCompressorComponent) item).setCompressorComponent(component);
             }
         }
     }

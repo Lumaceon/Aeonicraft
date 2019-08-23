@@ -1,6 +1,7 @@
 package lumaceon.mods.aeonicraft.temporalcompressor;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
+import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.util.TimeParser;
 
 import java.util.ArrayList;
@@ -60,6 +61,10 @@ public class TemporalCompressorGeneration
 
         public TemporalCompressorStats(long temporalCompressionPerTick) {
             this.temporalCompressionPerTick = temporalCompressionPerTick;
+        }
+
+        public void printStatsToConsole() {
+            Aeonicraft.logger.info(temporalCompressionPerTick);
         }
     }
 }

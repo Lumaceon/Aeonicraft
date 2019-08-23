@@ -6,17 +6,19 @@ import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockableCategory;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.util.Icon;
-import lumaceon.mods.aeonicraft.block.BlockTemporalCompressor;
-import lumaceon.mods.aeonicraft.block.BlockTemporalConnectionAmplifier;
+import lumaceon.mods.aeonicraft.block.temporalcompressor.BlockTemporalCompressor;
+import lumaceon.mods.aeonicraft.block.temporalcompressor.BlockTemporalCompressorDummy;
 import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.hourglassunlockable.HourglassUnlockableHGFunction;
+import lumaceon.mods.aeonicraft.item.ItemTemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.lib.Textures;
 import lumaceon.mods.aeonicraft.lib.TimeCosts;
 import lumaceon.mods.aeonicraft.registry.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
-import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponent;
+import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
+import lumaceon.mods.aeonicraft.tile.TileTemporalCompressor;
 import lumaceon.mods.aeonicraft.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -41,6 +43,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -87,12 +90,12 @@ public class RegistryEventHandler
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
-        block(new BlockTemporalCompressor(Material.IRON, "temporal_compressor"), event);
-        block(new BlockTemporalConnectionAmplifier(Material.IRON, "temporal_connection_amplifier"), event);
+        Block temp;
+        block(new BlockTemporalCompressorDummy(Material.IRON, "temporal_compressor_dummy"), event);
         // etc...
 
-        //Block temp = block(new BlockHourglassProgrammer(Material.IRON, "hourglass_programmer"), event);
-        //GameRegistry.registerTileEntity(TileHourglassProgrammer.class, Objects.requireNonNull(temp.getRegistryName()));
+        temp = block(new BlockTemporalCompressor(Material.IRON, "temporal_compressor"), event);
+        GameRegistry.registerTileEntity(TileTemporalCompressor.class, Objects.requireNonNull(temp.getRegistryName()));
     }
 
     @SubscribeEvent
@@ -101,6 +104,12 @@ public class RegistryEventHandler
         Item temp;
 
         item(new ItemTemporalHourglass(1, 10000, "temporal_hourglass"), event);
+
+        item(new ItemTemporalCompressorComponent(1, 10000, "gear_wood"), event);
+        item(new ItemTemporalCompressorComponent(1, 10000, "gear_stone"), event);
+        item(new ItemTemporalCompressorComponent(1, 10000, "gear_iron"), event);
+        item(new ItemTemporalCompressorComponent(1, 10000, "gear_gold"), event);
+        item(new ItemTemporalCompressorComponent(1, 10000, "gear_diamond"), event);
 
         // Ore Dictionary Items.
         temp = item(new ItemAeonicraft(64, 100, "ingot_temporal"), event);
@@ -218,11 +227,11 @@ public class RegistryEventHandler
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerTemporalCompressorComponent(RegistryEvent.Register<TemporalCompressorComponent> event)
     {
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test1")), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test2")), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test3")), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test4")), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "test5")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_wood")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_stone")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_iron")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_gold")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_diamond")), event);
     }
 
     @SubscribeEvent

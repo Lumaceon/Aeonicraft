@@ -1,7 +1,7 @@
-package lumaceon.mods.aeonicraft.temporalcompressor;
+package lumaceon.mods.aeonicraft.api.temporalcompression;
 
-import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.temporalcompression.TemporalCompressor;
+import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentVOP;
+import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorMatrix;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentVOP.ModifyLevel;

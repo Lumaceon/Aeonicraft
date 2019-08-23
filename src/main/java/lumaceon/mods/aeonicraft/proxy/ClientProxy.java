@@ -7,7 +7,10 @@ import lumaceon.mods.aeonicraft.client.init.ModHourglassGuiTabs;
 import lumaceon.mods.aeonicraft.client.particle.ModParticles;
 import lumaceon.mods.aeonicraft.client.particle.ParticleHourglassExplosion;
 import lumaceon.mods.aeonicraft.client.particle.ParticleTemporalWisp;
+import lumaceon.mods.aeonicraft.client.tesr.TESRTemporalCompressor;
 import lumaceon.mods.aeonicraft.lib.Particles;
+import lumaceon.mods.aeonicraft.registry.ModBlocks;
+import lumaceon.mods.aeonicraft.tile.TileTemporalCompressor;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class ClientProxy extends CommonProxy
@@ -39,6 +43,11 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerBlockModel(Block block, String unlocalizedName) {
         ModelRegistry.registerItemBlockModel(block, unlocalizedName);
+
+        if(block.equals(ModBlocks.temporal_compressor))
+        {
+            ClientRegistry.bindTileEntitySpecialRenderer(TileTemporalCompressor.class, new TESRTemporalCompressor());
+        }
     }
 
     @Override
