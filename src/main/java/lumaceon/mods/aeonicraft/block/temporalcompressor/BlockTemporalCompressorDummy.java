@@ -34,13 +34,14 @@ public class BlockTemporalCompressorDummy extends BlockAeonicraft
                 TileEntity te;
                 int initialX = pos.getX();
                 int initialZ = pos.getZ();
-                for(int x = initialX - 5; x <= initialX + 5; x++)
+                for(int x = -5; x <= 5; x++)
                 {
-                    for(int z = initialZ - 5; z <= initialZ + 5; z++)
+                    for(int z = -5; z <= 5; z++)
                     {
                         if(x == 0 && z == 0)
                             continue;
 
+                        System.out.println("Luma");
                         te = worldIn.getTileEntity(pos.add(x, 0, z));
                         //noinspection ConstantConditions
                         if(te instanceof TileTemporalCompressor)
