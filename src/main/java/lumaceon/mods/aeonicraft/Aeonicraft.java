@@ -102,6 +102,7 @@ public class Aeonicraft
             if(item instanceof ItemTemporalCompressorComponent)
             {
                 ((ItemTemporalCompressorComponent) item).setCompressorComponent(component);
+                component.itemToRender = new ItemStack(item);
             }
         }
     }

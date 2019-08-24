@@ -2,6 +2,7 @@ package lumaceon.mods.aeonicraft.api.temporalcompression;
 
 import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentModifier;
 import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorMatrix;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentModifier.ModifyLevel;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  */
 public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<TemporalCompressorComponent>
 {
-
+    public ItemStack itemToRender = null;
     public ArrayList<TemporalCompressorComponentModifier> TCModifiers = new ArrayList<TemporalCompressorComponentModifier>();
     public float oTCValue = 0;
     public float bTCValue = 0;

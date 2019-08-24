@@ -41,12 +41,11 @@ public class BlockTemporalCompressorDummy extends BlockAeonicraft
                         if(x == 0 && z == 0)
                             continue;
 
-                        System.out.println("Luma");
                         te = worldIn.getTileEntity(pos.add(x, 0, z));
                         //noinspection ConstantConditions
                         if(te instanceof TileTemporalCompressor)
                         {
-                            ItemStack stack = ((TileTemporalCompressor) te).requestTemporalComponentChange(component, -(x - initialX), -(z - initialZ));
+                            ItemStack stack = ((TileTemporalCompressor) te).requestTemporalComponentChange(component, x, z);
                             playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, stack);
                         }
                     }
