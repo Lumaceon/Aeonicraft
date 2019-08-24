@@ -4,6 +4,7 @@ import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.util.TimeParser;
 
+import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -24,24 +25,29 @@ public class TemporalCompressorGeneration
 
         ArrayList<TemporalCompressorComponent> components = new ArrayList<>();
 
+
         //Connect neighbours of matrix
         for (int x = 0; x < componentMatrix.matrix.length; x++) {
             for (int y = 0; y < componentMatrix.matrix[x].length; y++) {
                 TemporalCompressorComponent component = componentMatrix.getComponentForCoordinates(x,y);
                 if(component != null){
                     components.add(component);
+                    component.resetValues();
                 }
             }
         }
+
+        for (TemporalCompressorComponent component : components) {
+            component.findAndSetNeighbours(componentMatrix); //Add matrix to Component for efficency?
+        }
+
 
         ArrayList<TemporalCompressorComponentModifier> globalsBefore = getSortedGlobals(components,true);
         ArrayList<TemporalCompressorComponentModifier> globalsAfter = getSortedGlobals(components,false);
         //replace foreach with i iterations for efficency?
         //replace ArrayList with ??? for efficiency?
 
-        for (TemporalCompressorComponent component : components) {
-            component.findAndSetNeighbours(componentMatrix); //Add matrix to Component for efficency?
-        }
+
 
         executeModifierLogics(components,globalsBefore,globalsAfter, TemporalCompressorComponentModifier.ModifyLevel.BASE);
         executeModifierLogics(components,globalsBefore,globalsAfter, TemporalCompressorComponentModifier.ModifyLevel.MODIFIED);
@@ -49,6 +55,7 @@ public class TemporalCompressorGeneration
 
         for (TemporalCompressorComponent component : components) {
             gain += component.fTCValue;
+            System.out.println(component.fTCValue);
         }
 
 
@@ -59,11 +66,12 @@ public class TemporalCompressorGeneration
     private static ArrayList<TemporalCompressorComponentModifier> getSortedGlobals (ArrayList<TemporalCompressorComponent> components, boolean before) {
         ArrayList<TemporalCompressorComponentModifier> returnValue = new ArrayList<>();
 
+        // todo: remove isGlobal bool and just have priority be the only relevant variable. Zero equals not being a global.
         for (TemporalCompressorComponent component : components) {
             for (TemporalCompressorComponentModifier modifier : component.TCModifiers) {
-                if (before && modifier.priority < 0) {
+                if ( before && modifier.priority < 0) {
                     returnValue.add(modifier);
-                } else if(!before && modifier.priority >= 0){
+                } else if(!before && modifier.priority > 0){
                         returnValue.add(modifier);
                     }
                 }

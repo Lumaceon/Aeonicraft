@@ -25,7 +25,7 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
     public boolean isModifiable = false;
     public boolean isDisabled = false;
 
-    TemporalCompressorComponentNeighbours neighbours;
+    TemporalCompressorComponentNeighbours neighbours = new TemporalCompressorComponentNeighbours();
 
     //Create modifiers and add them to specific components via this.
     public TemporalCompressorComponent addTCModifier(TemporalCompressorComponentModifier modifier){
@@ -34,13 +34,28 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
     }
 
     public TemporalCompressorComponent(ResourceLocation registryName) {
+
         this.setRegistryName(registryName);
     }
 
+    public TemporalCompressorComponent(ResourceLocation registryName, float productionValue ) {
+
+        this.setRegistryName(registryName);
+        oTCValue = productionValue;
+        resetValues();
+    }
+
+    public void resetValues(){
+        bTCValue = mTCValue = fTCValue = oTCValue;
+    }
     public void doStuff(ModifyLevel modifyLevel){
         modify(modifyLevel);
     }
 
+    public TemporalCompressorComponent makeModifable(){
+        isModifiable = true;
+        return this;
+    }
 
     //Modify the temporalCompressorsComponentsStats based on which modifyLevel is given
     private void modify(ModifyLevel modifyLevel){
@@ -208,7 +223,7 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
         public TemporalCompressorComponent SOUTH;
         public TemporalCompressorComponent WEST;
         public TemporalCompressorComponent NORTH;
-        public final TemporalCompressorComponent[] NEIGHBOURS = new TemporalCompressorComponent[]{EAST,SOUTH,WEST,NORTH};
+        public TemporalCompressorComponent[] NEIGHBOURS;
 
         public void setNeighbours(TemporalCompressorMatrix matrix , Point2i pos){
             if(pos.x > 0){
@@ -226,12 +241,12 @@ public class TemporalCompressorComponent extends IForgeRegistryEntry.Impl<Tempor
                 WEST = matrix.getComponentForCoordinates(pos.x,pos.y-1);
             }
 
-            if(pos.y < matrix.matrix[matrix.matrix.length].length){
+            if(pos.y < matrix.matrix[matrix.matrix.length -1 ].length){
                 //east
                 EAST = matrix.getComponentForCoordinates(pos.x,pos.y+1);
             }
 
-
+            NEIGHBOURS = new TemporalCompressorComponent[]{EAST,SOUTH,WEST,NORTH};
 
         }
 

@@ -18,6 +18,7 @@ import lumaceon.mods.aeonicraft.registry.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
+import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentModifierLibrary;
 import lumaceon.mods.aeonicraft.tile.TileTemporalCompressor;
 import lumaceon.mods.aeonicraft.util.*;
 import net.minecraft.block.Block;
@@ -227,11 +228,11 @@ public class RegistryEventHandler
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerTemporalCompressorComponent(RegistryEvent.Register<TemporalCompressorComponent> event)
     {
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_wood")), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_stone")), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_iron")), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_gold")), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_diamond")), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_wood"),1).makeModifable(), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_stone"),10), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_iron"),100), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_gold"),1000), event);
+        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_diamond"),0).addTCModifier(TemporalCompressorComponentModifierLibrary.plusFiveModified), event);
     }
 
     @SubscribeEvent

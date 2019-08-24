@@ -5,7 +5,7 @@ public class TemporalCompressorComponentModifier implements Comparable<TemporalC
 
 
     private float Value;
-    private final TemporalCompressorComponentOperator operator;
+    private TemporalCompressorComponentOperator operator;
 
     public boolean isGlobal = false;
     //Only used for isGlobal. -value executes the priority queue before neighbour modifiers. Otherwise after.
@@ -20,10 +20,45 @@ public class TemporalCompressorComponentModifier implements Comparable<TemporalC
         this.operator = operator;
     }
 
+    public TemporalCompressorComponentModifier(float value, TemporalCompressorComponentOperator operator, ModifyLevel modifyLevel) {
+        this.Value = value;
+        this.operator = operator;
+        this.modifyLevel = modifyLevel;
+    }
+
+    public TemporalCompressorComponentModifier(float value, TemporalCompressorComponentOperator operator, ModifyLevel modifyLevel, int globalPriority) {
+        this.Value = value;
+        this.operator = operator;
+        this.modifyLevel = modifyLevel;
+        isGlobal = true;
+        priority = globalPriority;
+    }
+
+
     public float getValue() {
         return Value;
     }
 
+    public TemporalCompressorComponentModifier setGlobal(int priority){
+        isGlobal = true;
+        this.priority = priority;
+        return this;
+    }
+
+    public TemporalCompressorComponentModifier setValue(int value){
+        this.Value = value;
+        return this;
+    }
+
+    public TemporalCompressorComponentModifier setModifyLevel(ModifyLevel modifyLevel){
+        this.modifyLevel = modifyLevel;
+        return this;
+    }
+
+    public TemporalCompressorComponentModifier setOperator(TemporalCompressorComponentOperator operator){
+        this.operator = operator;
+        return this;
+    }
 
     public boolean  multiOrDiv(){
         if(operator == TemporalCompressorComponentOperator.MULTIPLY || operator == TemporalCompressorComponentOperator.DIVIDE){
