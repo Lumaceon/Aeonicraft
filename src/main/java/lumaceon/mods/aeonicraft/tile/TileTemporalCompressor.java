@@ -7,6 +7,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.vecmath.Point2i;
 import java.util.Collection;
@@ -62,5 +64,10 @@ public class TileTemporalCompressor extends TileAeonicraft
         super.readFromNBT(compound);
         if(compound.hasKey("component_matrix"))
             componentMatrix.loadFromNBT(compound.getCompoundTag("component_matrix"));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public net.minecraft.util.math.AxisAlignedBB getRenderBoundingBox() {
+        return INFINITE_EXTENT_AABB;
     }
 }

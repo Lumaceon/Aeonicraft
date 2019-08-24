@@ -7,6 +7,8 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Overrides default TileEntity to for the sake of efficient networking.
@@ -19,6 +21,13 @@ public class TileAeonicraft extends TileEntity
 
     public void readCustomNBT(NBTTagCompound nbt) {
         readFromNBT(nbt);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared()
+    {
+        return 262144.0;
     }
 
     @Override

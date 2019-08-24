@@ -28,6 +28,7 @@ public class ClientProxy extends CommonProxy
         OBJLoader.INSTANCE.addDomain(Aeonicraft.MOD_ID);
         new GuiHandler();
         ModHourglassGuiTabs.init();
+        ClientRegistry.bindTileEntitySpecialRenderer(TileTemporalCompressor.class, new TESRTemporalCompressor());
     }
 
     @Override
@@ -43,11 +44,6 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerBlockModel(Block block, String unlocalizedName) {
         ModelRegistry.registerItemBlockModel(block, unlocalizedName);
-
-        if(block.equals(ModBlocks.temporal_compressor))
-        {
-            ClientRegistry.bindTileEntitySpecialRenderer(TileTemporalCompressor.class, new TESRTemporalCompressor());
-        }
     }
 
     @Override

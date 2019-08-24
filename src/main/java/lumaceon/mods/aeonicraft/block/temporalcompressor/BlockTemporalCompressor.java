@@ -13,6 +13,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -20,6 +22,7 @@ public class BlockTemporalCompressor extends BlockAeonicraft implements ITileEnt
 {
     public BlockTemporalCompressor(Material blockMaterial, String name) {
         super(blockMaterial, name);
+        this.setLightOpacity(0);
     }
 
     @Override
@@ -36,6 +39,22 @@ public class BlockTemporalCompressor extends BlockAeonicraft implements ITileEnt
     @Override
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
         return face == EnumFacing.DOWN;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+        return false;
+    }
+
+    @Override
+    public boolean isBlockNormalCube(IBlockState blockState) {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState blockState) {
+        return false;
     }
 
     @Nullable
