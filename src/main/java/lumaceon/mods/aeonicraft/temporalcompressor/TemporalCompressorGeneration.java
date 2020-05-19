@@ -2,9 +2,8 @@ package lumaceon.mods.aeonicraft.temporalcompressor;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
-import lumaceon.mods.aeonicraft.util.TimeParser;
+import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
 
-import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -59,7 +58,7 @@ public class TemporalCompressorGeneration
         }
 
 
-        return new TemporalCompressorStats(TimeParser.SECOND * gain);
+        return new TemporalCompressorStats(TCToRealTime.SECOND * gain);
     }
 
     //Sorts modifiers that affect stuff globally in a modifier list. One is given out to be execute before neighbour logic. The other for after.

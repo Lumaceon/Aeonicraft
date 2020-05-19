@@ -1,0 +1,6 @@
+{
+    "parent": "block/cross",
+    "textures": {
+        "cross": "aeonicraft:block/aeon_pearl_stage_4"
+    }
+}

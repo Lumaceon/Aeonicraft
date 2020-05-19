@@ -1,18 +1,25 @@
-package lumaceon.mods.aeonicraft.util;
+package lumaceon.mods.aeonicraft.api.util;
 
-public class TimeParser
+public class TCToRealTime
 {
-    public static final long SECOND = 1000;
-    public static final long MINUTE = SECOND * 60;
-    public static final long HOUR = MINUTE * 60;
-    public static final long DAY = HOUR * 24;
-    public static final long MONTH = DAY * 30;
-    public static final long YEAR = MONTH * 12;
-    public static final long DECADE =  YEAR * 10;
-    public static final long CENTURY = DECADE * 10;
-    public static final long MILLENNIUM = CENTURY * 10;
-    public static final long TERASECOND =  SECOND * 1000000000000L;
-    public static final long ETERNITY =  SECOND * 1000000000000000L;
+    /**
+     * Convenience values to make TC look nicer in code.
+     */
+    public static final long MILLISECOND = 1;                           // 1
+    public static final long TICK = MILLISECOND * 50;                   // 50
+    public static final long SECOND = TICK * 20;                        // 1000
+    public static final long MINUTE = SECOND * 60;                      // 60k
+    public static final long HOUR = MINUTE * 60;                        // 3.6m
+    public static final long DAY = HOUR * 24;                           // 86.4m
+    public static final long MONTH = DAY * 30;                          // ~2.6b
+    public static final long YEAR = MONTH * 12;                         // ~31.1b
+    public static final long DECADE =  YEAR * 10;                       // ~310b
+    public static final long CENTURY = DECADE * 10;                     // ~3.1t
+    public static final long MILLENNIUM = CENTURY * 10;                 // ~31t
+    public static final long TERASECOND =  SECOND * 1000000000000L;     // One quadrillion
+    public static final long ETERNITY = Long.MAX_VALUE - 1;             // A lot.
+
+
 
     public static String parseTimeValue(long time, int maxUnitsShown)
     {

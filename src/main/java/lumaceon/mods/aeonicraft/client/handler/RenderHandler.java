@@ -1,11 +1,11 @@
 package lumaceon.mods.aeonicraft.client.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
+import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.client.particle.ModParticles;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.util.TimeHelper;
-import lumaceon.mods.aeonicraft.util.TimeParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
@@ -153,7 +153,7 @@ public class RenderHandler
                     GlStateManager.rotate(targetRotAngle, 0, 1, 0);
                     MC.getRenderItem().renderItem(heldItem, player, ItemCameraTransforms.TransformType.FIXED, false);
 
-                    String renderString = TimeParser.parseTimeValue(TimeHelper.getTime(player), 2);
+                    String renderString = TCToRealTime.parseTimeValue(TimeHelper.getTime(player), 2);
                     GlStateManager.scale(0.02F, 0.02F, 0.02F);
                     GlStateManager.translate(-MC.fontRenderer.getStringWidth(renderString) * 0.5F, 25.F, 30);
                     GlStateManager.rotate(180, 1, 0, 0);

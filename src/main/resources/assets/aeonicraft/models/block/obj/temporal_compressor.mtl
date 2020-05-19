@@ -1,7 +1,7 @@
 # Blender MTL File: 'temporal_compressor.blend'
 # Material Count: 1
 
-newmtl Material
+newmtl Main_Material
 Ka 1.000000 1.000000 1.000000
 Kd 1.000000 1.000000 1.000000
-map_Kd aeonicraft:block/brass_trim
+map_Kd aeonicraft:block/temporal_compressor

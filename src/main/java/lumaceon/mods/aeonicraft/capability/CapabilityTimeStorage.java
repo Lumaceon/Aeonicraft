@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.capability;
 
+import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
 import lumaceon.mods.aeonicraft.lib.ConfigValues;
-import lumaceon.mods.aeonicraft.util.TimeParser;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -98,7 +98,7 @@ public class CapabilityTimeStorage
         public UpdateSpeed speed = UpdateSpeed.SLOW;
 
         public TimeStorage() {
-            capacity = TimeParser.ETERNITY;
+            capacity = TCToRealTime.ETERNITY;
         }
 
         public TimeStorage(long capacity) {

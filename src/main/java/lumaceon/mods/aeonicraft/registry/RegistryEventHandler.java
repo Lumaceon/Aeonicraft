@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.handler;
+package lumaceon.mods.aeonicraft.registry;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.HourglassUnlocks;
@@ -6,20 +6,20 @@ import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockableCategory;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.util.Icon;
-import lumaceon.mods.aeonicraft.block.temporalcompressor.BlockTemporalCompressor;
-import lumaceon.mods.aeonicraft.block.temporalcompressor.BlockTemporalCompressorDummy;
+import lumaceon.mods.aeonicraft.block.BlockAeonPearl;
+import lumaceon.mods.aeonicraft.block.BlockTemporalCompressor;
 import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.hourglassunlockable.HourglassUnlockableHGFunction;
+import lumaceon.mods.aeonicraft.item.ItemAeonPearlSeeds;
 import lumaceon.mods.aeonicraft.item.ItemTemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.lib.Textures;
 import lumaceon.mods.aeonicraft.lib.TimeCosts;
-import lumaceon.mods.aeonicraft.registry.ModSounds;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentModifierLibrary;
-import lumaceon.mods.aeonicraft.tile.TileTemporalCompressor;
+import lumaceon.mods.aeonicraft.tile.TileAeonPearl;
 import lumaceon.mods.aeonicraft.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -54,49 +54,22 @@ import java.util.Objects;
 @Mod.EventBusSubscriber(modid = Aeonicraft.MOD_ID)
 public class RegistryEventHandler
 {
-    private static final ArrayList<Block> BLOCKS = new ArrayList<>();
-    private static Block block(Block block, RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(block);
-        BLOCKS.add(block);
-        return block;
-    }
-
-    private static final ArrayList<Item> ITEMS = new ArrayList<>();
-    private static Item item(Item item, RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(item);
-        ITEMS.add(item);
-        return item;
-    }
-
-    private static HourglassUnlockableCategory hgULCat(HourglassUnlockableCategory cat, RegistryEvent.Register<HourglassUnlockableCategory> event) {
-        event.getRegistry().register(cat);
-        return cat;
-    }
-
-    private static HourglassUnlockable hgUL(HourglassUnlockable unlockable, RegistryEvent.Register<HourglassUnlockable> event) {
-        event.getRegistry().register(unlockable);
-        return unlockable;
-    }
-
-    private static HourglassFunction hgFunc(HourglassFunction func, RegistryEvent.Register<HourglassFunction> event) {
-        event.getRegistry().register(func);
-        return func;
-    }
-
-    private static TemporalCompressorComponent tCompComponent(TemporalCompressorComponent component, RegistryEvent.Register<TemporalCompressorComponent> event) {
-        event.getRegistry().register(component);
-        return component;
-    }
-
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
         Block temp;
-        block(new BlockTemporalCompressorDummy(Material.IRON, "temporal_compressor_dummy"), event);
-        // etc...
 
-        temp = block(new BlockTemporalCompressor(Material.IRON, "temporal_compressor"), event);
-        GameRegistry.registerTileEntity(TileTemporalCompressor.class, Objects.requireNonNull(temp.getRegistryName()));
+        // Simple blocks
+        //block(new BlockAeonicraft(Material.IRON, "block_temporal"), event);
+
+
+        // Slightly-less simple blocks
+        block(new BlockTemporalCompressor(Material.IRON, "temporal_compressor"), event);
+
+
+        // Tile Entity Blocks
+        temp = block(new BlockAeonPearl(Material.PLANTS, "aeon_pearl"), event);
+        GameRegistry.registerTileEntity(TileAeonPearl.class, Objects.requireNonNull(temp.getRegistryName()));
     }
 
     @SubscribeEvent
@@ -104,8 +77,14 @@ public class RegistryEventHandler
     {
         Item temp;
 
+        // Simple Items
+        item(new ItemAeonicraft(64, 10000, "matter_temporal"), event);
+
+        // Slightly-less Simple Items
+        item(new ItemAeonPearlSeeds(64, 10000, "aeon_pearl_seeds"), event);
         item(new ItemTemporalHourglass(1, 10000, "temporal_hourglass"), event);
 
+        //
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_wood"), event);
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_stone"), event);
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_iron"), event);
@@ -124,6 +103,11 @@ public class RegistryEventHandler
         {
             event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
         }
+    }
+
+    public static void registerSmeltingRecipes()  // Called during mod init phase.
+    {
+        GameRegistry.addSmelting(ModItems.matter_temporal, new ItemStack(ModItems.ingot_temporal), 1.0F);
     }
 
     @SubscribeEvent
@@ -251,5 +235,43 @@ public class RegistryEventHandler
         {
             ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Objects.requireNonNull(item.getRegistryName()), "inventory"));
         }
+    }
+
+
+    // --------- CONVENIENCE METHODS --------- \\
+    // (and also convenience lists I guess...) \\
+
+    private static final ArrayList<Block> BLOCKS = new ArrayList<>();
+    private static Block block(Block block, RegistryEvent.Register<Block> event) {
+        event.getRegistry().register(block);
+        BLOCKS.add(block);
+        return block;
+    }
+
+    private static final ArrayList<Item> ITEMS = new ArrayList<>();
+    private static Item item(Item item, RegistryEvent.Register<Item> event) {
+        event.getRegistry().register(item);
+        ITEMS.add(item);
+        return item;
+    }
+
+    private static HourglassUnlockableCategory hgULCat(HourglassUnlockableCategory cat, RegistryEvent.Register<HourglassUnlockableCategory> event) {
+        event.getRegistry().register(cat);
+        return cat;
+    }
+
+    private static HourglassUnlockable hgUL(HourglassUnlockable unlockable, RegistryEvent.Register<HourglassUnlockable> event) {
+        event.getRegistry().register(unlockable);
+        return unlockable;
+    }
+
+    private static HourglassFunction hgFunc(HourglassFunction func, RegistryEvent.Register<HourglassFunction> event) {
+        event.getRegistry().register(func);
+        return func;
+    }
+
+    private static TemporalCompressorComponent tCompComponent(TemporalCompressorComponent component, RegistryEvent.Register<TemporalCompressorComponent> event) {
+        event.getRegistry().register(component);
+        return component;
     }
 }

@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.capability;
 
 import lumaceon.mods.aeonicraft.temporalcompression.TemporalCompressor;
-import lumaceon.mods.aeonicraft.util.BlockLoc;
+import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.worlddata.ExtendedWorldData;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

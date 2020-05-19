@@ -1,6 +1,5 @@
 package lumaceon.mods.aeonicraft;
 
-import lumaceon.mods.aeonicraft.api.HourglassUnlocks;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
@@ -11,8 +10,8 @@ import lumaceon.mods.aeonicraft.item.ItemTemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.proxy.IProxy;
+import lumaceon.mods.aeonicraft.registry.RegistryEventHandler;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +23,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Random;
 
 @Mod(modid = Aeonicraft.MOD_ID, name = Aeonicraft.NAME, version = Aeonicraft.VERSION)//, dependencies = "required:betteradvancements;")
 public class Aeonicraft
@@ -41,6 +42,8 @@ public class Aeonicraft
     public static IProxy proxy;
 
     public static Logger logger;
+
+    public static Random rng = new Random();
 
     private static ItemStack CREATIVE_TAB_DISPLAY_ITEMSTACK;
     public CreativeTabs CREATIVE_TAB = new CreativeTabs(NAME) {
@@ -72,6 +75,7 @@ public class Aeonicraft
         //ModBlocks.initModels();
         ModEntities.init();
         PacketHandler.init();
+        RegistryEventHandler.registerSmeltingRecipes();
     }
 
     @EventHandler

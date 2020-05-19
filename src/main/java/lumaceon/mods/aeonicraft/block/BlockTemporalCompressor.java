@@ -1,9 +1,10 @@
-package lumaceon.mods.aeonicraft.block.temporalcompressor;
+package lumaceon.mods.aeonicraft.block;
 
-import lumaceon.mods.aeonicraft.block.BlockAeonicraft;
+import lumaceon.mods.aeonicraft.Aeonicraft;
+import lumaceon.mods.aeonicraft.api.temporalnetwork.BlockTemporalNetwork;
+import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
 import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorGeneration;
 import lumaceon.mods.aeonicraft.tile.TileTemporalCompressor;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,13 +17,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
+import java.util.Objects;
 
-public class BlockTemporalCompressor extends BlockAeonicraft implements ITileEntityProvider
+@SuppressWarnings("deprecation")
+public class BlockTemporalCompressor extends BlockTemporalNetwork
 {
     public BlockTemporalCompressor(Material blockMaterial, String name) {
-        super(blockMaterial, name);
+        super(blockMaterial);
+        this.setCreativeTab(Aeonicraft.instance.CREATIVE_TAB);
+        this.setHardness(3.0F);
+        this.setRegistryName(Aeonicraft.MOD_ID, name);
+        this.setUnlocalizedName(Objects.requireNonNull(this.getRegistryName()).toString());
         this.setLightOpacity(0);
+        this.setLightLevel(0.75F);
     }
 
     @Override
@@ -38,7 +45,7 @@ public class BlockTemporalCompressor extends BlockAeonicraft implements ITileEnt
 
     @Override
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
-        return face == EnumFacing.DOWN;
+        return false;
     }
 
     @Override
@@ -57,9 +64,13 @@ public class BlockTemporalCompressor extends BlockAeonicraft implements ITileEnt
         return false;
     }
 
-    @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileTemporalCompressor();
+    public long initTCGenValue() {
+        return TCToRealTime.SECOND;
+    }
+
+    @Override
+    public boolean canConnectOnSide(EnumFacing mySide) {
+        return true;
     }
 }

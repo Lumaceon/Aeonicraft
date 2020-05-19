@@ -7,7 +7,7 @@ import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassRequestTCUpdate;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
 import lumaceon.mods.aeonicraft.temporalcompression.TemporalCompressor;
-import lumaceon.mods.aeonicraft.util.BlockLoc;
+import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.worlddata.ExtendedWorldData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;

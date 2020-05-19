@@ -2,7 +2,8 @@ package lumaceon.mods.aeonicraft.item;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
-import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
+import lumaceon.mods.aeonicraft.api.util.BlockLoc;
+import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeLink;
 import lumaceon.mods.aeonicraft.lib.GUIs;
@@ -153,7 +154,7 @@ public class ItemTemporalHourglass extends ItemAeonicraft
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-        tooltip.add(Colors.AQUA + "TC: " + TimeParser.parseTimeValue(availableTime(stack, null, Side.CLIENT), 2));
+        tooltip.add(Colors.AQUA + "TC: " + TCToRealTime.parseTimeValue(availableTime(stack, null, Side.CLIENT), 2));
     }
 
     @SuppressWarnings("deprecation")

@@ -2,6 +2,7 @@ package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
+import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
 import lumaceon.mods.aeonicraft.capability.CapabilityAeonicraftProgression;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
@@ -210,7 +211,7 @@ public class PlayerEventHandler
                         timeToConsume += 20000;
                         sheep.setSheared(false);
 
-                        if(availableTime < 20000 + TimeParser.SECOND * 10)
+                        if(availableTime < 20000 + TCToRealTime.SECOND * 10)
                         {
                             // within range of sheep regrowth, but not grass growth, so RIP grass...
                             sheep.world.setBlockState(firstGrass, Blocks.DIRT.getDefaultState());
@@ -218,7 +219,7 @@ public class PlayerEventHandler
                         else
                         {
                             // time for both sheep AND grass...
-                            timeToConsume += TimeParser.SECOND * 10;
+                            timeToConsume += TCToRealTime.SECOND * 10;
 
                             if(foundGrass == 1)
                             {

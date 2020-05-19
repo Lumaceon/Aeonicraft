@@ -2,13 +2,13 @@ package lumaceon.mods.aeonicraft.client.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
+import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
 import lumaceon.mods.aeonicraft.capability.CapabilityTravelGhost;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.registry.ModHourglassFunctions;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.util.InventoryHelper;
-import lumaceon.mods.aeonicraft.util.TimeParser;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovementInput;
@@ -43,7 +43,7 @@ public class InputHandler
                     if(func != null && func.equals(ModHourglassFunctions.hgf_proxy_traveller))
                     {
                         ItemTemporalHourglass hg = (ItemTemporalHourglass) hourglass.getItem();
-                        if(hg.availableTime(hourglass, player.world, Side.CLIENT) >= TimeParser.SECOND * 6)
+                        if(hg.availableTime(hourglass, player.world, Side.CLIENT) >= TCToRealTime.SECOND * 6)
                         {
 
                         }

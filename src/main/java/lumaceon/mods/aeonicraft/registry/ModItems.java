@@ -7,7 +7,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @GameRegistry.ObjectHolder(Aeonicraft.MOD_ID)
 public class ModItems
 {
+    public static final Item aeon_pearl_seeds = null;
+
+    public static final Item matter_temporal = null;
     public static final Item ingot_temporal = null;
+
     public static final Item ingot_brass = null;
     public static final Item temporal_hourglass = null;
 }
