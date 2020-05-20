@@ -29,7 +29,31 @@ public class ItemStackHandlerClockwork extends ItemStackHandler
     @Override
     protected void onContentsChanged(int slot)
     {
-        clockwork.buildFromStacks(stacks.toArray(new ItemStack[0]));
+        IClockworkComponent[][] matrix = new IClockworkComponent[matrixSizeX][matrixSizeY];
+
+        int matrixRadiusX = matrixSizeX / 2;
+        int matrixRadiusY = matrixSizeY / 2;
+        int index;
+        ItemStack stack;
+        for(int x = 0; x < matrixSizeX; x++)
+        {
+            for(int y = 0; y < matrixSizeY; y++)
+            {
+                if(x == matrixRadiusX && y == matrixRadiusY)
+                    continue;
+
+                index = x + (y * matrixSizeX);
+                if(y > matrixRadiusY || (y == matrixRadiusY && x > matrixRadiusX))
+                    index--;
+
+                stack = stacks.get(index);
+                if(stack.getItem() instanceof IClockworkComponent)
+                    matrix[x][y] = (IClockworkComponent) stack.getItem();
+                else
+                    matrix[x][y] = null;
+            }
+        }
+        clockwork.buildFromStacks(matrix);
     }
 
     @Override

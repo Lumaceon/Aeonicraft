@@ -1,6 +1,7 @@
 package lumaceon.mods.aeonicraft.capability;
 
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
+import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,8 +43,8 @@ public class CapabilityClockwork
         }
 
         @Override
-        public void buildFromStacks(ItemStack[] stacks) {
-            //TODO Stuff.
+        public void buildFromStacks(IClockworkComponent[][] components) {
+            //TODO Implement.
         }
 
         @Override
