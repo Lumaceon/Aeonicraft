@@ -7,12 +7,16 @@ import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockableCategory;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.util.Icon;
 import lumaceon.mods.aeonicraft.block.BlockAeonPearl;
+import lumaceon.mods.aeonicraft.block.BlockAssemblyTable;
 import lumaceon.mods.aeonicraft.block.BlockTemporalCompressor;
+import lumaceon.mods.aeonicraft.block.multiblockplacers.ItemAssemblyTable;
 import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.hourglassunlockable.HourglassUnlockableHGFunction;
 import lumaceon.mods.aeonicraft.item.ItemAeonPearlSeeds;
 import lumaceon.mods.aeonicraft.item.ItemTemporalCompressorComponent;
+import lumaceon.mods.aeonicraft.item.clockwork.ItemAeonicraftClockwork;
+import lumaceon.mods.aeonicraft.item.clockwork.ItemClockworkComponent;
 import lumaceon.mods.aeonicraft.lib.Textures;
 import lumaceon.mods.aeonicraft.lib.TimeCosts;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
@@ -65,6 +69,7 @@ public class RegistryEventHandler
 
         // Slightly-less simple blocks
         block(new BlockTemporalCompressor(Material.IRON, "temporal_compressor"), event);
+        block(new BlockAssemblyTable(Material.WOOD, "assembly_table"), event);
 
 
         // Tile Entity Blocks
@@ -83,8 +88,15 @@ public class RegistryEventHandler
         // Slightly-less Simple Items
         item(new ItemAeonPearlSeeds(64, 10000, "aeon_pearl_seeds"), event);
         item(new ItemTemporalHourglass(1, 10000, "temporal_hourglass"), event);
+        item(new ItemAssemblyTable(64, 10000, "assembly_table_item"), event);
 
-        //
+        // Clockwork Items
+        item(new ItemAeonicraftClockwork(7, 1, 10000, "clockwork_matrix_test"), event);
+
+        // Clockwork Component Items
+        item(new ItemClockworkComponent(64, 10000, "clockwork_component_test"), event);
+
+        // Chopping block...
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_wood"), event);
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_stone"), event);
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_iron"), event);

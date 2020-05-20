@@ -13,5 +13,6 @@ public class ModCapabilities
         CapabilityTimeLink.register();
         CapabilityHourglass.register();
         CapabilityTravelGhost.register();
+        CapabilityClockwork.register();
     }
 }

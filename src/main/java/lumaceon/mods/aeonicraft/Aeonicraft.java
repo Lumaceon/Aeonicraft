@@ -3,7 +3,9 @@ package lumaceon.mods.aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
+import lumaceon.mods.aeonicraft.block.CustomProperties;
 import lumaceon.mods.aeonicraft.compat.ModCompatProxyRegistry;
+import lumaceon.mods.aeonicraft.init.APIFunctionInitialization;
 import lumaceon.mods.aeonicraft.init.ModCapabilities;
 import lumaceon.mods.aeonicraft.init.ModEntities;
 import lumaceon.mods.aeonicraft.item.ItemTemporalCompressorComponent;
@@ -62,9 +64,12 @@ public class Aeonicraft
     {
         logger = event.getModLog();
 
+        APIFunctionInitialization.initFunctions();
+
         proxy.preInit();
 
         ModCapabilities.init();
+        CustomProperties.init();
 
         //GameRegistry.registerWorldGenerator(oreGenerator, 0);
     }

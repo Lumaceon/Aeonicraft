@@ -1,0 +1,13 @@
+{
+    "variants": {
+        "inventory": { "model": "aeonicraft:assembly_table_right" },
+        "horizontal_facing=west,part=right": { "model": "aeonicraft:assembly_table_right" },
+        "horizontal_facing=east,part=right": { "model": "aeonicraft:assembly_table_right", "y": 180 },
+        "horizontal_facing=south,part=right": { "model": "aeonicraft:assembly_table_right", "y": 270 },
+        "horizontal_facing=north,part=right": { "model": "aeonicraft:assembly_table_right", "y": 90 },
+        "horizontal_facing=west,part=left": { "model": "aeonicraft:assembly_table_left" },
+        "horizontal_facing=east,part=left": { "model": "aeonicraft:assembly_table_left", "y": 180 },
+        "horizontal_facing=south,part=left": { "model": "aeonicraft:assembly_table_left", "y": 270 },
+        "horizontal_facing=north,part=left": { "model": "aeonicraft:assembly_table_left", "y": 90 }
+    }
+}

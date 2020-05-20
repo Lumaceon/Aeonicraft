@@ -2,6 +2,7 @@ package lumaceon.mods.aeonicraft.client.gui;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.compat.ModCompatProxyRegistry;
+import lumaceon.mods.aeonicraft.container.ContainerAssemblyTable;
 import lumaceon.mods.aeonicraft.container.ContainerTemporalHourglass;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.lib.GUIs;
@@ -26,6 +27,10 @@ public class GuiHandler implements IGuiHandler
             if(hg.getItem().equals(ModItems.temporal_hourglass))
                 return new ContainerTemporalHourglass(hg);
         }
+        else if(ID == GUIs.ASSEMBLY_TABLE.ordinal())
+        {
+            return new ContainerAssemblyTable(player.inventory, world);
+        }
         return null;
     }
 
@@ -37,6 +42,10 @@ public class GuiHandler implements IGuiHandler
             ItemStack hg = player.inventory.getCurrentItem();
             if(hg.getItem().equals(ModItems.temporal_hourglass))
                 return new GuiTemporalHourglass(hg, ModCompatProxyRegistry.betterAdvancementsCompat.getAdvancementsGuiScreen());
+        }
+        else if(ID == GUIs.ASSEMBLY_TABLE.ordinal())
+        {
+            return new GuiAssemblyTable(player.inventory, world, x, y, z);
         }
         return null;
     }

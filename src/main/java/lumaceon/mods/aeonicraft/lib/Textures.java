@@ -8,6 +8,10 @@ import net.minecraft.util.ResourceLocation;
 
 public class Textures
 {
+    public static class GUI
+    {
+        public static ResourceLocation ASSEMBLY_TABLE = new ResourceLocation(Aeonicraft.MOD_ID, "textures/gui/assembly_table.png");
+    }
     public static final ResourceLocation TEMPORAL_ELECTRIC_BASE = new ResourceLocation(Aeonicraft.MOD_ID, "textures/gui/fx/temporal_electricity.png");
     public static final ResourceLocation TEMPORAL_ELECTRIC_BASE2 = new ResourceLocation(Aeonicraft.MOD_ID, "textures/gui/fx/temporal_electricity2.png");
     public static final ResourceLocation TEMPORAL_BASE = new ResourceLocation(Aeonicraft.MOD_ID, "textures/gui/fx/temporal_base.png");
