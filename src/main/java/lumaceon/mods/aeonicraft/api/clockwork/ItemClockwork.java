@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 
@@ -131,7 +132,7 @@ public class ItemClockwork extends Item implements IAssemblable
             energyStorage.setMaxCapacity(nbt.getInteger("max_capacity"));
             energyStorage.receiveEnergy(nbt.getInteger("energy"), false);
             inventory.deserializeNBT((NBTTagCompound) nbt.getTag("inventory"));
-            clockwork.deserializeNBT(nbt);
+            clockwork.deserializeNBT(nbt.getCompoundTag("clockwork_stats"));
         }
     }
 }

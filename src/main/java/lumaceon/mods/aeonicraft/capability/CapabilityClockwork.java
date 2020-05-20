@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.capability;
 
+import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponent;
 import net.minecraft.nbt.NBTBase;
