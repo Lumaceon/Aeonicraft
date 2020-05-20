@@ -94,7 +94,7 @@ public class RegistryEventHandler
         item(new ItemAeonicraftClockwork(7, 1, 10000, "clockwork_matrix_test"), event);
 
         // Clockwork Component Items
-        item(new ItemClockworkComponent(64, 10000, "clockwork_component_test"), event);
+        item(new ItemClockworkComponent(64, 10000, "clockwork_component_test",5), event);
 
         // Chopping block...
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_wood"), event);

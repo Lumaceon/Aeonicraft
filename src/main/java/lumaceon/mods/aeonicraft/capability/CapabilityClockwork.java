@@ -2,7 +2,6 @@ package lumaceon.mods.aeonicraft.capability;
 
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponent;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -34,6 +33,7 @@ public class CapabilityClockwork
 
     public static class Clockwork implements IClockwork
     {
+        private int summedTestInt;
         public Clockwork() {
             this(3);
         }
@@ -44,19 +44,33 @@ public class CapabilityClockwork
 
         @Override
         public void buildFromStacks(IClockworkComponent[][] components) {
+            summedTestInt = 0;
+            for (int x = 0; x < components.length ; x++) {
+                for (int y = 0; y < components[x].length; y++) {
+                    if(components[x][y] != null){
+                        summedTestInt += components[x][y].getTestInt();
+                    }
+                }
+            }
             //TODO Implement.
         }
 
         @Override
         public NBTTagCompound serializeNBT() {
             NBTTagCompound compound = new NBTTagCompound();
+            compound.setInteger("MAX_THINGY", summedTestInt);
             // TODO Save data to compound.
             return compound;
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound compound) {
-            // TODO Load data from compound if it's in there.
+            summedTestInt = compound.getInteger("MAX_THINGY");
+        }
+
+        @Override
+        public int getSummedTestInt() {
+            return summedTestInt;
         }
     }
 

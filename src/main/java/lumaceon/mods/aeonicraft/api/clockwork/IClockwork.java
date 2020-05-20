@@ -11,4 +11,6 @@ public interface IClockwork
 
     NBTTagCompound serializeNBT();
     void deserializeNBT(NBTTagCompound compound);
+
+    public int getSummedTestInt();
 }

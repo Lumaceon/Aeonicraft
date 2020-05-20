@@ -18,3 +18,8 @@ tile.aeonicraft:aeon_pearl.name=Aeon Pearl
 #Misc
 
 itemGroup.Aeonicraft=Aeonicraft
+
+#NotSorted
+
+item.aeonicraft:clockwork_matrix_test.name=uwuMatrix
+item.aeonicraft:clockwork_component_test.name=uwuComponent
