@@ -2,6 +2,8 @@ package lumaceon.mods.aeonicraft.block;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.temporalnetwork.BlockTemporalNetwork;
+import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetwork;
+import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
 import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorGeneration;
 import lumaceon.mods.aeonicraft.tile.TileTemporalCompressor;
@@ -35,10 +37,10 @@ public class BlockTemporalCompressor extends BlockTemporalNetwork
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        TileEntity te = worldIn.getTileEntity(pos);
-        if(te instanceof TileTemporalCompressor)
+        TemporalNetwork tn = TemporalNetwork.getTemporalNetwork(new BlockLoc(pos, worldIn));
+        if(tn != null)
         {
-            TemporalCompressorGeneration.calculateStatsPerTickFromCompressor(((TileTemporalCompressor) te).componentMatrix).printStatsToConsole();
+            Aeonicraft.logger.info(tn);
         }
         return false;
     }
