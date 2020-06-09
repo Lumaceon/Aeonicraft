@@ -11,6 +11,5 @@ public class APIFunctionInitialization
         Internal.createDefaultClockworkImplementation =
                 (matrixSize) -> new CapabilityClockwork.Clockwork(matrixSize);
         Internal.defaultAssemblyTableTexture = Textures.GUI.ASSEMBLY_TABLE;
-        //TODO Internal.temporalNetworkRetriever = somesuch
     }
 }

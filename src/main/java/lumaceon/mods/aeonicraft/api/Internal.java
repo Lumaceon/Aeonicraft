@@ -12,8 +12,9 @@ import java.util.function.Function;
  */
 public class Internal
 {
-    public static Function<BlockLoc, TemporalNetwork> temporalNetworkRetriever;
-    public static Function<TemporalNetwork, Boolean> destroyTemporalNetwork;
+    public static Function<BlockLoc, TemporalNetwork> getTemporalNetwork;
+    public static Function<BlockLoc, TemporalNetwork> addTemporalNetworkLocation;
+    public static Function<BlockLoc, Integer> removeTemporalNetworkLocation;
     public static Function<Integer, IClockwork> createDefaultClockworkImplementation;
 
     public static ResourceLocation defaultAssemblyTableTexture;

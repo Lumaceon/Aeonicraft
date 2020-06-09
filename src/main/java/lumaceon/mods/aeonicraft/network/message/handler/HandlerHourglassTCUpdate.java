@@ -1,7 +1,6 @@
 package lumaceon.mods.aeonicraft.network.message.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.CapabilityTimeLink;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;

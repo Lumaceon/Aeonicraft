@@ -67,8 +67,13 @@ public class BlockTemporalCompressor extends BlockTemporalNetwork
     }
 
     @Override
-    public long initTCGenValue() {
+    public long getTCGenerationPerSecond() {
         return TCToRealTime.SECOND;
+    }
+
+    @Override
+    public long getTCCapacity() {
+        return 0;
     }
 
     @Override

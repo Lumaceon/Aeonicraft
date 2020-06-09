@@ -1,14 +1,13 @@
 package lumaceon.mods.aeonicraft.network.message.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.CapabilityTimeLink;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassRequestTCUpdate;
 import lumaceon.mods.aeonicraft.network.message.MessageHourglassTCUpdate;
 import lumaceon.mods.aeonicraft.temporalcompression.TemporalCompressor;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
-import lumaceon.mods.aeonicraft.worlddata.ExtendedWorldData;
+import lumaceon.mods.aeonicraft.worlddata.ExtendedSaveData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -41,7 +40,7 @@ public class HandlerHourglassRequestTCUpdate implements IMessageHandler<MessageH
                         CapabilityTimeLink.ITimeLinkHandler cap = targetItem.getCapability(CapabilityTimeLink.TIME_LINK, null);
                         if(cap != null)
                         {
-                            ExtendedWorldData worldData = ExtendedWorldData.getInstance(player.world);
+                            ExtendedSaveData worldData = ExtendedSaveData.getInstance(player.world);
                             ArrayList<TemporalCompressor> tcs = new ArrayList<>();
                             for(BlockLoc loc : cap.getCompressorLocations())
                             {

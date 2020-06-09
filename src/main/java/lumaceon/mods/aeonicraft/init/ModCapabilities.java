@@ -10,7 +10,6 @@ public class ModCapabilities
         CapabilityAeonicraftProgression.register();
         CapabilityTimeStorage.register();
         CapabilityToggle.register();
-        CapabilityTimeLink.register();
         CapabilityHourglass.register();
         CapabilityTravelGhost.register();
         CapabilityClockwork.register();
