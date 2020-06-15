@@ -43,10 +43,6 @@ public class InputHandler
                     if(func != null && func.equals(ModHourglassFunctions.hgf_proxy_traveller))
                     {
                         ItemTemporalHourglass hg = (ItemTemporalHourglass) hourglass.getItem();
-                        if(hg.availableTime(hourglass, player.world, Side.CLIENT) >= TCToRealTime.SECOND * 6)
-                        {
-
-                        }
                     }
                 }
             }

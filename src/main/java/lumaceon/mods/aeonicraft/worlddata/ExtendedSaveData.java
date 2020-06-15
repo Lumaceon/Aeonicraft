@@ -16,7 +16,7 @@ import java.util.Iterator;
 @SuppressWarnings("NullableProblems")
 public class ExtendedSaveData extends WorldSavedData
 {
-    private static final String ID = Aeonicraft.MOD_ID + "_world_data";
+    private static final String ID = Aeonicraft.MOD_ID + "_save_data";
 
     public ExtendedSaveData() {
         super(ID);
@@ -69,6 +69,7 @@ public class ExtendedSaveData extends WorldSavedData
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
+        //TODO WHY ISN'T THIS FREAKIN' THING BEING CALLED!?!?!?!?
         if(nbt.hasKey("ac_temporal_networks"))
             temporalNetworkData.deserializeNBT(nbt.getCompoundTag("ac_temporal_networks"));
     }

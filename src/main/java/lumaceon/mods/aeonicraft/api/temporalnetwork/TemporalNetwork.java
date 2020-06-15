@@ -75,8 +75,7 @@ public class TemporalNetwork
             }
             else
             {
-                Chunk chunk = world.getChunkFromChunkCoords(loc.getX(), loc.getY());
-                if(!chunk.isLoaded())
+                if(!world.getChunkProvider().isChunkGeneratedAt(loc.getX(), loc.getY()))
                 {
                     amountToGain += tcGenIfUnloaded;
                 }

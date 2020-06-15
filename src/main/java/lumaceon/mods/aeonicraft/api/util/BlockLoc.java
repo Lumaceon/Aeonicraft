@@ -7,6 +7,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
+import java.util.Objects;
+
 /**
  * BlockPos extended to includes a dimension.
  */
@@ -122,25 +124,19 @@ public class BlockLoc
     }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-            return true;
-        else if (!(o instanceof BlockLoc))
-            return false;
-        else
-        {
-            BlockLoc loc = (BlockLoc) o;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BlockLoc blockLoc = (BlockLoc) o;
+        return getX() == blockLoc.getX() &&
+                getY() == blockLoc.getY() &&
+                getZ() == blockLoc.getZ() &&
+                dimID == blockLoc.dimID;
+    }
 
-            if (this.getX() != loc.getX())
-                return false;
-            else if (this.getY() != loc.getY())
-                return false;
-            else if (this.getZ() != loc.getZ())
-                return false;
-            else
-                return this.dimID == loc.getDimensionID();
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z, dimID);
     }
 
     @Override

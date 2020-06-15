@@ -6,12 +6,15 @@ import lumaceon.mods.aeonicraft.container.ContainerAssemblyTable;
 import lumaceon.mods.aeonicraft.container.ContainerAssemblyTableClient;
 import lumaceon.mods.aeonicraft.lib.Textures;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class GuiAssemblyTable extends GuiContainer
 {
@@ -41,6 +44,16 @@ public class GuiAssemblyTable extends GuiContainer
             container.guiTop = this.guiTop;
             container.onGUIResize();
         }
+    }
+
+    @Override
+    protected void renderToolTip(ItemStack stack, int x, int y)
+    {
+        FontRenderer font = stack.getItem().getFontRenderer(stack);
+        net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
+        List<String> tooltip = this.getItemToolTip(stack);
+        this.drawHoveringText(tooltip, x, y, (font == null ? fontRenderer : font));
+        net.minecraftforge.fml.client.config.GuiUtils.postItemToolTip();
     }
 
     @Override

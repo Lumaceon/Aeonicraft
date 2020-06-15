@@ -8,9 +8,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 public class NetworkBlockMap
 {
@@ -304,7 +302,6 @@ public class NetworkBlockMap
         private BlockLoc location;
         private ArrayList<BlockLoc> forcedAdjacencyConnections = new ArrayList<>(2);
 
-
         public TemporalNetworkLocationStats(long tcGenPerSecond, long tcCapacity, boolean[] connectableSides, BlockLoc location) {
             this.tcGenPerSecond = tcGenPerSecond;
             this.tcCapacity = tcCapacity;
@@ -380,6 +377,25 @@ public class NetworkBlockMap
             return ret;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TemporalNetworkLocationStats that = (TemporalNetworkLocationStats) o;
+            return tcGenPerSecond == that.tcGenPerSecond &&
+                    this.getTCCap() == that.getTCCap() &&
+                    Arrays.equals(connections, that.connections) &&
+                    getLocation().equals(that.getLocation()) &&
+                    forcedAdjacencyConnections.equals(that.forcedAdjacencyConnections);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Objects.hash(tcGenPerSecond, tcCapacity, getLocation(), forcedAdjacencyConnections);
+            result = 31 * result + Arrays.hashCode(connections);
+            return result;
+        }
+
         public NBTTagCompound serializeToNBT()
         {
             NBTTagCompound nbt = new NBTTagCompound();
@@ -417,6 +433,20 @@ public class NetworkBlockMap
         public TemporalNetworkChunkStats(long tcGenPerSecond)
         {
             this.tcGenPerSecond = tcGenPerSecond;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TemporalNetworkChunkStats that = (TemporalNetworkChunkStats) o;
+            return tcGenPerSecond == that.tcGenPerSecond &&
+                    locsInChunk == that.locsInChunk;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(tcGenPerSecond, locsInChunk);
         }
     }
 }

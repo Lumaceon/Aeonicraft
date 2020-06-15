@@ -4,6 +4,8 @@ import com.google.common.base.MoreObjects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Objects;
+
 public class ChunkLoc
 {
     private int x;
@@ -62,29 +64,18 @@ public class ChunkLoc
     }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-            return true;
-        else if (!(o instanceof ChunkLoc))
-            return false;
-        else
-        {
-            ChunkLoc loc = (ChunkLoc) o;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChunkLoc chunkLoc = (ChunkLoc) o;
+        return getX() == chunkLoc.getX() &&
+                getY() == chunkLoc.getY() &&
+                getDimensionID() == chunkLoc.getDimensionID();
+    }
 
-            if (this.getX() != loc.getX())
-            {
-                return false;
-            }
-            else if (this.getY() != loc.getY())
-            {
-                return false;
-            }
-            else
-            {
-                return this.dimID == loc.getDimensionID();
-            }
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY(), getDimensionID());
     }
 
     @Override

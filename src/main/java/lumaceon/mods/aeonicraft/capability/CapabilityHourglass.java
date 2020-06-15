@@ -2,7 +2,6 @@ package lumaceon.mods.aeonicraft.capability;
 
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
-import lumaceon.mods.aeonicraft.network.message.MessageHourglassRequestTCUpdate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -74,7 +73,7 @@ public class CapabilityHourglass
             if(shouldClientSendRequestForUpdate)
             {
                 shouldClientSendRequestForUpdate = false;
-                PacketHandler.INSTANCE.sendToServer(new MessageHourglassRequestTCUpdate(slotIndex));
+                //PacketHandler.INSTANCE.sendToServer(new MessageHourglassRequestTCUpdate(slotIndex));
             }
         }
 

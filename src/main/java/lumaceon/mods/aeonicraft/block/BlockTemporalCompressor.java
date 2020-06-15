@@ -5,12 +5,9 @@ import lumaceon.mods.aeonicraft.api.temporalnetwork.BlockTemporalNetwork;
 import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetwork;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
-import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorGeneration;
-import lumaceon.mods.aeonicraft.tile.TileTemporalCompressor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -73,7 +70,7 @@ public class BlockTemporalCompressor extends BlockTemporalNetwork
 
     @Override
     public long getTCCapacity() {
-        return 0;
+        return TCToRealTime.SECOND;
     }
 
     @Override

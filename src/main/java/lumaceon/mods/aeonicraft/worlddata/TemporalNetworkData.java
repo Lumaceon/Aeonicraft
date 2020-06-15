@@ -26,8 +26,7 @@ public class TemporalNetworkData
         this.data = data;
     }
 
-    public TemporalNetwork get(BlockLoc blockLoc)
-    {
+    public TemporalNetwork get(BlockLoc blockLoc) {
         return temporalNetworkBlockMap.get(blockLoc);
     }
 
@@ -46,7 +45,7 @@ public class TemporalNetworkData
     public TemporalNetwork setupLocationForNetworkBlockMap(BlockLoc blockLocation)
     {
         World world = DimensionManager.getWorld(blockLocation.getDimensionID());
-        TemporalNetwork networkToAddThisTo = null;
+        TemporalNetwork networkToAddThisTo;
 
         // Get the unique networks surrounding this position.
         ArrayList<TemporalNetwork> surroundingNetworks = new ArrayList<>(6);
@@ -101,7 +100,6 @@ public class TemporalNetworkData
 
         // Remove the location and destroy adjacency so we don't use the destroyed block during subnet creation.
         compositeNetwork.generationStats.removeLocation(location);
-        compositeNetwork.generationStats.destroyAllForcedAdjacencyAtLocation(location);
 
         while (!adjacentBlocks.isEmpty())
         {
