@@ -151,7 +151,7 @@ public class BlockLoc
 
         tag.setInteger("x", this.getX());
         tag.setInteger("y", this.getY());
-        tag.setInteger("z", this.getX());
+        tag.setInteger("z", this.getZ());
         tag.setInteger("dim", this.getDimensionID());
 
         return tag;

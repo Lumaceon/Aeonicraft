@@ -2,16 +2,10 @@ package lumaceon.mods.aeonicraft.worlddata;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.Internal;
-import lumaceon.mods.aeonicraft.temporalcompression.TemporalCompressor;
-import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
-import net.minecraftforge.common.util.Constants;
-
-import java.util.Iterator;
 
 @SuppressWarnings("NullableProblems")
 public class ExtendedSaveData extends WorldSavedData
@@ -69,7 +63,6 @@ public class ExtendedSaveData extends WorldSavedData
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
-        //TODO WHY ISN'T THIS FREAKIN' THING BEING CALLED!?!?!?!?
         if(nbt.hasKey("ac_temporal_networks"))
             temporalNetworkData.deserializeNBT(nbt.getCompoundTag("ac_temporal_networks"));
     }

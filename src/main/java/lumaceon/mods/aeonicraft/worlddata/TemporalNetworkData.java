@@ -16,6 +16,7 @@ import net.minecraftforge.common.util.Constants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class TemporalNetworkData
 {
@@ -191,9 +192,15 @@ public class TemporalNetworkData
         NBTTagCompound networksCompound = new NBTTagCompound();
         NBTTagList networkList = new NBTTagList();
 
+        List<TemporalNetwork> networksSaved = new ArrayList<>(networkList.tagCount());
+
         for(TemporalNetwork network : temporalNetworkBlockMap.values())
         {
-            networkList.appendTag(network.generationStats.getNBT());
+            if(!networksSaved.contains(network)) // Make sure duplicate entries aren't saved.
+            {
+                networkList.appendTag(network.serializeNBT());
+                networksSaved.add(network);
+            }
         }
 
         networksCompound.setTag("network_list", networkList);
