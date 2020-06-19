@@ -4,4 +4,9 @@
 newmtl Main_Material
 Ka 1.000000 1.000000 1.000000
 Kd 1.000000 1.000000 1.000000
-map_Kd aeonicraft:block/temporal_compressor
+map_Kd aeonicraft:common/temporal_window_up
+
+newmtl Inert_Connector
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:common/temporal_connector

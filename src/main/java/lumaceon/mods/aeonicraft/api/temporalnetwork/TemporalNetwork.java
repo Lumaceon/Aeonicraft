@@ -1,11 +1,11 @@
 package lumaceon.mods.aeonicraft.api.temporalnetwork;
 
 import lumaceon.mods.aeonicraft.api.Internal;
+import lumaceon.mods.aeonicraft.api.TemporalChunks;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.api.util.ChunkLoc;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
 
@@ -23,21 +23,33 @@ public class TemporalNetwork
         this.generationStats = new NetworkBlockMap(this);
     }
 
+    /**
+     * Get the temporal network associated with the current block location.
+     * @return The temporal network, or null if none exist at the given location.
+     */
     @Nullable
     public static TemporalNetwork getTemporalNetwork(BlockLoc blockLocation) {
         return Internal.getTemporalNetwork.apply(blockLocation);
     }
 
+    /**
+     * @return The current TC stored in this network.
+     */
     public long getTC() {
         return this.temporalCompression;
     }
 
+    /**
+     * Set the current amount of TC in this network.
+     * @param temporalCompression New amount of TC.
+     */
     public void setTC(long temporalCompression) {
         this.temporalCompression = Math.min(temporalCompression, getTCCapacity());
     }
 
     /**
-     * @return The amount which was added successfully.
+     * Add TC to this network.
+     * @return The amount of TC which was added successfully.
      */
     public long receiveTC(long inputAmount)
     {
@@ -53,12 +65,15 @@ public class TemporalNetwork
         return amountToActuallyAdd;
     }
 
+    /**
+     * @return The TC capacity of this network.
+     */
     public long getTCCapacity() {
         return generationStats.getTCCapacity();
     }
 
     /**
-     * Called on the server each tick to generate (or lose) TC from unloaded chunks.
+     * Called on the server every 20 update ticks to generate (or lose) TC from unloaded chunks.
      */
     public void onUpdate()
     {
@@ -75,7 +90,7 @@ public class TemporalNetwork
             }
             else
             {
-                if(!world.getChunkProvider().isChunkGeneratedAt(loc.getX(), loc.getY()))
+                if(TemporalChunks.isChunkFrozen(world, loc.toChunkPos()))
                 {
                     amountToGain += tcGenIfUnloaded;
                 }
@@ -84,6 +99,10 @@ public class TemporalNetwork
         this.receiveTC(amountToGain);
     }
 
+    /**
+     * Called when internal capacity changes to potentially lose time if the new capacity has been reduced below the
+     * current amount.
+     */
     public void checkCapacityChangeLoss(long newCapacity){
         if(newCapacity < temporalCompression)
             setTC(newCapacity);

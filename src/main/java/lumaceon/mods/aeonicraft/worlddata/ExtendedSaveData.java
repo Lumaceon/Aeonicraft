@@ -47,10 +47,15 @@ public class ExtendedSaveData extends WorldSavedData
 
     private TemporalNetworkData temporalNetworkData;
 
+    private long updateTimer = 0;
     public void onServerTick()
     {
-        temporalNetworkData.update();
-        markDirty(); // Mark dirty constantly so we don't miss stuff. We perform our own NBT caching for efficiency.
+        if(updateTimer % 20 == 0)
+        {
+            temporalNetworkData.update();
+        }
+        markDirty(); // We perform our own NBT caching for efficiency.
+        updateTimer++;
     }
 
     @Override
