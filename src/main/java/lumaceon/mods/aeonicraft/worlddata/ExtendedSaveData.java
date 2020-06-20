@@ -29,6 +29,10 @@ public class ExtendedSaveData extends WorldSavedData
                 (loc) -> temporalNetworkData.setupLocationForNetworkBlockMap(loc);
         Internal.removeTemporalNetworkLocation =
                 (loc) -> temporalNetworkData.removeNetworkFromLocation(loc);
+        Internal.mergeTemporalNetworks =
+                (locPair) -> temporalNetworkData.mergeNetworks(locPair);
+        Internal.separateNetworksIfNecessary =
+                (locPair) -> temporalNetworkData.checkSeparation(locPair);
     }
 
     public static ExtendedSaveData getInstance(World world)

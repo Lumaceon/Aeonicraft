@@ -14,7 +14,7 @@ public class TileTemporalMachine extends TileAeonicraft
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing)
     {
-        if(capability == ITEM_HANDLER_CAPABILITY || capability == ENERGY_STORAGE_CAPABILITY)
+        /*if(capability == ITEM_HANDLER_CAPABILITY || capability == ENERGY_STORAGE_CAPABILITY)
             return true;
 
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
@@ -25,7 +25,7 @@ public class TileTemporalMachine extends TileAeonicraft
                 if(tank != null && tank.isAvailableForSide(localDirection))
                     return true;
             }
-        }
+        }*/
 
         return super.hasCapability(capability, facing);
     }
@@ -35,7 +35,7 @@ public class TileTemporalMachine extends TileAeonicraft
     {
         if(hasCapability(capability, facing))
         {
-            if(capability == ENERGY_STORAGE_CAPABILITY)
+            /*if(capability == ENERGY_STORAGE_CAPABILITY)
             {
                 return ENERGY_STORAGE_CAPABILITY.cast(energyStorage);
             }
@@ -64,7 +64,7 @@ public class TileTemporalMachine extends TileAeonicraft
                         return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(tank);
                     }
                 }
-            }
+            }*/
         }
         return super.getCapability(capability, facing);
     }

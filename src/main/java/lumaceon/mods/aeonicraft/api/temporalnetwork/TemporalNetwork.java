@@ -14,13 +14,13 @@ import java.util.Map;
 
 public class TemporalNetwork
 {
-    public NetworkBlockMap generationStats;
+    public TemporalNetworkGenerationStats generationStats;
 
     protected long temporalCompression = 0;
 
 
     public TemporalNetwork() {
-        this.generationStats = new NetworkBlockMap(this);
+        this.generationStats = new TemporalNetworkGenerationStats(this);
     }
 
     /**
@@ -79,7 +79,7 @@ public class TemporalNetwork
     {
         // Generation TC from internal generators.
         long amountToGain = 0;
-        for(Map.Entry<ChunkLoc, NetworkBlockMap.TemporalNetworkChunkStats> chunkEntry : generationStats.tcGenPerChunk.entrySet())
+        for(Map.Entry<ChunkLoc, TemporalNetworkGenerationStats.TemporalNetworkChunkStats> chunkEntry : generationStats.tcGenPerChunk.entrySet())
         {
             long tcGenIfUnloaded = chunkEntry.getValue().tcGenPerSecond;
             ChunkLoc loc = chunkEntry.getKey();

@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.block;
+package lumaceon.mods.aeonicraft.block.temporalnetwork;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.temporalnetwork.BlockTemporalNetwork;

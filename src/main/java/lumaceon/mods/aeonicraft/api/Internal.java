@@ -15,6 +15,9 @@ public class Internal
     public static Function<BlockLoc, TemporalNetwork> getTemporalNetwork;
     public static Function<BlockLoc, TemporalNetwork> addTemporalNetworkLocation;
     public static Function<BlockLoc, Integer> removeTemporalNetworkLocation;
+    public static Function<BlockLoc.Pair, TemporalNetwork> mergeTemporalNetworks;
+    public static Function<BlockLoc.Pair, Boolean> separateNetworksIfNecessary;
+
     public static Function<Integer, IClockwork> createDefaultClockworkImplementation;
 
     public static ResourceLocation defaultAssemblyTableTexture;

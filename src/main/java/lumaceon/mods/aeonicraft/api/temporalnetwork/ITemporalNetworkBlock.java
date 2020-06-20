@@ -31,5 +31,15 @@ public interface ITemporalNetworkBlock
      *
      * @return True of the given side of this block can connect to a network, false otherwise.
      */
-    boolean canConnectOnSide(EnumFacing mySide);
+    default boolean canConnectOnSide(EnumFacing mySide) {
+        return true;
+    }
+
+    /**
+     * Hourglasses can link relays to each other to force connectivity across distance (and even dimensions). It uses
+     * the return value from this method to decide whether or not this block is a valid connection point.
+     */
+    default boolean isRelay() {
+        return false;
+    }
 }

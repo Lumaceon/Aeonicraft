@@ -1,0 +1,17 @@
+# Blender MTL File: 'temporal_relay.blend'
+# Material Count: 3
+
+newmtl Primary_Texture
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:common/temporal_window_up
+
+newmtl Temporal_Dots
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:common/temporal_dots
+
+newmtl Temporal_Pulse
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+map_Kd aeonicraft:common/temporal_connector

@@ -19,5 +19,5 @@ public class Machine
 
     protected int gameTicksSinceLastInternalTick = 0;
 
-    
+
 }

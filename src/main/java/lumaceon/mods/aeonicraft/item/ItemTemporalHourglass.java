@@ -2,9 +2,12 @@ package lumaceon.mods.aeonicraft.item;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
+import lumaceon.mods.aeonicraft.api.temporalnetwork.ITemporalNetworkBlock;
+import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetworkGenerationStats;
+import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetwork;
+import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
-import lumaceon.mods.aeonicraft.lib.GUIs;
-import lumaceon.mods.aeonicraft.temporalcompression.ITemporalCompressorLinkableBlock;
+import lumaceon.mods.aeonicraft.capability.CapabilityTemporalNetworkLinker;
 import lumaceon.mods.aeonicraft.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
@@ -17,6 +20,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -34,6 +38,9 @@ public class ItemTemporalHourglass extends ItemAeonicraft
 {
     @CapabilityInject(CapabilityHourglass.IHourglassHandler.class)
     public static final Capability<CapabilityHourglass.IHourglassHandler> HOURGLASS = null;
+
+    @CapabilityInject(CapabilityTemporalNetworkLinker.ITemporalNetworkLinker.class)
+    public static final Capability<CapabilityTemporalNetworkLinker.ITemporalNetworkLinker> NETWORK_LINKER = null;
 
     public ItemTemporalHourglass(int maxStack, int maxDamage, String name) {
         super(maxStack, maxDamage, name);
@@ -127,7 +134,7 @@ public class ItemTemporalHourglass extends ItemAeonicraft
             }
             else
             {
-                playerIn.openGui(Aeonicraft.instance, GUIs.TEMPORAL_HOURGLASS.ordinal(), worldIn, (int) playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ);
+                //playerIn.openGui(Aeonicraft.instance, GUIs.TEMPORAL_HOURGLASS.ordinal(), worldIn, (int) playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ);
             }
         }
         return new ActionResult<>(EnumActionResult.PASS, stack);
@@ -136,17 +143,60 @@ public class ItemTemporalHourglass extends ItemAeonicraft
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
+        ItemStack stack = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, this);
+        if(stack == null)
+            return EnumActionResult.FAIL;
+
         Block block = world.getBlockState(pos).getBlock();
-        if(block instanceof ITemporalCompressorLinkableBlock)
+        if(block instanceof ITemporalNetworkBlock && ((ITemporalNetworkBlock) block).isRelay())
         {
-            if(!world.isRemote) {
-                ((ITemporalCompressorLinkableBlock) block).onLinkAttempt(player, world, pos, hand, facing, hitX, hitY, hitZ);
+            CapabilityTemporalNetworkLinker.ITemporalNetworkLinker linker = stack.getCapability(NETWORK_LINKER, facing);
+            if(linker != null)
+            {
+                BlockLoc otherRelay = linker.getRelayLocation();
+                BlockLoc thisRelay = new BlockLoc(pos, world);
+                if(otherRelay == null)
+                {
+                    linker.setRelayLocation(new BlockLoc(pos, world));
+                    player.sendMessage(new TextComponentString("Hourglass linking to relay."));
+                }
+                else
+                {
+                    TemporalNetwork network = TemporalNetwork.getTemporalNetwork(otherRelay);
+                    if(network == null)
+                    {
+                        linker.setRelayLocation(null);
+                        player.sendMessage(new TextComponentString("The first relay was not found: stopped linking."));
+                    }
+                    else
+                    {
+                        TemporalNetworkGenerationStats.TemporalNetworkLocationStats stats = network.generationStats.getLocationFromSide(otherRelay, null);
+                        if(stats == null)
+                        {
+                            player.sendMessage(new TextComponentString("Something went wrong: please contact the mod author."));
+                            Aeonicraft.logger.error("Missing Temporal Network block error:");
+                            Aeonicraft.logger.error(otherRelay.toString());
+                            for (TemporalNetworkGenerationStats.TemporalNetworkLocationStats stat : network.generationStats.getLocations()) {
+                                Aeonicraft.logger.error(stat.getLocation().toString());
+                            }
+                        }
+                        else if(stats.getForcedAdjacencies().contains(thisRelay))
+                        {
+                            linker.setRelayLocation(null);
+                            player.sendMessage(new TextComponentString("The two relays are already connected. Stopped linking."));
+                        }
+                        else
+                        {
+                            network.generationStats.createForcedAdjacency(thisRelay, otherRelay);
+                            linker.setRelayLocation(null);
+                            player.sendMessage(new TextComponentString("Relays Connected~! Stopped linking."));
+                        }
+                    }
+                }
+                return EnumActionResult.SUCCESS;
             }
-            return EnumActionResult.SUCCESS;
         }
 
-        ItemStack stack = InventoryHelper.getFirstStackOfTypeInInventory(player.inventory, this);
-        assert stack != null;
         CapabilityHourglass.IHourglassHandler hg = stack.getCapability(HOURGLASS, null);
 
         if(!world.isRemote)
@@ -210,15 +260,17 @@ public class ItemTemporalHourglass extends ItemAeonicraft
     private static class Provider implements ICapabilitySerializable<NBTTagCompound>
     {
         CapabilityHourglass.IHourglassHandler hourglassHandler;
+        CapabilityTemporalNetworkLinker.ITemporalNetworkLinker networkLinker;
 
         private Provider()
         {
             hourglassHandler = new CapabilityHourglass.HourglassHandler();
+            networkLinker = new CapabilityTemporalNetworkLinker.TemporalNetworkLinker();
         }
 
         @Override
         public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-            return capability == HOURGLASS;
+            return capability == HOURGLASS || capability == NETWORK_LINKER;
         }
 
         @Override
@@ -226,6 +278,8 @@ public class ItemTemporalHourglass extends ItemAeonicraft
         {
             if(capability == HOURGLASS) {
                 return HOURGLASS.cast(hourglassHandler);
+            } else if(capability == NETWORK_LINKER) {
+                return NETWORK_LINKER.cast(networkLinker);
             }
             return null;
         }
@@ -235,12 +289,20 @@ public class ItemTemporalHourglass extends ItemAeonicraft
         {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setTag("hourglass_data", hourglassHandler.saveToNBT());
+
+            BlockLoc loc = networkLinker.getRelayLocation();
+            if(loc != null)
+                nbt.setTag("network_linker_tag", networkLinker.getRelayLocation().serializeToNBT());
+
             return nbt;
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound nbt)
         {
+            if(nbt.hasKey("network_linker_tag"))
+                this.networkLinker.setRelayLocation(new BlockLoc(nbt.getCompoundTag("network_linker_tag")));
+
             hourglassHandler.loadFromNBT(nbt.getCompoundTag("hourglass_data"));
         }
     }

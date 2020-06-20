@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
@@ -145,6 +146,7 @@ public class BlockLoc
         return MoreObjects.toStringHelper(this).add("x", this.getX()).add("y", this.getY()).add("z", this.getZ()).add("dim_id", this.getDimensionID()).toString();
     }
 
+    @Nonnull
     public NBTTagCompound serializeToNBT()
     {
         NBTTagCompound tag = new NBTTagCompound();

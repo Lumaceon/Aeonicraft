@@ -8,8 +8,11 @@ import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.util.Icon;
 import lumaceon.mods.aeonicraft.block.BlockAeonPearl;
 import lumaceon.mods.aeonicraft.block.BlockAssemblyTable;
-import lumaceon.mods.aeonicraft.block.BlockTemporalCompressor;
+import lumaceon.mods.aeonicraft.block.temporalnetwork.BlockTemporalCompressionChamber;
+import lumaceon.mods.aeonicraft.block.temporalnetwork.BlockTemporalCompressor;
 import lumaceon.mods.aeonicraft.block.multiblockplacers.ItemAssemblyTable;
+import lumaceon.mods.aeonicraft.block.temporalnetwork.BlockTemporalConduit;
+import lumaceon.mods.aeonicraft.block.temporalnetwork.BlockTemporalRelay;
 import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.hourglassunlockable.HourglassUnlockableHGFunction;
@@ -66,10 +69,14 @@ public class RegistryEventHandler
         // Simple blocks
         //block(new BlockAeonicraft(Material.IRON, "block_temporal"), event);
 
-
         // Slightly-less simple blocks
-        block(new BlockTemporalCompressor(Material.IRON, "temporal_compressor"), event);
         block(new BlockAssemblyTable(Material.WOOD, "assembly_table"), event);
+
+        // Temporal Network blocks
+        block(new BlockTemporalCompressor(Material.IRON, "temporal_compressor"), event);
+        block(new BlockTemporalCompressionChamber(Material.IRON, "temporal_compression_chamber"), event);
+        block(new BlockTemporalConduit(Material.IRON, "temporal_conduit"), event);
+        block(new BlockTemporalRelay(Material.IRON, "temporal_relay"), event);
 
 
         // Tile Entity Blocks

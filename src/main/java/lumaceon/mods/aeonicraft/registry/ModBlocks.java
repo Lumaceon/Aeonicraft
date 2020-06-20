@@ -11,6 +11,9 @@ public class ModBlocks
 
     public static final Block assembly_table = null;
     public static final Block temporal_compressor = null;
+    public static final Block temporal_compression_chamber = null;
+    public static final Block temporal_conduit = null;
+    public static final Block temporal_relay = null;
     public static final Block temporal_bridge = null;
     public static final Block temporal_connection_amplifier = null;
 }

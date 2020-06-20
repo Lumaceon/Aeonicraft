@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.worlddata;
 
 import lumaceon.mods.aeonicraft.api.temporalnetwork.BlockTemporalNetwork;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.NetworkBlockMap;
+import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetworkGenerationStats;
 import lumaceon.mods.aeonicraft.api.temporalnetwork.ITemporalNetworkBlock;
 import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetwork;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
@@ -96,8 +96,8 @@ public class TemporalNetworkData
         TemporalNetwork compositeNetwork = temporalNetworkBlockMap.remove(location);
 
         // Get the internal stats for this location, then find which blocks are adjacent to it.
-        NetworkBlockMap.TemporalNetworkLocationStats stats = compositeNetwork.generationStats.getLocationFromSide(location, null);
-        ArrayList<NetworkBlockMap.TemporalNetworkLocationStats> adjacentBlocks = compositeNetwork.generationStats.getEffectiveNeighbors(stats, true);
+        TemporalNetworkGenerationStats.TemporalNetworkLocationStats stats = compositeNetwork.generationStats.getLocationFromSide(location, null);
+        ArrayList<TemporalNetworkGenerationStats.TemporalNetworkLocationStats> adjacentBlocks = compositeNetwork.generationStats.getEffectiveNeighbors(stats, true);
 
         // Remove the location and destroy adjacency so we don't use the destroyed block during subnet creation.
         compositeNetwork.generationStats.removeLocation(location);
@@ -112,6 +112,32 @@ public class TemporalNetworkData
         data.markDirty();
 
         return numberOfNetworkAfterSeparation;
+    }
+
+    public boolean checkSeparation(BlockLoc.Pair pair)
+    {
+        TemporalNetwork composite = TemporalNetwork.getTemporalNetwork(pair.loc1);
+        if(composite == null)
+            return false;
+
+        Collection<TemporalNetworkGenerationStats.TemporalNetworkLocationStats> locs = composite.generationStats.getLocations();
+
+        TemporalNetwork newNetwork = buildSubsetNetworkFrom(composite, composite.generationStats.getLocationFromSide(pair.loc1, null));
+        Collection<TemporalNetworkGenerationStats.TemporalNetworkLocationStats> locsNew = newNetwork.generationStats.getLocations();
+
+        if(locs.containsAll(locsNew))
+            return false; // If the networks were already connected, no need to create a second subset net.
+
+        buildSubsetNetworkFrom(composite, composite.generationStats.getLocationFromSide(pair.loc2, null));
+        return false;
+    }
+
+    public TemporalNetwork mergeNetworks(BlockLoc.Pair pair)
+    {
+        ArrayList<TemporalNetwork> list = new ArrayList<>();
+        list.add(TemporalNetwork.getTemporalNetwork(pair.loc1));
+        list.add(TemporalNetwork.getTemporalNetwork(pair.loc2));
+        return createCompositeNetwork(list);
     }
 
     /**
@@ -132,6 +158,8 @@ public class TemporalNetworkData
         // Remove the composite from the networks to merge.
         networks.remove(compositeNetwork);
 
+        Collection<TemporalNetworkGenerationStats.TemporalNetworkLocationStats> compositeNetworkLocs = compositeNetwork.generationStats.getLocations();
+
         // Add network data to the composite network one by one.
         while (!networks.isEmpty())
         {
@@ -139,9 +167,12 @@ public class TemporalNetworkData
             networks.remove(0);
 
             // Put each location associated with the absorbed network into the composite.
-            Collection<NetworkBlockMap.TemporalNetworkLocationStats> locs = networkToAbsorb.generationStats.getLocations();
-            for(NetworkBlockMap.TemporalNetworkLocationStats locStats : locs)
+            Collection<TemporalNetworkGenerationStats.TemporalNetworkLocationStats> locs = networkToAbsorb.generationStats.getLocations();
+            for(TemporalNetworkGenerationStats.TemporalNetworkLocationStats locStats : locs)
             {
+                if(compositeNetworkLocs.contains(locStats))
+                    continue; // Just in case we try to merge identical networks.
+
                 compositeNetwork.generationStats.addLocation(locStats); // This automatically adjusts the chunk values as well.
                 temporalNetworkBlockMap.put(locStats.getLocation(), compositeNetwork);
             }
@@ -157,28 +188,28 @@ public class TemporalNetworkData
      * @param origin The origin point of the rebuilding process.
      * @return A new network built as a subset of this one.
      */
-    public TemporalNetwork buildSubsetNetworkFrom(TemporalNetwork compositeNetwork, NetworkBlockMap.TemporalNetworkLocationStats origin)
+    public TemporalNetwork buildSubsetNetworkFrom(TemporalNetwork compositeNetwork, TemporalNetworkGenerationStats.TemporalNetworkLocationStats origin)
     {
         TemporalNetwork newSubnet = new TemporalNetwork();
 
-        ArrayList<NetworkBlockMap.TemporalNetworkLocationStats> locationsFound = new ArrayList<>(compositeNetwork.generationStats.getLocations().size());
-        ArrayList<NetworkBlockMap.TemporalNetworkLocationStats> toCheck = new ArrayList<>(compositeNetwork.generationStats.getLocations().size());
+        ArrayList<TemporalNetworkGenerationStats.TemporalNetworkLocationStats> locationsFound = new ArrayList<>(compositeNetwork.generationStats.getLocations().size());
+        ArrayList<TemporalNetworkGenerationStats.TemporalNetworkLocationStats> toCheck = new ArrayList<>(compositeNetwork.generationStats.getLocations().size());
 
         toCheck.add(origin);
 
         // Recursively add all accessible locations to the arraylist.
         while(!toCheck.isEmpty())
         {
-            NetworkBlockMap.TemporalNetworkLocationStats workingLocation = toCheck.remove(0);
+            TemporalNetworkGenerationStats.TemporalNetworkLocationStats workingLocation = toCheck.remove(0);
             locationsFound.add(workingLocation);
 
-            ArrayList<NetworkBlockMap.TemporalNetworkLocationStats> adjacentLocations = compositeNetwork.generationStats.getEffectiveNeighbors(workingLocation, true);
+            ArrayList<TemporalNetworkGenerationStats.TemporalNetworkLocationStats> adjacentLocations = compositeNetwork.generationStats.getEffectiveNeighbors(workingLocation, true);
             adjacentLocations.removeAll(locationsFound); // Avoid duplicates.
 
             toCheck.addAll(adjacentLocations);
         }
 
-        for(NetworkBlockMap.TemporalNetworkLocationStats s : locationsFound)
+        for(TemporalNetworkGenerationStats.TemporalNetworkLocationStats s : locationsFound)
         {
             newSubnet.generationStats.addLocation(s.deepCopy());
             temporalNetworkBlockMap.put(s.getLocation(), newSubnet);
@@ -219,8 +250,8 @@ public class TemporalNetworkData
             tn.deserializeNBT(networkList.getCompoundTagAt(i));
 
             // Update the block map with the block locations from this network.
-            Collection<NetworkBlockMap.TemporalNetworkLocationStats> locs = tn.generationStats.getLocations();
-            for(NetworkBlockMap.TemporalNetworkLocationStats loc : locs)
+            Collection<TemporalNetworkGenerationStats.TemporalNetworkLocationStats> locs = tn.generationStats.getLocations();
+            for(TemporalNetworkGenerationStats.TemporalNetworkLocationStats loc : locs)
             {
                 temporalNetworkBlockMap.put(loc.getLocation(), tn);
             }

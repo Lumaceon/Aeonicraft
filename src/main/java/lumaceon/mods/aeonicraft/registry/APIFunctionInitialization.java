@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.init;
+package lumaceon.mods.aeonicraft.registry;
 
 import lumaceon.mods.aeonicraft.api.Internal;
 import lumaceon.mods.aeonicraft.capability.CapabilityClockwork;

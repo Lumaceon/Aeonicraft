@@ -1,0 +1,13 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"__comment": "flip v to correct UVs for obj models",
+		"custom": { "flip-v": true },
+		"model": "aeonicraft:obj/temporal_relay.obj",
+		"transform": "forge:default-block"
+    },
+	"variants": {
+		"normal": [{}],
+		"inventory": [{}]
+    }
+}

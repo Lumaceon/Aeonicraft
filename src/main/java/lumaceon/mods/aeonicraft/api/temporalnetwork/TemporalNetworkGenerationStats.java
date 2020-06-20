@@ -1,5 +1,6 @@
 package lumaceon.mods.aeonicraft.api.temporalnetwork;
 
+import lumaceon.mods.aeonicraft.api.Internal;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.api.util.ChunkLoc;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,7 +11,7 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class NetworkBlockMap
+public class TemporalNetworkGenerationStats
 {
     protected HashMap<BlockLoc, TemporalNetworkLocationStats> locationsInTheNetwork = new HashMap<>(100);
     protected HashMap<ChunkLoc, TemporalNetworkChunkStats> tcGenPerChunk = new HashMap<>(20);
@@ -21,7 +22,7 @@ public class NetworkBlockMap
     protected long temporalCompressionCapacity = 0;
 
 
-    public NetworkBlockMap(TemporalNetwork temporalNetwork) {
+    public TemporalNetworkGenerationStats(TemporalNetwork temporalNetwork) {
         this.temporalNetwork = temporalNetwork;
     }
 
@@ -185,6 +186,8 @@ public class NetworkBlockMap
         if(stats != null && !stats.forcedAdjacencyConnections.contains(loc1))
             stats.forcedAdjacencyConnections.add(loc1);
 
+        Internal.mergeTemporalNetworks.apply(new BlockLoc.Pair(loc1, loc2, false));
+
         markDirty();
     }
 
@@ -201,6 +204,8 @@ public class NetworkBlockMap
         if(s2 != null)
             s2.forcedAdjacencyConnections.remove(loc1);
 
+        Internal.separateNetworksIfNecessary.apply(new BlockLoc.Pair(loc1, loc2, false));
+
         markDirty();
     }
 
@@ -210,7 +215,15 @@ public class NetworkBlockMap
     public void destroyAllForcedAdjacencyAtLocation(BlockLoc loc)
     {
         TemporalNetworkLocationStats stats = getLocationFromSide(loc, null);
-        stats.forcedAdjacencyConnections.clear();
+        if(stats != null)
+        {
+            ArrayList<BlockLoc> locs = stats.getForcedAdjacencies();
+            stats.forcedAdjacencyConnections.clear();
+            for(BlockLoc l : locs)
+            {
+                Internal.separateNetworksIfNecessary.apply(new BlockLoc.Pair(loc, l, false));
+            }
+        }
 
         markDirty();
     }
@@ -346,6 +359,10 @@ public class NetworkBlockMap
 
         public BlockLoc getLocation() {
             return this.location;
+        }
+
+        public ArrayList<BlockLoc> getForcedAdjacencies() {
+            return forcedAdjacencyConnections;
         }
 
         public void setCanConnect(EnumFacing side, boolean canConnect) {

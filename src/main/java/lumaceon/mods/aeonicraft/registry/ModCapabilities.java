@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.init;
+package lumaceon.mods.aeonicraft.registry;
 
 
 import lumaceon.mods.aeonicraft.capability.*;
@@ -13,5 +13,6 @@ public class ModCapabilities
         CapabilityHourglass.register();
         CapabilityTravelGhost.register();
         CapabilityClockwork.register();
+        CapabilityTemporalNetworkLinker.register();
     }
 }

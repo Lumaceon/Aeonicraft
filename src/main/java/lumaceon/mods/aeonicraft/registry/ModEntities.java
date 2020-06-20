@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.init;
+package lumaceon.mods.aeonicraft.registry;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
