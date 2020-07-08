@@ -2,7 +2,6 @@ package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.capability.CapabilityAeonicraftProgression;
-import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.capability.CapabilityTravelGhost;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,8 +26,6 @@ public class CapabilityAttachHandler
         {
             if(!entity.hasCapability(TRAVEL_GHOST, null))
                 event.addCapability(new ResourceLocation(Aeonicraft.MOD_ID + ":travel_ghost"), new CapabilityTravelGhost.Provider());
-            if(!entity.hasCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null))
-                event.addCapability(new ResourceLocation(Aeonicraft.MOD_ID + ":timestroage"), new CapabilityTimeStorage.Provider());
             if(!entity.hasCapability(CapabilityAeonicraftProgression.AEONICRAFT_PROGRESSION_CAPABILITY, null))
                 event.addCapability(new ResourceLocation(Aeonicraft.MOD_ID + ":aeonicraft_progression"), new CapabilityAeonicraftProgression.Provider());
         }

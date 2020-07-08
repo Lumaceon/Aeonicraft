@@ -1,7 +1,8 @@
 package lumaceon.mods.aeonicraft.block.temporalnetwork;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.BlockTemporalNetwork;
+import lumaceon.mods.aeonicraft.api.temporal.TC;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.BlockTemporalNetwork;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.EnumFacing;
 
@@ -20,13 +21,13 @@ public class BlockTemporalConduit extends BlockTemporalNetwork
     }
 
     @Override
-    public long getTCGenerationPerSecond() {
-        return 0;
+    public TC getTCGenerationPerSecond() {
+        return TC.NONE;
     }
 
     @Override
-    public long getTCCapacity() {
-        return 0;
+    public TC getTCCapacity() {
+        return TC.NONE;
     }
 
     @Override

@@ -54,10 +54,7 @@ public class InventoryAssemblyTableComponents implements IInventory
         if(itemHandler == null)
             return true;
 
-        if(itemHandler.getSlots() > 0)
-            return false;
-
-        return true;
+        return itemHandler.getSlots() <= 0;
     }
 
     @Nullable

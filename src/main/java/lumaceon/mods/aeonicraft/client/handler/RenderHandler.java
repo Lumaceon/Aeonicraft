@@ -1,27 +1,20 @@
 package lumaceon.mods.aeonicraft.client.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
-import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.client.particle.ModParticles;
 import lumaceon.mods.aeonicraft.registry.ModItems;
-import lumaceon.mods.aeonicraft.util.TimeHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -32,9 +25,6 @@ import java.util.ArrayList;
 @Mod.EventBusSubscriber
 public class RenderHandler
 {
-    @CapabilityInject(CapabilityTimeStorage.ITimeStorage.class)
-    private static final Capability<CapabilityTimeStorage.ITimeStorage> TIME_STORAGE = null;
-
     private static Minecraft MC = Minecraft.getMinecraft();
     private static ResourceLocation MOD_PARTICLES = new ResourceLocation(Aeonicraft.MOD_ID, "textures/particles.png");
 
@@ -104,7 +94,7 @@ public class RenderHandler
 
             if(hourglassHeld)
             {
-                CapabilityTimeStorage.ITimeStorage cap = player.getCapability(TIME_STORAGE, null);
+                /*CapabilityTimeStorage.ITimeStorage cap = player.getCapability(TIME_STORAGE, null);
                 if(cap != null)
                 {
                     Vec3d look = player.getLookVec();
@@ -160,7 +150,7 @@ public class RenderHandler
                     MC.fontRenderer.drawString(renderString, 0, 0, 0xFFFFFF, false);
                     GlStateManager.popMatrix();
                 }
-                else
+                else*/
                     hourglassRenderedLastTick = false;
             }
             else

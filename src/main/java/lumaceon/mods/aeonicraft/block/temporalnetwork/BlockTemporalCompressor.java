@@ -1,10 +1,10 @@
 package lumaceon.mods.aeonicraft.block.temporalnetwork;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.BlockTemporalNetwork;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetwork;
+import lumaceon.mods.aeonicraft.api.temporal.TC;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.BlockTemporalNetwork;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.TemporalNetwork;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
-import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,13 +64,13 @@ public class BlockTemporalCompressor extends BlockTemporalNetwork
     }
 
     @Override
-    public long getTCGenerationPerSecond() {
-        return TCToRealTime.SECOND;
+    public TC getTCGenerationPerSecond() {
+        return TC.SECOND;
     }
 
     @Override
-    public long getTCCapacity() {
-        return TCToRealTime.SECOND;
+    public TC getTCCapacity() {
+        return TC.SECOND;
     }
 
     @Override

@@ -272,10 +272,7 @@ public class GuiHourglassTabUnlocks extends GuiHourglassTab
 
         int localY = (int) (categoryDefinitions[categoryIndex].topPos - scrollY);
 
-        if(mouseY < localY || mouseY >= localY + category.textureHeight())
-            return false;
-
-        return true;
+        return mouseY >= localY && mouseY < localY + category.textureHeight();
     }
 
     private boolean isOverUnlockable(UnlockableGUIDefinition unlockable, int mouseX, int mouseY)

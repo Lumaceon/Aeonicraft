@@ -1,9 +1,9 @@
 package lumaceon.mods.aeonicraft.worlddata;
 
-import lumaceon.mods.aeonicraft.api.temporalnetwork.BlockTemporalNetwork;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetworkGenerationStats;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.ITemporalNetworkBlock;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetwork;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.BlockTemporalNetwork;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.TemporalNetworkGenerationStats;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.ITemporalNetworkBlock;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.TemporalNetwork;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,10 +1,8 @@
 package lumaceon.mods.aeonicraft.client.gui.hourglass;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.client.gui.util.GuiHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -24,33 +22,6 @@ public class GuiHourglassTabTCSummary extends GuiHourglassTab
 
         this.width = 290;
         this.height = 189;
-    }
-
-    @Override
-    public void initGui()
-    {
-
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-        super.drawScreen(mouseX, mouseY, partialTicks);
-
-        // tooltips
-        int clockX = 144;
-        int clockY = 35;
-        int radius = 30;
-
-        if(Math.sqrt((mouseX - clockX) * (mouseX - clockX) + (mouseY - clockY) * (mouseY - clockY)) < radius)
-        {
-            CapabilityTimeStorage.ITimeStorage cap = Aeonicraft.proxy.getClientPlayer().getCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null);
-            if(cap instanceof CapabilityTimeStorage.TimeStorage)
-            {
-                CapabilityTimeStorage.TimeStorage ts = (CapabilityTimeStorage.TimeStorage) cap;
-                this.drawHoveringText(I18n.format(Long.toString(ts.getTimeInMillisecondsForDisplay())), mouseX, mouseY);
-            }
-        }
     }
 
     @Override

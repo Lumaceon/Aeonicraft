@@ -1,7 +1,8 @@
-package lumaceon.mods.aeonicraft.api.temporalnetwork;
+package lumaceon.mods.aeonicraft.api.temporal.temporalnetwork;
 
 import lumaceon.mods.aeonicraft.api.Internal;
 import lumaceon.mods.aeonicraft.api.TemporalChunks;
+import lumaceon.mods.aeonicraft.api.temporal.TC;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.api.util.ChunkLoc;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,7 +17,7 @@ public class TemporalNetwork
 {
     public TemporalNetworkGenerationStats generationStats;
 
-    protected long temporalCompression = 0;
+    protected TC temporalCompression = TC.NONE;
 
 
     public TemporalNetwork() {
@@ -35,7 +36,7 @@ public class TemporalNetwork
     /**
      * @return The current TC stored in this network.
      */
-    public long getTC() {
+    public TC getTC() {
         return this.temporalCompression;
     }
 
@@ -43,32 +44,32 @@ public class TemporalNetwork
      * Set the current amount of TC in this network.
      * @param temporalCompression New amount of TC.
      */
-    public void setTC(long temporalCompression) {
-        this.temporalCompression = Math.min(temporalCompression, getTCCapacity());
+    public void setTC(TC temporalCompression) {
+        this.temporalCompression = new TC(Math.min(temporalCompression.getVal(), getTCCapacity().getVal()));
     }
 
     /**
      * Add TC to this network.
      * @return The amount of TC which was added successfully.
      */
-    public long receiveTC(long inputAmount)
+    public TC receiveTC(TC inputAmount)
     {
-        long amountToActuallyAdd = inputAmount;
+        TC amountToActuallyAdd = inputAmount;
 
-        if(this.temporalCompression + amountToActuallyAdd > generationStats.getTCCapacity())
-            amountToActuallyAdd = generationStats.getTCCapacity() - this.temporalCompression;
+        if(this.temporalCompression.getVal() + amountToActuallyAdd.getVal() > generationStats.getTCCapacity().getVal())
+            amountToActuallyAdd = generationStats.getTCCapacity().subtract(this.temporalCompression);
 
-        if(amountToActuallyAdd + this.temporalCompression < 0)
-            amountToActuallyAdd = -this.temporalCompression;
+        if(amountToActuallyAdd.getVal() + this.temporalCompression.getVal() < 0)
+            amountToActuallyAdd = TC.NONE.subtract(this.temporalCompression);
 
-        this.temporalCompression += amountToActuallyAdd;
+        this.temporalCompression = this.temporalCompression.add(amountToActuallyAdd);
         return amountToActuallyAdd;
     }
 
     /**
      * @return The TC capacity of this network.
      */
-    public long getTCCapacity() {
+    public TC getTCCapacity() {
         return generationStats.getTCCapacity();
     }
 
@@ -81,7 +82,7 @@ public class TemporalNetwork
         long amountToGain = 0;
         for(Map.Entry<ChunkLoc, TemporalNetworkGenerationStats.TemporalNetworkChunkStats> chunkEntry : generationStats.tcGenPerChunk.entrySet())
         {
-            long tcGenIfUnloaded = chunkEntry.getValue().tcGenPerSecond;
+            long tcGenIfUnloaded = chunkEntry.getValue().tcGenPerSecond.getVal();
             ChunkLoc loc = chunkEntry.getKey();
             World world = DimensionManager.getWorld(loc.getDimensionID());
             if(world == null)
@@ -96,15 +97,15 @@ public class TemporalNetwork
                 }
             }
         }
-        this.receiveTC(amountToGain);
+        this.receiveTC(new TC(amountToGain));
     }
 
     /**
      * Called when internal capacity changes to potentially lose time if the new capacity has been reduced below the
      * current amount.
      */
-    public void checkCapacityChangeLoss(long newCapacity){
-        if(newCapacity < temporalCompression)
+    public void checkCapacityChangeLoss(TC newCapacity){
+        if(newCapacity.getVal() < temporalCompression.getVal())
             setTC(newCapacity);
     }
 
@@ -115,7 +116,7 @@ public class TemporalNetwork
     {
         NBTTagCompound networkCompound = new NBTTagCompound();
 
-        networkCompound.setLong("temporal_compression", temporalCompression);
+        networkCompound.setLong("temporal_compression", temporalCompression.getVal());
         networkCompound.setTag("locations", generationStats.getNBT());
 
         return networkCompound;
@@ -124,6 +125,6 @@ public class TemporalNetwork
     public void deserializeNBT(NBTTagCompound nbt)
     {
         generationStats.fromNBT(nbt.getTagList("locations", Constants.NBT.TAG_COMPOUND));
-        setTC(nbt.getLong("temporal_compression"));
+        setTC(new TC(nbt.getLong("temporal_compression")));
     }
 }

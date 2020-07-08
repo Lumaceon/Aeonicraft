@@ -44,7 +44,7 @@ public class LivingEventHandler
                     EntityAgeable target = event.getChild();
                     if(target != null && event.getParentA() instanceof EntityAnimal && event.getParentB() instanceof EntityAnimal)
                     {
-                        if(TimeHelper.getTime(player) >= TimeCosts.AUTO_ADULT_BREED)
+                        if(TimeHelper.getTime(player).getVal() >= TimeCosts.AUTO_ADULT_BREED.getVal())
                         {
                             TimeHelper.consumeTime(player, TimeCosts.AUTO_ADULT_BREED);
 

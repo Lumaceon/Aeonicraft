@@ -1,7 +1,7 @@
 package lumaceon.mods.aeonicraft.api;
 
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetwork;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.TemporalNetwork;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import net.minecraft.util.ResourceLocation;
 

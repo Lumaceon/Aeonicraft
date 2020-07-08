@@ -16,10 +16,10 @@ public interface IAssemblable
      * @param stack Stack representation of this item in the GUI.
      * @return The GUI background to display.
      */
-    public ResourceLocation getGUIBackground(ItemStack stack);
+    ResourceLocation getGUIBackground(ItemStack stack);
 
     /**
      * Initialize the slots for the internal assembly inventory.
      */
-    public Slot[] getContainerSlots(IInventory inventory, int centerSlotX, int centerSlotY);
+    Slot[] getContainerSlots(IInventory inventory, int centerSlotX, int centerSlotY);
 }

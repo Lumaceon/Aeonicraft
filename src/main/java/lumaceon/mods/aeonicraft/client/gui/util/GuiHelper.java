@@ -30,10 +30,10 @@ public class GuiHelper
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        vertexbuffer.pos((double)(x + 0), (double)(y + height), zLevel).tex((double)((float)(textureX + 0) * f), (double)((float)(textureY + height) * f)).endVertex();
-        vertexbuffer.pos((double)(x + width), (double)(y + height), zLevel).tex((double)((float)(textureX + width) * f), (double)((float)(textureY + height) * f)).endVertex();
-        vertexbuffer.pos((double)(x + width), (double)(y + 0), zLevel).tex((double)((float)(textureX + width) * f), (double)((float)(textureY + 0) * f)).endVertex();
-        vertexbuffer.pos((double)(x + 0), (double)(y + 0), zLevel).tex((double)((float)(textureX + 0) * f), (double)((float)(textureY + 0) * f)).endVertex();
+        vertexbuffer.pos(x + 0, y + height, zLevel).tex((float)(textureX + 0) * f, (float)(textureY + height) * f).endVertex();
+        vertexbuffer.pos(x + width, y + height, zLevel).tex((float)(textureX + width) * f, (float)(textureY + height) * f).endVertex();
+        vertexbuffer.pos(x + width, y + 0, zLevel).tex((float)(textureX + width) * f, (float)(textureY + 0) * f).endVertex();
+        vertexbuffer.pos(x + 0, y + 0, zLevel).tex((float)(textureX + 0) * f, (float)(textureY + 0) * f).endVertex();
         tessellator.draw();
     }
 
@@ -45,10 +45,10 @@ public class GuiHelper
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder renderer = tessellator.getBuffer();
         renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        renderer.pos((double)(x), (double)(y + height), zLevel).tex(0, 1).endVertex();
-        renderer.pos((double)(x + width), (double)(y + height), zLevel).tex(1, 1).endVertex();
-        renderer.pos((double)(x + width), (double)(y), zLevel).tex(1, 0).endVertex();
-        renderer.pos((double)(x), (double)(y), zLevel).tex(0, 0).endVertex();
+        renderer.pos(x, y + height, zLevel).tex(0, 1).endVertex();
+        renderer.pos(x + width, y + height, zLevel).tex(1, 1).endVertex();
+        renderer.pos(x + width, y, zLevel).tex(1, 0).endVertex();
+        renderer.pos(x, y, zLevel).tex(0, 0).endVertex();
         tessellator.draw();
     }
 
@@ -75,10 +75,10 @@ public class GuiHelper
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder renderer = tessellator.getBuffer();
         renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        renderer.pos((double)(x), (double)(y + height), zLevel).tex(minU, maxV).endVertex();
-        renderer.pos((double)(x + width), (double)(y + height), zLevel).tex(maxU, maxV).endVertex();
-        renderer.pos((double)(x + width), (double)(y), zLevel).tex(maxU, minV).endVertex();
-        renderer.pos((double)(x), (double)(y), zLevel).tex(minU, minV).endVertex();
+        renderer.pos(x, y + height, zLevel).tex(minU, maxV).endVertex();
+        renderer.pos(x + width, y + height, zLevel).tex(maxU, maxV).endVertex();
+        renderer.pos(x + width, y, zLevel).tex(maxU, minV).endVertex();
+        renderer.pos(x, y, zLevel).tex(minU, minV).endVertex();
         tessellator.draw();
     }
 
@@ -113,10 +113,10 @@ public class GuiHelper
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder renderer = tessellator.getBuffer();
         renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        renderer.pos((double)(x), (double)(y + height), zLevel).tex(u1, v1).endVertex();
-        renderer.pos((double)(x + width), (double)(y + height), zLevel).tex(u2, v2).endVertex();
-        renderer.pos((double)(x + width), (double)(y), zLevel).tex(u3, v3).endVertex();
-        renderer.pos((double)(x), (double)(y), zLevel).tex(u4, v4).endVertex();
+        renderer.pos(x, y + height, zLevel).tex(u1, v1).endVertex();
+        renderer.pos(x + width, y + height, zLevel).tex(u2, v2).endVertex();
+        renderer.pos(x + width, y, zLevel).tex(u3, v3).endVertex();
+        renderer.pos(x, y, zLevel).tex(u4, v4).endVertex();
         tessellator.draw();
     }
 
@@ -126,10 +126,10 @@ public class GuiHelper
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        vertexbuffer.pos((double)(x), (double)(y+fullHeight), zLevel).tex(0, 0).endVertex();
-        vertexbuffer.pos((double)(x+width), (double)(y+fullHeight), zLevel).tex(1, 0).endVertex();
-        vertexbuffer.pos((double)(x+width), (double)(y+height), zLevel).tex(1, (float) -(1 +(currentHeight))/fullHeight).endVertex();
-        vertexbuffer.pos((double)(x), (double)(y+height), zLevel).tex(0, (float) -(1 +(currentHeight))/fullHeight).endVertex();
+        vertexbuffer.pos(x, y+fullHeight, zLevel).tex(0, 0).endVertex();
+        vertexbuffer.pos(x+width, y+fullHeight, zLevel).tex(1, 0).endVertex();
+        vertexbuffer.pos(x+width, y+height, zLevel).tex(1, (float) -(1 +(currentHeight))/fullHeight).endVertex();
+        vertexbuffer.pos(x, y+height, zLevel).tex(0, (float) -(1 +(currentHeight))/fullHeight).endVertex();
         tessellator.draw();
     }
 
@@ -138,10 +138,10 @@ public class GuiHelper
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder renderer = tessellator.getBuffer();
         renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        renderer.pos((double)(x), (double)(y + height), zLevel).tex(0 + uOffset, 1 + vOffset).endVertex();
-        renderer.pos((double)(x + width), (double)(y + height), zLevel).tex(1 + uOffset, 1 + vOffset).endVertex();
-        renderer.pos((double)(x + width), (double)(y), zLevel).tex(1 + uOffset, 0 + vOffset).endVertex();
-        renderer.pos((double)(x), (double)(y), zLevel).tex(0 + uOffset, 0 + vOffset).endVertex();
+        renderer.pos(x, y + height, zLevel).tex(0 + uOffset, 1 + vOffset).endVertex();
+        renderer.pos(x + width, y + height, zLevel).tex(1 + uOffset, 1 + vOffset).endVertex();
+        renderer.pos(x + width, y, zLevel).tex(1 + uOffset, 0 + vOffset).endVertex();
+        renderer.pos(x, y, zLevel).tex(0 + uOffset, 0 + vOffset).endVertex();
         tessellator.draw();
     }
 
@@ -174,10 +174,10 @@ public class GuiHelper
             heightToRender = actualHeight > width ? width : actualHeight;
             maxV = ((textureUV.getMaxV() - textureUV.getMinV()) * (float) heightToRender / (float) width) + textureUV.getMinV();
             vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            vertexbuffer.pos((double)(x), (double)(y+height-(pass*width)), zLevel).tex(textureUV.getMinU(), textureUV.getMinV()).endVertex(); //Bottom-left
-            vertexbuffer.pos((double)(x+width), (double)(y+height-(pass*width)), zLevel).tex(textureUV.getMaxU(), textureUV.getMinV()).endVertex(); //Bottom-right
-            vertexbuffer.pos((double)(x+width), (double)(((y+height)-heightToRender)-(pass*width)), zLevel).tex(textureUV.getMaxU(), maxV ).endVertex(); //Top-right
-            vertexbuffer.pos((double)(x), (double)(((y+height)-heightToRender)-(pass*width)), zLevel).tex(textureUV.getMinU(), maxV ).endVertex(); //Top-left
+            vertexbuffer.pos(x, y+height-(pass*width), zLevel).tex(textureUV.getMinU(), textureUV.getMinV()).endVertex(); //Bottom-left
+            vertexbuffer.pos(x+width, y+height-(pass*width), zLevel).tex(textureUV.getMaxU(), textureUV.getMinV()).endVertex(); //Bottom-right
+            vertexbuffer.pos(x+width, ((y+height)-heightToRender)-(pass*width), zLevel).tex(textureUV.getMaxU(), maxV ).endVertex(); //Top-right
+            vertexbuffer.pos(x, ((y+height)-heightToRender)-(pass*width), zLevel).tex(textureUV.getMinU(), maxV ).endVertex(); //Top-left
             tessellator.draw();
 
             actualHeight = actualHeight - width;
@@ -229,10 +229,10 @@ public class GuiHelper
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder renderer = tessellator.getBuffer();
         renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        renderer.pos((double)(x), (double)(y + height), zLevel).tex(u1, v1).endVertex();
-        renderer.pos((double)(x + width), (double)(y + height), zLevel).tex(u2, v2).endVertex();
-        renderer.pos((double)(x + width), (double)(y), zLevel).tex(u3, v3).endVertex();
-        renderer.pos((double)(x), (double)(y), zLevel).tex(u4, v4).endVertex();
+        renderer.pos(x, y + height, zLevel).tex(u1, v1).endVertex();
+        renderer.pos(x + width, y + height, zLevel).tex(u2, v2).endVertex();
+        renderer.pos(x + width, y, zLevel).tex(u3, v3).endVertex();
+        renderer.pos(x, y, zLevel).tex(u4, v4).endVertex();
         tessellator.draw();
     }
 }

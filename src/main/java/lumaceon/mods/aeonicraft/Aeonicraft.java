@@ -2,19 +2,12 @@ package lumaceon.mods.aeonicraft;
 
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
-import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
 import lumaceon.mods.aeonicraft.block.CustomProperties;
 import lumaceon.mods.aeonicraft.compat.ModCompatProxyRegistry;
-import lumaceon.mods.aeonicraft.registry.APIFunctionInitialization;
-import lumaceon.mods.aeonicraft.registry.ModCapabilities;
-import lumaceon.mods.aeonicraft.registry.ModEntities;
-import lumaceon.mods.aeonicraft.item.ItemTemporalCompressorComponent;
-import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.network.PacketHandler;
 import lumaceon.mods.aeonicraft.proxy.IProxy;
-import lumaceon.mods.aeonicraft.registry.RegistryEventHandler;
+import lumaceon.mods.aeonicraft.registry.*;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -100,18 +93,6 @@ public class Aeonicraft
             if((unlockable = registry.getValue(function.getRegistryName())) != null)
             {
                 function.requiredUnlockable = unlockable;
-            }
-        }
-
-        // Link temporal compressor components to Items of the same name
-        IForgeRegistry<Item> itemRegistry = GameRegistry.findRegistry(Item.class);
-        for(TemporalCompressorComponent component : GameRegistry.findRegistry(TemporalCompressorComponent.class))
-        {
-            Item item = itemRegistry.getValue(component.getRegistryName());
-            if(item instanceof ItemTemporalCompressorComponent)
-            {
-                ((ItemTemporalCompressorComponent) item).setCompressorComponent(component);
-                component.itemToRender = new ItemStack(item);
             }
         }
     }

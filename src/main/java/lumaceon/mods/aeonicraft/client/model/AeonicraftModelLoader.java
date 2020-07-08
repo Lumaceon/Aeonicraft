@@ -34,11 +34,7 @@ public class AeonicraftModelLoader implements ICustomModelLoader
         //Aeonicraft.logger.info(modelLocation.toString());
         //if(modelLocation.getResourcePath().endsWith("temporal_hourglass.obj") || modelLocation.getResourcePath().endsWith("temporal_hourglass"))
         //    return true;
-        if(modelLocation.getResourcePath().endsWith("temporal_hourglass"))
-        {
-            return true;
-        }
-        return false;
+        return modelLocation.getResourcePath().endsWith("temporal_hourglass");
     }
 
     @Override

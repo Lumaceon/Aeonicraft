@@ -1,6 +1,6 @@
 package lumaceon.mods.aeonicraft.util;
 
-import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
+import lumaceon.mods.aeonicraft.api.temporal.TC;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,27 +11,19 @@ import net.minecraft.world.World;
 
 public class TimeHelper
 {
-    public static long getTime(Entity entity)
+    public static TC getTime(Entity entity)
     {
-        CapabilityTimeStorage.ITimeStorage cap = entity.getCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null);
-        if(cap != null)
-        {
-            return cap.getTimeInMilliseconds();
-        }
-        return 0;
+        // TODO - Implement me.
+        return TC.ETERNITY;
     }
 
     /**
      * @return Time consumed.
      */
-    public static long consumeTime(Entity entity, long amountToConsume)
+    public static TC consumeTime(Entity entity, TC amountToConsume)
     {
-        CapabilityTimeStorage.ITimeStorage cap = entity.getCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null);
-        if(cap != null)
-        {
-            return cap.extractTime(amountToConsume);
-        }
-        return 0;
+        // TODO - Implement me.
+        return TC.NONE;
     }
 
     /**
@@ -41,10 +33,10 @@ public class TimeHelper
      * @param tool The tools used.
      * @return The time, in milliseconds, it takes to break the block.
      */
-    public static long getTimeToBreakBlock(World world, BlockPos pos, IBlockState state, EntityLivingBase player, ItemStack tool)
+    public static TC getTimeToBreakBlock(World world, BlockPos pos, IBlockState state, EntityLivingBase player, ItemStack tool)
     {
         if(!(player instanceof EntityPlayer) || !state.getBlock().canHarvestBlock(world, pos, (EntityPlayer) player))
-            return Long.MAX_VALUE;
+            return TC.ETERNITY;
 
         float strength = tool.getItem().getDestroySpeed(tool, state);
         float timeCostInTicks = state.getBlockHardness(world, pos) * 30F / strength;
@@ -52,6 +44,6 @@ public class TimeHelper
             timeCostInTicks *= 5.0F;
         if(player.isAirBorne)
             timeCostInTicks *= 5.0F;
-        return (long) (timeCostInTicks * 50.0F);
+        return new TC((long) (timeCostInTicks * 50.0F));
     }
 }

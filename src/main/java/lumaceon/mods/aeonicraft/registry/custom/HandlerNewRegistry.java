@@ -4,7 +4,6 @@ import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockableCategory;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
-import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -34,11 +33,5 @@ public class HandlerNewRegistry
         b3.setName(new ResourceLocation(Aeonicraft.MOD_ID, "hourglass_zfunction_registry")); // because alphabetical order...
         b3.setType(HourglassFunction.class);
         b3.create();
-
-        // Temporal Compressor Components
-        RegistryBuilder<TemporalCompressorComponent> b4 = new RegistryBuilder<>();
-        b4.setName(new ResourceLocation(Aeonicraft.MOD_ID, "temporal_compressor_component_registry"));
-        b4.setType(TemporalCompressorComponent.class);
-        b4.create();
     }
 }

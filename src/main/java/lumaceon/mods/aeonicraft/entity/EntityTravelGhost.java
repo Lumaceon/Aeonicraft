@@ -123,7 +123,7 @@ public class EntityTravelGhost extends EntityCreature
         public void updateTask()
         {
             findDestination();
-            this.travelGhost.getNavigator().tryMoveToXYZ((double)((float)this.destinationBlock.getX()) + 0.5D, (double)(this.destinationBlock.getY() + 1), (double)((float)this.destinationBlock.getZ()) + 0.5D, this.movementSpeed);
+            this.travelGhost.getNavigator().tryMoveToXYZ((double)((float)this.destinationBlock.getX()) + 0.5D, this.destinationBlock.getY() + 1, (double)((float)this.destinationBlock.getZ()) + 0.5D, this.movementSpeed);
         }
 
         private void findDestination()

@@ -2,32 +2,32 @@ package lumaceon.mods.aeonicraft.registry;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.HourglassUnlocks;
+import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockable;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassUnlockableCategory;
-import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
 import lumaceon.mods.aeonicraft.api.util.Icon;
 import lumaceon.mods.aeonicraft.block.BlockAeonPearl;
 import lumaceon.mods.aeonicraft.block.BlockAssemblyTable;
+import lumaceon.mods.aeonicraft.block.multiblockplacers.ItemAssemblyTable;
 import lumaceon.mods.aeonicraft.block.temporalnetwork.BlockTemporalCompressionChamber;
 import lumaceon.mods.aeonicraft.block.temporalnetwork.BlockTemporalCompressor;
-import lumaceon.mods.aeonicraft.block.multiblockplacers.ItemAssemblyTable;
 import lumaceon.mods.aeonicraft.block.temporalnetwork.BlockTemporalConduit;
 import lumaceon.mods.aeonicraft.block.temporalnetwork.BlockTemporalRelay;
 import lumaceon.mods.aeonicraft.client.model.AeonicraftModelLoader;
 import lumaceon.mods.aeonicraft.entity.EntityTravelGhost;
 import lumaceon.mods.aeonicraft.hourglassunlockable.HourglassUnlockableHGFunction;
 import lumaceon.mods.aeonicraft.item.ItemAeonPearlSeeds;
-import lumaceon.mods.aeonicraft.item.ItemTemporalCompressorComponent;
+import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
+import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
 import lumaceon.mods.aeonicraft.item.clockwork.ItemAeonicraftClockwork;
 import lumaceon.mods.aeonicraft.item.clockwork.ItemClockworkComponent;
 import lumaceon.mods.aeonicraft.lib.Textures;
 import lumaceon.mods.aeonicraft.lib.TimeCosts;
-import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
-import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
-import lumaceon.mods.aeonicraft.api.temporalcompression.TemporalCompressorComponent;
-import lumaceon.mods.aeonicraft.temporalcompressor.TemporalCompressorComponentModifierLibrary;
 import lumaceon.mods.aeonicraft.tile.TileAeonPearl;
-import lumaceon.mods.aeonicraft.util.*;
+import lumaceon.mods.aeonicraft.util.ParticleHelper;
+import lumaceon.mods.aeonicraft.util.SoundHelper;
+import lumaceon.mods.aeonicraft.util.SpawnHelper;
+import lumaceon.mods.aeonicraft.util.TimeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -104,11 +104,11 @@ public class RegistryEventHandler
         item(new ItemClockworkComponent(64, 10000, "clockwork_component_test",5), event);
 
         // Chopping block...
-        item(new ItemTemporalCompressorComponent(1, 10000, "gear_wood"), event);
+        /*item(new ItemTemporalCompressorComponent(1, 10000, "gear_wood"), event);
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_stone"), event);
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_iron"), event);
         item(new ItemTemporalCompressorComponent(1, 10000, "gear_gold"), event);
-        item(new ItemTemporalCompressorComponent(1, 10000, "gear_diamond"), event);
+        item(new ItemTemporalCompressorComponent(1, 10000, "gear_diamond"), event);*/
 
         // Ore Dictionary Items.
         temp = item(new ItemAeonicraft(64, 100, "ingot_temporal"), event);
@@ -188,7 +188,7 @@ public class RegistryEventHandler
             @Override
             public ActionResult<ItemStack> onHourglassRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
                 if(!worldIn.isRemote) {
-                    if(TimeHelper.getTime(playerIn) >= TimeCosts.TRAVEL_GHOST) {
+                    if(TimeHelper.getTime(playerIn).getVal() >= TimeCosts.TRAVEL_GHOST.getVal()) {
                         TimeHelper.consumeTime(playerIn, TimeCosts.TRAVEL_GHOST);
                         worldIn.spawnEntity(new EntityTravelGhost(worldIn, playerIn));
                     }
@@ -205,7 +205,7 @@ public class RegistryEventHandler
                 {
                     if(world.getTotalWorldTime() % 10 == 0)
                     {
-                        if(TimeHelper.getTime(entity) >= TimeCosts.ENDATTRACTOR_SPAWN)
+                        if(TimeHelper.getTime(entity).getVal() >= TimeCosts.ENDATTRACTOR_SPAWN.getVal())
                         {
                             List<EntityEnderman> enders = world.getEntities(EntityEnderman.class, input -> input != null && input.getDistance(entity) < 32F);
                             if(enders.size() < 3)
@@ -226,16 +226,6 @@ public class RegistryEventHandler
                 }
             }
         }, event);
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void registerTemporalCompressorComponent(RegistryEvent.Register<TemporalCompressorComponent> event)
-    {
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_wood"),1).makeModifable(), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_stone"),10), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_iron"),100), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_gold"),1000), event);
-        tCompComponent(new TemporalCompressorComponent(new ResourceLocation(Aeonicraft.MOD_ID, "gear_diamond"),0).addTCModifier(TemporalCompressorComponentModifierLibrary.plusFiveModified), event);
     }
 
     @SubscribeEvent
@@ -287,10 +277,5 @@ public class RegistryEventHandler
     private static HourglassFunction hgFunc(HourglassFunction func, RegistryEvent.Register<HourglassFunction> event) {
         event.getRegistry().register(func);
         return func;
-    }
-
-    private static TemporalCompressorComponent tCompComponent(TemporalCompressorComponent component, RegistryEvent.Register<TemporalCompressorComponent> event) {
-        event.getRegistry().register(component);
-        return component;
     }
 }

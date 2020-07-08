@@ -8,7 +8,6 @@ public class ModCapabilities
     public static void init()
     {
         CapabilityAeonicraftProgression.register();
-        CapabilityTimeStorage.register();
         CapabilityToggle.register();
         CapabilityHourglass.register();
         CapabilityTravelGhost.register();

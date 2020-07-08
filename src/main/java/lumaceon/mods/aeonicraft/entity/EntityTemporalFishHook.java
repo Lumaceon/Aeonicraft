@@ -1,9 +1,7 @@
 package lumaceon.mods.aeonicraft.entity;
 
+import lumaceon.mods.aeonicraft.api.temporal.TC;
 import lumaceon.mods.aeonicraft.lib.TimeCosts;
-import lumaceon.mods.aeonicraft.registry.ModItems;
-import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
-import lumaceon.mods.aeonicraft.util.InventoryHelper;
 import lumaceon.mods.aeonicraft.util.ParticleHelper;
 import lumaceon.mods.aeonicraft.util.SoundHelper;
 import lumaceon.mods.aeonicraft.util.TimeHelper;
@@ -72,6 +70,7 @@ public class EntityTemporalFishHook extends EntityFishHook
         this.shoot();
     }
 
+
     private void init(EntityPlayer p_190626_1_)
     {
         this.setSize(0.25F, 0.25F);
@@ -104,16 +103,16 @@ public class EntityTemporalFishHook extends EntityFishHook
         double d1 = this.angler.prevPosY + (this.angler.posY - this.angler.prevPosY) + (double)this.angler.getEyeHeight();
         double d2 = this.angler.prevPosZ + (this.angler.posZ - this.angler.prevPosZ) - (double)f2 * 0.3D;
         this.setLocationAndAngles(d0, d1, d2, f1, f);
-        this.motionX = (double)(-f3);
-        this.motionY = (double)MathHelper.clamp(-(f5 / f4), -5.0F, 5.0F);
-        this.motionZ = (double)(-f2);
+        this.motionX = -f3;
+        this.motionY = MathHelper.clamp(-(f5 / f4), -5.0F, 5.0F);
+        this.motionZ = -f2;
         float f6 = MathHelper.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
         this.motionX *= 0.6D / (double)f6 + 0.5D + this.rand.nextGaussian() * 0.0045D;
         this.motionY *= 0.6D / (double)f6 + 0.5D + this.rand.nextGaussian() * 0.0045D;
         this.motionZ *= 0.6D / (double)f6 + 0.5D + this.rand.nextGaussian() * 0.0045D;
         float f7 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float)(MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
-        this.rotationPitch = (float)(MathHelper.atan2(this.motionY, (double)f7) * (180D / Math.PI));
+        this.rotationPitch = (float)(MathHelper.atan2(this.motionY, f7) * (180D / Math.PI));
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
     }
@@ -241,7 +240,7 @@ public class EntityTemporalFishHook extends EntityFishHook
                         else
                         {
                             this.posX = this.caughtEntity.posX;
-                            double d2 = (double)this.caughtEntity.height;
+                            double d2 = this.caughtEntity.height;
                             this.posY = this.caughtEntity.getEntityBoundingBox().minY + d2 * 0.8D;
                             this.posZ = this.caughtEntity.posZ;
                             this.setPosition(this.posX, this.posY, this.posZ);
@@ -309,9 +308,8 @@ public class EntityTemporalFishHook extends EntityFishHook
         float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float)(MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
 
-        for (this.rotationPitch = (float)(MathHelper.atan2(this.motionY, (double)f) * (180D / Math.PI)); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
+        for (this.rotationPitch = (float)(MathHelper.atan2(this.motionY, f) * (180D / Math.PI)); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
         {
-            ;
         }
 
         while (this.rotationPitch - this.prevRotationPitch >= 180.0F)
@@ -413,13 +411,13 @@ public class EntityTemporalFishHook extends EntityFishHook
         // if this would have failed to catch a fish, but we have a valid hourglass, consume time and auto-succeed
         if(this.ticksCatchable <= 0)
         {
-            int timeToCatchAFish = MathHelper.getInt(this.rand, (int) TimeCosts.INSTANT_FISH_MIN, (int) TimeCosts.INSTANT_FISH_MAX);
+            int timeToCatchAFish = MathHelper.getInt(this.rand, (int) TimeCosts.INSTANT_FISH_MIN.getVal(), (int) TimeCosts.INSTANT_FISH_MAX.getVal());
             timeToCatchAFish -= this.lureSpeed * 20 * 5;
 
 
-            if(angler != null && TimeHelper.getTime(angler) > timeToCatchAFish)
+            if(angler != null && TimeHelper.getTime(angler).getVal() > timeToCatchAFish)
             {
-                TimeHelper.consumeTime(angler, timeToCatchAFish);
+                TimeHelper.consumeTime(angler, new TC(timeToCatchAFish));
                 this.ticksCatchable = 100;
 
                 SoundHelper.playMediumTimeDing(null, world, posX, posY, posZ);
@@ -452,7 +450,7 @@ public class EntityTemporalFishHook extends EntityFishHook
                 float f1 = MathHelper.sin(f);
                 float f2 = MathHelper.cos(f);
                 double d0 = this.posX + (double)(f1 * (float)this.ticksCatchableDelay * 0.1F);
-                double d1 = (double)((float)MathHelper.floor(this.getEntityBoundingBox().minY) + 1.0F);
+                double d1 = (float)MathHelper.floor(this.getEntityBoundingBox().minY) + 1.0F;
                 double d2 = this.posZ + (double)(f2 * (float)this.ticksCatchableDelay * 0.1F);
                 Block block = worldserver.getBlockState(new BlockPos(d0, d1 - 1.0D, d2)).getBlock();
 
@@ -460,22 +458,22 @@ public class EntityTemporalFishHook extends EntityFishHook
                 {
                     if (this.rand.nextFloat() < 0.15F)
                     {
-                        worldserver.spawnParticle(EnumParticleTypes.WATER_BUBBLE, d0, d1 - 0.10000000149011612D, d2, 1, (double)f1, 0.1D, (double)f2, 0.0D);
+                        worldserver.spawnParticle(EnumParticleTypes.WATER_BUBBLE, d0, d1 - 0.10000000149011612D, d2, 1, f1, 0.1D, f2, 0.0D);
                     }
 
                     float f3 = f1 * 0.04F;
                     float f4 = f2 * 0.04F;
-                    worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, d0, d1, d2, 0, (double)f4, 0.01D, (double)(-f3), 1.0D);
-                    worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, d0, d1, d2, 0, (double)(-f4), 0.01D, (double)f3, 1.0D);
+                    worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, d0, d1, d2, 0, f4, 0.01D, -f3, 1.0D);
+                    worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, d0, d1, d2, 0, -f4, 0.01D, f3, 1.0D);
                 }
             }
             else
             {
-                this.motionY = (double)(-0.4F * MathHelper.nextFloat(this.rand, 0.6F, 1.0F));
+                this.motionY = -0.4F * MathHelper.nextFloat(this.rand, 0.6F, 1.0F);
                 this.playSound(SoundEvents.ENTITY_BOBBER_SPLASH, 0.25F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
                 double d3 = this.getEntityBoundingBox().minY + 0.5D;
-                worldserver.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX, d3, this.posZ, (int)(1.0F + this.width * 20.0F), (double)this.width, 0.0D, (double)this.width, 0.20000000298023224D);
-                worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, this.posX, d3, this.posZ, (int)(1.0F + this.width * 20.0F), (double)this.width, 0.0D, (double)this.width, 0.20000000298023224D);
+                worldserver.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX, d3, this.posZ, (int)(1.0F + this.width * 20.0F), this.width, 0.0D, this.width, 0.20000000298023224D);
+                worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, this.posX, d3, this.posZ, (int)(1.0F + this.width * 20.0F), this.width, 0.0D, this.width, 0.20000000298023224D);
                 this.ticksCatchable = MathHelper.getInt(this.rand, 20, 40);
             }
         }
@@ -502,7 +500,7 @@ public class EntityTemporalFishHook extends EntityFishHook
                 float f6 = MathHelper.nextFloat(this.rand, 0.0F, 360.0F) * 0.017453292F;
                 float f7 = MathHelper.nextFloat(this.rand, 25.0F, 60.0F);
                 double d4 = this.posX + (double)(MathHelper.sin(f6) * f7 * 0.1F);
-                double d5 = (double)((float)MathHelper.floor(this.getEntityBoundingBox().minY) + 1.0F);
+                double d5 = (float)MathHelper.floor(this.getEntityBoundingBox().minY) + 1.0F;
                 double d6 = this.posZ + (double)(MathHelper.cos(f6) * f7 * 0.1F);
                 Block block1 = worldserver.getBlockState(new BlockPos((int)d4, (int)d5 - 1, (int)d6)).getBlock();
 
@@ -582,7 +580,7 @@ public class EntityTemporalFishHook extends EntityFishHook
                     double d0 = this.angler.posX - this.posX;
                     double d1 = this.angler.posY - this.posY;
                     double d2 = this.angler.posZ - this.posZ;
-                    double d3 = (double)MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+                    double d3 = MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
                     double d4 = 0.1D;
                     entityitem.motionX = d0 * 0.1D;
                     entityitem.motionY = d1 * 0.1D + (double)MathHelper.sqrt(d3) * 0.08D;
@@ -673,7 +671,7 @@ public class EntityTemporalFishHook extends EntityFishHook
         return this.angler;
     }
 
-    static enum State
+    enum State
     {
         FLYING,
         HOOKED_IN_ENTITY,

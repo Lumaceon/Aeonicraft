@@ -1,10 +1,12 @@
 package lumaceon.mods.aeonicraft.lib;
 
+import lumaceon.mods.aeonicraft.api.temporal.TC;
+
 public class TimeCosts
 {
-    public static long TRAVEL_GHOST = 1L;
-    public static long ENDATTRACTOR_SPAWN = 5L;
-    public static long AUTO_ADULT_BREED = 100L;
-    public static long INSTANT_FISH_MIN = 5000L;
-    public static long INSTANT_FISH_MAX = 30000L;
+    public static TC TRAVEL_GHOST = TC.MINUTE;
+    public static TC ENDATTRACTOR_SPAWN = TC.MINUTE.multiply(10);
+    public static TC AUTO_ADULT_BREED = TC.TICK.multiply(2);
+    public static TC INSTANT_FISH_MIN = TC.SECOND.multiply(5);
+    public static TC INSTANT_FISH_MAX = TC.SECOND.multiply(30);
 }

@@ -1,5 +1,6 @@
-package lumaceon.mods.aeonicraft.api.temporalnetwork;
+package lumaceon.mods.aeonicraft.api.temporal.temporalnetwork;
 
+import lumaceon.mods.aeonicraft.api.temporal.TC;
 import net.minecraft.util.EnumFacing;
 
 /**
@@ -17,13 +18,13 @@ public interface ITemporalNetworkBlock
      *
      * @return The TC this will generate each second when unloaded.
      */
-    long getTCGenerationPerSecond();
+    TC getTCGenerationPerSecond();
 
     /**
      * How much TC capacity to add to a temporal network. Conventionally, blocks with a high TC capacity should also
      * have a significant negative generation value, encouraging the player to keep storage loaded at all times.
      */
-    long getTCCapacity();
+    TC getTCCapacity();
 
     /**
      * Queried when first added to the network. If you need more dynamic sides, you'll have to get the TemporalNetwork

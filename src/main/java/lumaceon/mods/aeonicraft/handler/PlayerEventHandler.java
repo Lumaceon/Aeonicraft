@@ -2,24 +2,19 @@ package lumaceon.mods.aeonicraft.handler;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
-import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
+import lumaceon.mods.aeonicraft.api.temporal.TC;
 import lumaceon.mods.aeonicraft.capability.CapabilityAeonicraftProgression;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
-import lumaceon.mods.aeonicraft.capability.CapabilityTimeStorage;
 import lumaceon.mods.aeonicraft.entity.EntityTemporalFishHook;
 import lumaceon.mods.aeonicraft.lib.TimeCosts;
 import lumaceon.mods.aeonicraft.registry.ModHourglassFunctions;
 import lumaceon.mods.aeonicraft.registry.ModItems;
 import lumaceon.mods.aeonicraft.item.ItemTemporalHourglass;
-import lumaceon.mods.aeonicraft.lib.ConfigValues;
-import lumaceon.mods.aeonicraft.network.PacketHandler;
-import lumaceon.mods.aeonicraft.network.message.MessagePlayerTCUpdate;
 import lumaceon.mods.aeonicraft.util.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
@@ -76,8 +71,8 @@ public class PlayerEventHandler
                 HourglassFunction hourglassFunction = hourglass.getActiveHourglassFunction(firstHourglass);
                 if(hourglassFunction != null && hourglassFunction.equals(ModHourglassFunctions.hgf_excavation_overclocker))
                 {
-                    long timeToBreakBlock = TimeHelper.getTimeToBreakBlock(player.world, event.getPos(), event.getState(), player, player.inventory.getCurrentItem());
-                    if(TimeHelper.getTime(player) >= timeToBreakBlock)
+                    TC timeToBreakBlock = TimeHelper.getTimeToBreakBlock(player.world, event.getPos(), event.getState(), player, player.inventory.getCurrentItem());
+                    if(TimeHelper.getTime(player).getVal() >= timeToBreakBlock.getVal())
                     {
                         int hourglassSlotIndex = -1;
                         for(int i = 0; i < player.inventory.getSizeInventory(); i++)
@@ -115,19 +110,6 @@ public class PlayerEventHandler
 
         int currentUpdateCount = updateCount.getOrDefault(player, -1) + 1;
 
-        // Handle player-bound TC generation...
-        CapabilityTimeStorage.ITimeStorage timeStorage = player.getCapability(CapabilityTimeStorage.TIME_STORAGE_CAPABILITY, null);
-        if(timeStorage != null)
-        {
-            // TODO proper time generation logic
-            timeStorage.insertTime(1);
-            if(currentUpdateCount % ConfigValues.SECONDS_BETWEEN_PLAYER_TC_UPDATE_PACKET * 20 == 0)
-            {
-                currentUpdateCount = 0;
-                PacketHandler.INSTANCE.sendTo(new MessagePlayerTCUpdate(timeStorage.getTimeInMilliseconds(), 50, CapabilityTimeStorage.TimeStorage.UpdateSpeed.SLOW), (EntityPlayerMP) player);
-            }
-        }
-
         // Modify fish hook if the appropriate hourglass module is active...
         if(player.fishEntity != null)
         {
@@ -136,7 +118,7 @@ public class PlayerEventHandler
             if(cap != null)
             {
                 HourglassFunction func = cap.getActiveFunction();
-                if(func != null && func.equals(ModHourglassFunctions.hgf_aquatic_lure_overclocker) && !(player.fishEntity instanceof EntityTemporalFishHook) && TimeHelper.getTime(player) >= TimeCosts.INSTANT_FISH_MAX)
+                if(func != null && func.equals(ModHourglassFunctions.hgf_aquatic_lure_overclocker) && !(player.fishEntity instanceof EntityTemporalFishHook) && TimeHelper.getTime(player).getVal() >= TimeCosts.INSTANT_FISH_MAX.getVal())
                 {
                     player.fishEntity.setDead();
                     EntityTemporalFishHook fishHook = new EntityTemporalFishHook(player.world, player);
@@ -193,7 +175,7 @@ public class PlayerEventHandler
                 )
                 {
 
-                    long availableTime = TimeHelper.getTime(player);
+                    long availableTime = TimeHelper.getTime(player).getVal();
 
                     // do we have time to shear a sheep MY WAY...?
                     if(availableTime >= 20000)
@@ -211,7 +193,7 @@ public class PlayerEventHandler
                         timeToConsume += 20000;
                         sheep.setSheared(false);
 
-                        if(availableTime < 20000 + TCToRealTime.SECOND * 10)
+                        if(availableTime < 20000 + TC.SECOND.getVal() * 10)
                         {
                             // within range of sheep regrowth, but not grass growth, so RIP grass...
                             sheep.world.setBlockState(firstGrass, Blocks.DIRT.getDefaultState());
@@ -219,7 +201,7 @@ public class PlayerEventHandler
                         else
                         {
                             // time for both sheep AND grass...
-                            timeToConsume += TCToRealTime.SECOND * 10;
+                            timeToConsume += TC.SECOND.getVal() * 10;
 
                             if(foundGrass == 1)
                             {
@@ -228,7 +210,7 @@ public class PlayerEventHandler
                             }
 
                             // either way, consume the time...
-                            TimeHelper.consumeTime(player, timeToConsume);
+                            TimeHelper.consumeTime(player, new TC(timeToConsume));
 
                             BlockPos pos = event.getPos();
 

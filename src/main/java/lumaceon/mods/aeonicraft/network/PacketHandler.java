@@ -17,7 +17,6 @@ public class PacketHandler
     public static void init()
     {
         //Note: the side passed in is the RECEIVING side.
-        registerMessage(HandlerPlayerTCUpdate.class, MessagePlayerTCUpdate.class, Side.CLIENT);
         registerMessage(HandlerLoginDataSync.class, MessageLoginDataSync.class, Side.CLIENT);
         registerMessage(HandlerHourglassFunctionChange.class, MessageHourglassFunctionChange.class, Side.SERVER);
         registerMessage(HandlerGainUnlock.class, MessageGainUnlock.class, Side.SERVER);

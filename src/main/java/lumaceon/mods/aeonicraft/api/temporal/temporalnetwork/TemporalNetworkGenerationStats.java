@@ -1,6 +1,7 @@
-package lumaceon.mods.aeonicraft.api.temporalnetwork;
+package lumaceon.mods.aeonicraft.api.temporal.temporalnetwork;
 
 import lumaceon.mods.aeonicraft.api.Internal;
+import lumaceon.mods.aeonicraft.api.temporal.TC;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.api.util.ChunkLoc;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,14 +20,14 @@ public class TemporalNetworkGenerationStats
     protected TemporalNetwork temporalNetwork;
     protected boolean isDirty = true;
 
-    protected long temporalCompressionCapacity = 0;
+    protected TC temporalCompressionCapacity = TC.NONE;
 
 
     public TemporalNetworkGenerationStats(TemporalNetwork temporalNetwork) {
         this.temporalNetwork = temporalNetwork;
     }
 
-    public long getTCCapacity() {
+    public TC getTCCapacity() {
         return this.temporalCompressionCapacity;
     }
 
@@ -49,7 +50,7 @@ public class TemporalNetworkGenerationStats
 
         stats = new TemporalNetworkLocationStats(block.getTCGenerationPerSecond(), block.getTCCapacity(), connectableSides, loc);
         locationsInTheNetwork.put(loc, stats);
-        this.temporalCompressionCapacity += stats.getTCCap();
+        this.temporalCompressionCapacity = this.temporalCompressionCapacity.add(stats.getTCCap());
         this.temporalNetwork.checkCapacityChangeLoss(this.getTCCapacity());
         updateChunkStatsWhenAddingLocation(stats);
 
@@ -65,7 +66,7 @@ public class TemporalNetworkGenerationStats
             return;
 
         locationsInTheNetwork.put(loc.location, loc);
-        this.temporalCompressionCapacity += loc.getTCCap();
+        this.temporalCompressionCapacity = this.temporalCompressionCapacity.add(loc.getTCCap());
         this.temporalNetwork.checkCapacityChangeLoss(this.getTCCapacity());
         updateChunkStatsWhenAddingLocation(loc);
 
@@ -82,7 +83,7 @@ public class TemporalNetworkGenerationStats
         else
         {
             TemporalNetworkChunkStats chunkStats = tcGenPerChunk.get(cLoc);
-            chunkStats.tcGenPerSecond += loc.tcGenPerSecond;
+            chunkStats.tcGenPerSecond = chunkStats.tcGenPerSecond.add(loc.tcGenPerSecond);
             chunkStats.locsInChunk++;
         }
     }
@@ -96,14 +97,14 @@ public class TemporalNetworkGenerationStats
         if(stats == null)
             return;
 
-        this.temporalCompressionCapacity -= stats.getTCCap();
+        this.temporalCompressionCapacity = this.temporalCompressionCapacity.subtract(stats.getTCCap());
         this.temporalNetwork.checkCapacityChangeLoss(this.getTCCapacity());
 
         ChunkLoc cLoc = new ChunkLoc(loc);
         if(tcGenPerChunk.containsKey(cLoc))
         {
             TemporalNetworkChunkStats chunkStats = tcGenPerChunk.get(new ChunkLoc(loc));
-            chunkStats.tcGenPerSecond -= stats.tcGenPerSecond;
+            chunkStats.tcGenPerSecond = chunkStats.tcGenPerSecond.subtract(stats.tcGenPerSecond);
             chunkStats.locsInChunk--;
             if(chunkStats.locsInChunk <= 0)
             {
@@ -140,34 +141,34 @@ public class TemporalNetworkGenerationStats
     /**
      * Updates the TC generation rate associated with the block at the given location.
      */
-    public void updateTCGen(BlockLoc loc, long newTCGenPerSecond)
+    public void updateTCGen(BlockLoc loc, TC newTCGenPerSecond)
     {
         if(locationsInTheNetwork.containsKey(loc))
         {
             TemporalNetworkLocationStats stats = locationsInTheNetwork.get(loc);
-            long howMuchNewGenAdded = newTCGenPerSecond - stats.tcGenPerSecond;
+            long howMuchNewGenAdded = newTCGenPerSecond.getVal() - stats.tcGenPerSecond.getVal();
             stats.setTCGenPerSecond(newTCGenPerSecond);
 
             ChunkLoc cLoc = new ChunkLoc(loc);
             if(tcGenPerChunk.containsKey(cLoc))
             {
                 TemporalNetworkChunkStats chunkStats = tcGenPerChunk.get(new ChunkLoc(loc));
-                chunkStats.tcGenPerSecond += howMuchNewGenAdded;
+                chunkStats.tcGenPerSecond = chunkStats.tcGenPerSecond.add(howMuchNewGenAdded);
             }
         }
 
         markDirty();
     }
 
-    public void updateTCCapacity(BlockLoc loc, long newTCCapacity)
+    public void updateTCCapacity(BlockLoc loc, TC newTCCapacity)
     {
         if(locationsInTheNetwork.containsKey(loc))
         {
             TemporalNetworkLocationStats stats = locationsInTheNetwork.get(loc);
-            long howMuchNewCapAdded = newTCCapacity - stats.tcGenPerSecond;
+            long howMuchNewCapAdded = newTCCapacity.getVal() - stats.tcGenPerSecond.getVal();
             stats.setTCCap(newTCCapacity);
 
-            this.temporalCompressionCapacity += howMuchNewCapAdded;
+            this.temporalCompressionCapacity = this.temporalCompressionCapacity.add(howMuchNewCapAdded);
         }
 
         markDirty();
@@ -302,8 +303,8 @@ public class TemporalNetworkGenerationStats
 
     public class TemporalNetworkLocationStats
     {
-        private long tcGenPerSecond;
-        private long tcCapacity;
+        private TC tcGenPerSecond;
+        private TC tcCapacity;
         private boolean[] connections = {
                 true, //DOWN
                 true, //UP
@@ -315,7 +316,7 @@ public class TemporalNetworkGenerationStats
         private BlockLoc location;
         private ArrayList<BlockLoc> forcedAdjacencyConnections = new ArrayList<>(2);
 
-        public TemporalNetworkLocationStats(long tcGenPerSecond, long tcCapacity, boolean[] connectableSides, BlockLoc location) {
+        public TemporalNetworkLocationStats(TC tcGenPerSecond, TC tcCapacity, boolean[] connectableSides, BlockLoc location) {
             this.tcGenPerSecond = tcGenPerSecond;
             this.tcCapacity = tcCapacity;
             this.connections = connectableSides;
@@ -324,8 +325,8 @@ public class TemporalNetworkGenerationStats
 
         public TemporalNetworkLocationStats(NBTTagCompound tag)
         {
-            this.tcGenPerSecond = tag.getLong("tc_gen");
-            this.tcCapacity = tag.getLong("tc_cap");
+            this.tcGenPerSecond = new TC(tag.getLong("tc_gen"));
+            this.tcCapacity = new TC(tag.getLong("tc_cap"));
 
             this.connections[0] = tag.getBoolean("c_down");
             this.connections[1] = tag.getBoolean("c_up");
@@ -341,19 +342,19 @@ public class TemporalNetworkGenerationStats
                 this.forcedAdjacencyConnections.add(new BlockLoc(forcedAdjacentTargets.getCompoundTagAt(i)));
         }
 
-        public void setTCGenPerSecond(long tcGenPerSecond) {
+        public void setTCGenPerSecond(TC tcGenPerSecond) {
             this.tcGenPerSecond = tcGenPerSecond;
         }
 
-        public long getTCGenPerSecond() {
+        public TC getTCGenPerSecond() {
             return this.tcGenPerSecond;
         }
 
-        public void setTCCap(long tcCap) {
+        public void setTCCap(TC tcCap) {
             this.tcCapacity = tcCap;
         }
 
-        public long getTCCap() {
+        public TC getTCCap() {
             return this.tcCapacity;
         }
 
@@ -418,8 +419,8 @@ public class TemporalNetworkGenerationStats
             NBTTagCompound nbt = new NBTTagCompound();
 
             // Save TC Generation value.
-            nbt.setLong("tc_gen", getTCGenPerSecond());
-            nbt.setLong("tc_cap", getTCCap());
+            nbt.setLong("tc_gen", getTCGenPerSecond().getVal());
+            nbt.setLong("tc_cap", getTCCap().getVal());
 
             // Save side connections.
             nbt.setBoolean("c_down", this.canConnect(EnumFacing.DOWN));
@@ -444,10 +445,10 @@ public class TemporalNetworkGenerationStats
 
     public class TemporalNetworkChunkStats
     {
-        public long tcGenPerSecond;
+        public TC tcGenPerSecond;
         public int locsInChunk = 1;
 
-        public TemporalNetworkChunkStats(long tcGenPerSecond)
+        public TemporalNetworkChunkStats(TC tcGenPerSecond)
         {
             this.tcGenPerSecond = tcGenPerSecond;
         }

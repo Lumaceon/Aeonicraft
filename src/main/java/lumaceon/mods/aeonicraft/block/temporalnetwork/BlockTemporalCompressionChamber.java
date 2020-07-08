@@ -1,8 +1,8 @@
 package lumaceon.mods.aeonicraft.block.temporalnetwork;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.BlockTemporalNetwork;
-import lumaceon.mods.aeonicraft.api.util.TCToRealTime;
+import lumaceon.mods.aeonicraft.api.temporal.TC;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.BlockTemporalNetwork;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.EnumFacing;
 
@@ -21,13 +21,13 @@ public class BlockTemporalCompressionChamber extends BlockTemporalNetwork
     }
 
     @Override
-    public long getTCGenerationPerSecond() {
-        return -TCToRealTime.MINUTE;
+    public TC getTCGenerationPerSecond() {
+        return TC.MINUTE;
     }
 
     @Override
-    public long getTCCapacity() {
-        return TCToRealTime.HOUR;
+    public TC getTCCapacity() {
+        return TC.HOUR;
     }
 
     @Override

@@ -2,9 +2,9 @@ package lumaceon.mods.aeonicraft.item;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.hourglass.HourglassFunction;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.ITemporalNetworkBlock;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetworkGenerationStats;
-import lumaceon.mods.aeonicraft.api.temporalnetwork.TemporalNetwork;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.ITemporalNetworkBlock;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.TemporalNetworkGenerationStats;
+import lumaceon.mods.aeonicraft.api.temporal.temporalnetwork.TemporalNetwork;
 import lumaceon.mods.aeonicraft.api.util.BlockLoc;
 import lumaceon.mods.aeonicraft.capability.CapabilityHourglass;
 import lumaceon.mods.aeonicraft.capability.CapabilityTemporalNetworkLinker;
