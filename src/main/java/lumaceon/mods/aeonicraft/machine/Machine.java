@@ -87,21 +87,40 @@ public class Machine
         return energyStorage.extractEnergy(Integer.MAX_VALUE, true) / energyPerProgress;
     }
 
+    /**
+     * @return The number of game ticks it takes to complete one machine action.
+     */
+    protected float getGameTicksPerAction() {
+        return this.progressPerAction / this.progressPerGameTick;
+    }
+
 
     // *** OPTIONAL NBT FUNCTIONS *** //
 
     public NBTTagCompound serializeNBT()
     {
         NBTTagCompound nbt = new NBTTagCompound();
+
+        nbt.setTag("tick_interval_stats", tickInterval.serializeNBT());
+
+        nbt.setInteger("energy", energyStorage.getEnergyStored());
+        nbt.setInteger("max_energy", energyStorage.getMaxEnergyStored());
+
         nbt.setFloat("current_progress", this.currentProgress);
         nbt.setFloat("progress_per_game_tick", this.progressPerGameTick);
         nbt.setFloat("progress_per_action", this.progressPerAction);
         nbt.setFloat("energy_per_progress", this.energyPerProgress);
+
         return nbt;
     }
 
     public void deserializeNBT(NBTTagCompound nbt)
     {
+        this.tickInterval = new TickInterval(nbt.getCompoundTag("tick_interval_stats"));
+
+        int maxEnergy = nbt.getInteger("max_energy");
+        this.energyStorage = new EnergyStorage(maxEnergy, maxEnergy, maxEnergy, nbt.getInteger("energy"));
+
         this.currentProgress = nbt.getFloat("current_progress");
         this.progressPerGameTick = nbt.getFloat("progress_per_game_tick");
         this.progressPerAction = nbt.getFloat("progress_per_action");
@@ -111,6 +130,7 @@ public class Machine
 
     // *** GENERATED MUTATORS AND ACCESSORS *** //
 
+    public EnergyStorage getEnergyStorage() { return energyStorage; }
     public TickInterval getTickInterval() {
         return tickInterval;
     }
