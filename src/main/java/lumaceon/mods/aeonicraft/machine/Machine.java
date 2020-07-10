@@ -1,14 +1,14 @@
 package lumaceon.mods.aeonicraft.machine;
 
+import lumaceon.mods.aeonicraft.api.clockwork.EnergyStorageModular;
 import lumaceon.mods.aeonicraft.util.TickInterval;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.energy.EnergyStorage;
 
 import java.util.function.Function;
 
 public class Machine
 {
-    protected EnergyStorage energyStorage;
+    protected EnergyStorageModular energyStorage;
 
     /**
      * Tick interval is how many ingame ticks are required for a machine tick, which may possibly be configurable.
@@ -32,7 +32,7 @@ public class Machine
     protected Function<Integer, Integer> takeActions;
 
 
-    public Machine(EnergyStorage energyStorage,
+    public Machine(EnergyStorageModular energyStorage,
                    TickInterval tickInterval,
                    Function<Machine, Integer> getMaxActions,
                    Function<Integer, Integer> takeActions) {
@@ -44,28 +44,37 @@ public class Machine
 
     /**
      * To be called every available update tick.
+     * @return True if important data has changed, false otherwise.
      */
-    public void gameTick()
+    public boolean gameTick()
     {
         if(tickInterval.receiveTick())
-            machineTick();
+            return machineTick();
+        return false;
     }
 
     /**
      * Called internally every internal tick interval.
+     * @return True if important data has changed, false otherwise.
      */
-    protected void machineTick()
+    protected boolean machineTick()
     {
-        progressTick();
+        boolean ret = progressTick();
 
         int actions = this.takeActions.apply((int) (this.currentProgress / this.progressPerAction));
         this.currentProgress -= (actions * this.progressPerAction);
+
+        if(actions != 0)
+            ret = true;
+
+        return ret;
     }
 
     /**
      * Called every internal tick interval; specifically handles progress.
+     * @return True if important data has changed, false otherwise.
      */
-    protected void progressTick()
+    protected boolean progressTick()
     {
         float progressToAdd = tickInterval.getTickInterval() * this.progressPerGameTick;
         progressToAdd = Math.min(progressToAdd, getMaxProgressFromEnergy());
@@ -76,6 +85,8 @@ public class Machine
         }
 
         currentProgress += progressToAdd;
+
+        return progressToAdd != 0;
     }
 
     /**
@@ -119,7 +130,7 @@ public class Machine
         this.tickInterval = new TickInterval(nbt.getCompoundTag("tick_interval_stats"));
 
         int maxEnergy = nbt.getInteger("max_energy");
-        this.energyStorage = new EnergyStorage(maxEnergy, maxEnergy, maxEnergy, nbt.getInteger("energy"));
+        this.energyStorage = new EnergyStorageModular(maxEnergy, maxEnergy, maxEnergy, nbt.getInteger("energy"));
 
         this.currentProgress = nbt.getFloat("current_progress");
         this.progressPerGameTick = nbt.getFloat("progress_per_game_tick");
@@ -130,7 +141,7 @@ public class Machine
 
     // *** GENERATED MUTATORS AND ACCESSORS *** //
 
-    public EnergyStorage getEnergyStorage() { return energyStorage; }
+    public EnergyStorageModular getEnergyStorage() { return energyStorage; }
     public TickInterval getTickInterval() {
         return tickInterval;
     }

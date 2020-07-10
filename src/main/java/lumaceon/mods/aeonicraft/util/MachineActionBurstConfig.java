@@ -8,9 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class MachineActionBurstConfig
 {
-    private int burst = 1;
-    private int minBurst = 1;
-    private int maxBurst = 64;
+    private int burst = 64;
+    private int minBurst = 0;
+    private int maxBurst = 1024;
     private boolean unboundedMax = false;
 
     /**

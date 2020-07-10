@@ -1,19 +1,30 @@
 package lumaceon.mods.aeonicraft.tile.temporalmachine;
 
+import lumaceon.mods.aeonicraft.machine.Machine;
 import lumaceon.mods.aeonicraft.machine.TemporalMachine;
 import lumaceon.mods.aeonicraft.tile.TileAeonicraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public abstract class TileTemporalMachine extends TileAeonicraft
+public abstract class TileTemporalMachine extends TileAeonicraft implements ITickable
 {
     @CapabilityInject(IEnergyStorage.class)
     static Capability<IEnergyStorage> ENERGY_STORAGE_CAPABILITY = null;
 
     public TemporalMachine temporalMachine;
+
+    public abstract int getMaxActions(Machine machine);
+    public abstract int takeActions(int max);
+
+    @Override
+    public void update() {
+        if(temporalMachine.gameTick())
+            markDirty();
+    }
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing)

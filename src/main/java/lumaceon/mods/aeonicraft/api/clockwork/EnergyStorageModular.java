@@ -30,6 +30,10 @@ public class EnergyStorageModular extends EnergyStorage
         super(capacity, maxReceive, maxExtract);
     }
 
+    public EnergyStorageModular(int capacity, int maxReceive, int maxExtract, int energy) {
+        super(capacity, maxReceive, maxExtract, energy);
+    }
+
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
         int ret = super.receiveEnergy(maxReceive, simulate);
