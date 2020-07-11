@@ -3,7 +3,10 @@ package lumaceon.mods.aeonicraft.tile.temporalmachine;
 import lumaceon.mods.aeonicraft.util.SidedInventorySlotConfiguration;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -13,7 +16,9 @@ public abstract class TileTemporalMachineInventory extends TileTemporalMachine i
 {
     protected NonNullList<ItemStack> inventory;
     protected SidedInventorySlotConfiguration slotConfiguration;
-    protected SidedInvWrapper[] sidedInventoryWrappers = {
+
+    protected final String name;
+    protected final SidedInvWrapper[] sidedInventoryWrappers = {
             new SidedInvWrapper(this, EnumFacing.values()[0]), // DOWN
             new SidedInvWrapper(this, EnumFacing.values()[1]), // UP
             new SidedInvWrapper(this, EnumFacing.values()[2]), // NORTH
@@ -21,14 +26,13 @@ public abstract class TileTemporalMachineInventory extends TileTemporalMachine i
             new SidedInvWrapper(this, EnumFacing.values()[4]), // EAST
             new SidedInvWrapper(this, EnumFacing.values()[5]), // WEST
     };
-    protected String name;
-    protected EnumFacing rotation;
 
-
-    public TileTemporalMachineInventory(String name) {
+    public TileTemporalMachineInventory(String name, int inventorySize)
+    {
         this.name = name;
-        rotation = EnumFacing.NORTH;
+        this.inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
         slotConfiguration = new SidedInventorySlotConfiguration();
+        this.slotConfiguration.slots = new Slot[inventorySize];
     }
 
     @Override
@@ -38,13 +42,35 @@ public abstract class TileTemporalMachineInventory extends TileTemporalMachine i
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-        return false; // TODO
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    {
+        //Confirm we have an array of slots and the index is in-bounds.
+        if(slotConfiguration.slots == null || index >= slotConfiguration.slots.length)
+            return false;
+
+        //Confirm this index is accessible for the direction.
+        boolean foundSlot = false;
+        int[] validSlots = getSlotsForFace(direction);
+        for(int slot : validSlots)
+        {
+            if(slot == index)
+            {
+                foundSlot = true;
+                break;
+            }
+        }
+
+        return foundSlot && slotConfiguration.slots[index].isItemValid(itemStackIn);
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        return false; // TODO
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        int[] validSlots = getSlotsForFace(direction);
+        for(int slot : validSlots)
+            if(slot == index)
+                return true;
+        return false;
     }
 
     @Override
@@ -134,7 +160,7 @@ public abstract class TileTemporalMachineInventory extends TileTemporalMachine i
         switch(id)
         {
             case 0: //Progress - 0 (no progress) to 10,000 (complete), though it can go above this in some cases.
-                return (int) ((temporalMachine.getCurrentProgress() / temporalMachine.getProgressPerAction()) * 10000);
+                return (int) ((temporalMachine.getCurrentProgress() / temporalMachine.getProgressCostPerAction()) * 10000);
             case 1: //Energy
                 return temporalMachine.getEnergyStorage().getEnergyStored();
             case 2: //Max Energy
@@ -172,31 +198,56 @@ public abstract class TileTemporalMachineInventory extends TileTemporalMachine i
         markDirty();
     }
 
-    /**
-     * Translates from a global EnumFacing to a local EnumFacing.
-     * In local EnumFacing: front translates to north, and only rotates about the Y-axis are accepted.
-     */
-    private EnumFacing globalToLocalFacing(EnumFacing facing)
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
-        if(facing.equals(EnumFacing.UP) || facing.equals(EnumFacing.DOWN))
-            return facing;
+        nbt = super.writeToNBT(nbt);
 
-        if(this.rotation.equals(EnumFacing.NORTH))
-            return facing;
+        // Save machine inventory (itemstacks)
+        if(inventory != null)
+        {
+            NBTTagList nbtList = new NBTTagList();
+            for(int index = 0; index < inventory.size(); index++)
+            {
+                if(!inventory.get(index).isEmpty())
+                {
+                    NBTTagCompound tag = new NBTTagCompound();
+                    tag.setByte("slot_index", (byte)index);
+                    inventory.get(index).writeToNBT(tag);
+                    nbtList.appendTag(tag);
+                }
+            }
+            nbt.setTag("machine_inventory", nbtList);
+        }
 
-        facing = facing.rotateAround(EnumFacing.Axis.Y);
-        if(this.rotation.equals(EnumFacing.WEST))
-            return facing;
+        // Save slot configuration
+        nbt.setTag("slot_config", slotConfiguration.serializeNBT());
 
-        facing = facing.rotateAround(EnumFacing.Axis.Y);
-        if(this.rotation.equals(EnumFacing.SOUTH))
-            return facing;
+        return nbt;
+    }
 
-        facing = facing.rotateAround(EnumFacing.Axis.Y);
-        if(this.rotation.equals(EnumFacing.EAST))
-            return facing;
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    {
+        super.readFromNBT(nbt);
 
-        return facing;
+        // Load machine inventory (itemstacks)
+        if(nbt.hasKey("machine_inventory"))
+        {
+            NBTTagList tagList = nbt.getTagList("machine_inventory", 10);
+            inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+            for(int i = 0; i < tagList.tagCount(); ++i)
+            {
+                NBTTagCompound tagCompound = tagList.getCompoundTagAt(i);
+                byte slotIndex = tagCompound.getByte("slot_index");
+                if(slotIndex >= 0 && slotIndex < inventory.size())
+                    inventory.set(slotIndex, new ItemStack(tagCompound));
+            }
+        }
+
+        // Load slot configurations
+        if(nbt.hasKey("slot_config"))
+            slotConfiguration.deserializeNBT(nbt.getCompoundTag("slot_config"));
     }
 
 

@@ -1,9 +1,9 @@
 package lumaceon.mods.aeonicraft.machine;
 
+import lumaceon.mods.aeonicraft.api.clockwork.EnergyStorageModular;
 import lumaceon.mods.aeonicraft.util.MachineActionBurstConfig;
 import lumaceon.mods.aeonicraft.util.TickInterval;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.energy.EnergyStorage;
 
 import java.util.function.Function;
 
@@ -11,18 +11,26 @@ public class TemporalMachine extends Machine
 {
     protected MachineActionBurstConfig actionBurstConfig;
 
-    public TemporalMachine(EnergyStorage energyStorage, TickInterval tickInterval, Function<Machine, Integer> getMaxActions, Function<Integer, Integer> takeActions) {
-        super(energyStorage, tickInterval, getMaxActions, takeActions);
+    public TemporalMachine(EnergyStorageModular energyStorage,
+                           TickInterval tickInterval,
+                           float progressCostPerAction,
+                           float progressGainPerGameTick,
+                           float energyCostPerProgress,
+                           Function<Machine, Integer> getMaxActions, Function<Integer, Integer> takeActions) {
+        super(energyStorage, tickInterval, progressCostPerAction, progressGainPerGameTick, energyCostPerProgress, getMaxActions, takeActions);
         actionBurstConfig = new MachineActionBurstConfig(64, 0, Integer.MAX_VALUE);
     }
 
-    public TemporalMachine(EnergyStorage energyStorage,
+    public TemporalMachine(EnergyStorageModular energyStorage,
                            TickInterval tickInterval,
+                           float progressCostPerAction,
+                           float progressGainPerGameTick,
+                           float energyCostPerProgress,
                            Function<Machine, Integer> getMaxActions,
                            Function<Integer, Integer> takeActions,
                            MachineActionBurstConfig burstConfig)
     {
-        super(energyStorage, tickInterval, getMaxActions, takeActions);
+        super(energyStorage, tickInterval, progressCostPerAction, progressGainPerGameTick, energyCostPerProgress, getMaxActions, takeActions);
         actionBurstConfig = burstConfig;
     }
 

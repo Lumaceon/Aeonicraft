@@ -1,6 +1,7 @@
 package lumaceon.mods.aeonicraft.util;
 
 import net.minecraft.inventory.Slot;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
 import java.util.ArrayList;
@@ -23,6 +24,11 @@ public class SidedInventorySlotConfiguration
         };
     }
 
+    public SidedInventorySlotConfiguration(NBTTagCompound nbt) {
+        this();
+        deserializeNBT(nbt);
+    }
+
     public ArrayList<Integer> getSlotsForSide(EnumFacing side) {
         return slotsAvailableFromSides[side.getIndex()];
     }
@@ -38,5 +44,33 @@ public class SidedInventorySlotConfiguration
         }
 
         return ret;
+    }
+
+    public NBTTagCompound serializeNBT()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+
+        for(EnumFacing f : EnumFacing.VALUES)
+        {
+            int[] slots = getSlotsForSideIntArray(f);
+            nbt.setIntArray("slots_" + f.getIndex(), slots);
+        }
+
+        return nbt;
+    }
+
+    public void deserializeNBT(NBTTagCompound nbt)
+    {
+        for(EnumFacing f : EnumFacing.VALUES)
+        {
+            int[] slotArray = nbt.getIntArray("slots_" + f.getIndex());
+
+            ArrayList<Integer> list = new ArrayList<>();
+            for(int n = 0; n < slotArray.length; n++) {
+                list.add(slotArray[n]);
+            }
+
+            slotsAvailableFromSides[f.getIndex()] = list;
+        }
     }
 }

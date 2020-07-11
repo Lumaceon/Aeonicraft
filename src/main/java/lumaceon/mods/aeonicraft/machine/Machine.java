@@ -18,8 +18,8 @@ public class Machine
 
     protected float currentProgress = 0.0F;
     protected float progressPerGameTick = 1.0F;
-    protected float progressPerAction = 100.0F;
-    protected float energyPerProgress = 1.0F;
+    protected float progressCostPerAction = 100.0F;
+    protected float energyCostPerProgress = 1.0F;
 
     /**
      * Output the maximum number of actions that could be taken when called.
@@ -34,10 +34,16 @@ public class Machine
 
     public Machine(EnergyStorageModular energyStorage,
                    TickInterval tickInterval,
+                   float progressCostPerAction,
+                   float progressGainPerGameTick,
+                   float energyCostPerProgress,
                    Function<Machine, Integer> getMaxActions,
                    Function<Integer, Integer> takeActions) {
         this.energyStorage = energyStorage;
         this.tickInterval = tickInterval;
+        this.progressCostPerAction = progressCostPerAction;
+        this.progressPerGameTick = progressGainPerGameTick;
+        this.energyCostPerProgress = energyCostPerProgress;
         this.getMaxActions = getMaxActions;
         this.takeActions = takeActions;
     }
@@ -61,8 +67,8 @@ public class Machine
     {
         boolean ret = progressTick();
 
-        int actions = this.takeActions.apply((int) (this.currentProgress / this.progressPerAction));
-        this.currentProgress -= (actions * this.progressPerAction);
+        int actions = this.takeActions.apply((int) (this.currentProgress / this.progressCostPerAction));
+        this.currentProgress -= (actions * this.progressCostPerAction);
 
         if(actions != 0)
             ret = true;
@@ -78,10 +84,10 @@ public class Machine
     {
         float progressToAdd = tickInterval.getTickInterval() * this.progressPerGameTick;
         progressToAdd = Math.min(progressToAdd, getMaxProgressFromEnergy());
-        progressToAdd = Math.min(progressToAdd, getMaxActions.apply(this) * progressPerAction - currentProgress);
+        progressToAdd = Math.min(progressToAdd, getMaxActions.apply(this) * progressCostPerAction - currentProgress);
 
         if(this.energyStorage != null) {
-            this.energyStorage.extractEnergy((int) (currentProgress * energyPerProgress), false);
+            this.energyStorage.extractEnergy((int) (currentProgress * energyCostPerProgress), false);
         }
 
         currentProgress += progressToAdd;
@@ -93,16 +99,16 @@ public class Machine
      * @return The maximum progress that can be gained from the currently available energy.
      */
     protected float getMaxProgressFromEnergy() {
-        if(this.energyPerProgress <= 0) return Float.MAX_VALUE;
+        if(this.energyCostPerProgress <= 0.000000001F) return Float.MAX_VALUE;
         if(energyStorage == null) return 0.0F;
-        return energyStorage.extractEnergy(Integer.MAX_VALUE, true) / energyPerProgress;
+        return energyStorage.extractEnergy(Integer.MAX_VALUE, true) / energyCostPerProgress;
     }
 
     /**
      * @return The number of game ticks it takes to complete one machine action.
      */
     protected float getGameTicksPerAction() {
-        return this.progressPerAction / this.progressPerGameTick;
+        return this.progressCostPerAction / this.progressPerGameTick;
     }
 
 
@@ -119,8 +125,8 @@ public class Machine
 
         nbt.setFloat("current_progress", this.currentProgress);
         nbt.setFloat("progress_per_game_tick", this.progressPerGameTick);
-        nbt.setFloat("progress_per_action", this.progressPerAction);
-        nbt.setFloat("energy_per_progress", this.energyPerProgress);
+        nbt.setFloat("progress_per_action", this.progressCostPerAction);
+        nbt.setFloat("energy_per_progress", this.energyCostPerProgress);
 
         return nbt;
     }
@@ -134,8 +140,8 @@ public class Machine
 
         this.currentProgress = nbt.getFloat("current_progress");
         this.progressPerGameTick = nbt.getFloat("progress_per_game_tick");
-        this.progressPerAction = nbt.getFloat("progress_per_action");
-        this.energyPerProgress = nbt.getFloat("energy_per_progress");
+        this.progressCostPerAction = nbt.getFloat("progress_per_action");
+        this.energyCostPerProgress = nbt.getFloat("energy_per_progress");
     }
 
 
@@ -157,13 +163,16 @@ public class Machine
     public void setProgressPerGameTick(float progressPerGameTick) {
         this.progressPerGameTick = progressPerGameTick;
     }
-    public float getProgressPerAction() {
-        return progressPerAction;
+    public float getProgressCostPerAction() {
+        return progressCostPerAction;
     }
-    public float getEnergyPerProgress() {
-        return energyPerProgress;
+    public void setProgressCostPerAction(float progressCostPerAction) {
+        this.progressCostPerAction = progressCostPerAction;
     }
-    public void setEnergyPerProgress(float energyPerProgress) {
-        this.energyPerProgress = energyPerProgress;
+    public float getEnergyCostPerProgress() {
+        return energyCostPerProgress;
+    }
+    public void setEnergyCostPerProgress(float energyCostPerProgress) {
+        this.energyCostPerProgress = energyCostPerProgress;
     }
 }

@@ -17,6 +17,14 @@ public abstract class TileTemporalMachine extends TileAeonicraft implements ITic
 
     public TemporalMachine temporalMachine;
 
+    protected EnumFacing rotation;
+
+
+    public TileTemporalMachine()
+    {
+        this.rotation = EnumFacing.NORTH;
+    }
+
     public abstract int getMaxActions(Machine machine);
     public abstract int takeActions(int max);
 
@@ -24,6 +32,33 @@ public abstract class TileTemporalMachine extends TileAeonicraft implements ITic
     public void update() {
         if(temporalMachine.gameTick())
             markDirty();
+    }
+
+    /**
+     * Translates from a global EnumFacing to a local EnumFacing.
+     * In local EnumFacing: front translates to north, and only rotates about the Y-axis are accepted.
+     */
+    protected EnumFacing globalToLocalFacing(EnumFacing facing)
+    {
+        if(facing.equals(EnumFacing.UP) || facing.equals(EnumFacing.DOWN))
+            return facing;
+
+        if(this.rotation.equals(EnumFacing.NORTH))
+            return facing;
+
+        facing = facing.rotateAround(EnumFacing.Axis.Y);
+        if(this.rotation.equals(EnumFacing.WEST))
+            return facing;
+
+        facing = facing.rotateAround(EnumFacing.Axis.Y);
+        if(this.rotation.equals(EnumFacing.SOUTH))
+            return facing;
+
+        facing = facing.rotateAround(EnumFacing.Axis.Y);
+        if(this.rotation.equals(EnumFacing.EAST))
+            return facing;
+
+        return facing;
     }
 
     @Override
@@ -50,6 +85,7 @@ public abstract class TileTemporalMachine extends TileAeonicraft implements ITic
         compound = super.writeToNBT(compound);
 
         compound.setTag("temporal_machine_compound", temporalMachine.serializeNBT());
+        compound.setInteger("rotation", rotation.getIndex());
 
         return compound;
     }
@@ -61,5 +97,8 @@ public abstract class TileTemporalMachine extends TileAeonicraft implements ITic
 
         if(compound.hasKey("temporal_machine_compound"))
             this.temporalMachine.deserializeNBT(compound.getCompoundTag("temporal_machine_compound"));
+
+        if(compound.hasKey("rotation"))
+            this.rotation = EnumFacing.VALUES[compound.getInteger("rotation")];
     }
 }
