@@ -2,5 +2,9 @@ package lumaceon.mods.aeonicraft.api.clockwork;
 
 public interface IClockworkComponent
 {
-        int getTestInt();
+        float getProgress();
+        float getWindUpCost();
+        float getWindUpMaxMod();
+        float getEfficiency();
 }
+

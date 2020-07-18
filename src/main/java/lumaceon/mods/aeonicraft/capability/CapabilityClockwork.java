@@ -49,7 +49,7 @@ public class CapabilityClockwork
             for (int x = 0; x < components.length ; x++) {
                 for (int y = 0; y < components[x].length; y++) {
                     if(components[x][y] != null){
-                        summedTestInt += components[x][y].getTestInt();
+                        //summedTestInt += components[x][y].getTestInt();
                     }
                 }
             }
