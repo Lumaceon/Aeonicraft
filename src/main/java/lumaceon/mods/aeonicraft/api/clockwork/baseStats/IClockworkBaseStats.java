@@ -1,5 +1,7 @@
 package lumaceon.mods.aeonicraft.api.clockwork.baseStats;
 
+import lumaceon.mods.aeonicraft.api.clockwork.IClockworkTooltip;
+
 //Interface that is a collection for the stats of the ClockworkMatrix shenanigans,
 //Also has a helper method that returns a collection of these stats back
 public interface IClockworkBaseStats {

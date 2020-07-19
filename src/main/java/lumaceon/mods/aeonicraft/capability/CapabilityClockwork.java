@@ -1,12 +1,11 @@
 package lumaceon.mods.aeonicraft.capability;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
+import lumaceon.mods.aeonicraft.api.clockwork.ClockworkTooltipDummy;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponent;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkEfficiencyStat;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkMaxWindUpStat;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkProgressStat;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkWindUpStat;
+import lumaceon.mods.aeonicraft.api.clockwork.IClockworkTooltip;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.*;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -16,6 +15,8 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.List;
 
 public class CapabilityClockwork
 {
@@ -38,19 +39,23 @@ public class CapabilityClockwork
         }, Clockwork::new);
     }
 
-    public static class Clockwork implements IClockwork
+
+    public static class Clockwork implements IClockwork, IClockworkTooltip
     {
         private ClockworkEfficiencyStat summedEfficiency  = new ClockworkEfficiencyStat(0);
         private ClockworkMaxWindUpStat summedMaxWindUp  = new ClockworkMaxWindUpStat(0);
         private ClockworkProgressStat summedProgress = new ClockworkProgressStat(0);
         private ClockworkWindUpStat summedWindUp = new ClockworkWindUpStat(0);
+        private List<String>[][] matrixCompDescription;
+
+
 
         public Clockwork() {
             this(3);
         }
 
         public Clockwork(int matrixSize) {
-
+            matrixCompDescription = new ArrayList[matrixSize][matrixSize];
         }
 
         private void resetClockworkStats(){
@@ -59,18 +64,30 @@ public class CapabilityClockwork
             summedMaxWindUp = new ClockworkMaxWindUpStat(0);
             summedWindUp = new ClockworkWindUpStat(0);
         }
+
         @Override
         public void buildFromStacks(IClockworkComponent[][] components) {
+            ClockworkTooltipDummy valueHolder = new ClockworkTooltipDummy();
 
             resetClockworkStats();
             for (int x = 0; x < components.length ; x++) {
                 for (int y = 0; y < components[x].length; y++) {
                     if(components[x][y] != null){
                         IClockworkComponent currentComp = components[x][y];
-                        summedProgress.StatValue += getActualProgress(getCompAndNeighbours(components,x,y));
-                        summedEfficiency.StatValue += currentComp.getEfficiency().StatValue;
-                        summedMaxWindUp.StatValue += currentComp.getWindUpMaxMod().StatValue;
-                        summedWindUp.StatValue += currentComp.getWindUpCost().StatValue;
+
+                        //set/calculate the singular statvalues, add it to the valueHolder(Dummy) and then add it to the sum
+                        summedProgress.StatValue += valueHolder.getProgress().StatValue = getActualProgress(getCompAndNeighbours(components,x,y));
+                        summedEfficiency.StatValue += valueHolder.getEfficiency().StatValue = currentComp.getEfficiency().StatValue;
+                        summedMaxWindUp.StatValue += valueHolder.getWindUpMaxMod().StatValue = currentComp.getWindUpMaxMod().StatValue;
+                        summedWindUp.StatValue += valueHolder.getWindUpCost().StatValue = currentComp.getWindUpCost().StatValue;
+
+                        //populate the matrix with the proper tooltip description, feeding it the modified values from the valueHolder
+                        matrixCompDescription[x][y] = getTooltip(valueHolder.getClockworkStatCollection(), new ArrayList<String>());
+
+                        //todo why does this log three times? Shouldn't it be two(Server, Client?) Also seems to be some sort of small delay when placing two.
+                        Aeonicraft.logger.info("Matrix in position " + x + " " + y + ": " + matrixCompDescription[x][y]);
+                    }else{
+                        matrixCompDescription[x][y] = null;
                     }
                 }
             }
@@ -126,7 +143,7 @@ public class CapabilityClockwork
             if(x+1 < components.length){
                 returnComps.add(components[x+1][y]);
             }
-            if(y+1 > components[x].length){
+            if(y+1 < components[x].length){
                 returnComps.add(components[x][y+1]);
             }
 
