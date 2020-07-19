@@ -3,6 +3,10 @@ package lumaceon.mods.aeonicraft.capability;
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponent;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkEfficiencyStat;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkMaxWindUpStat;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkProgressStat;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkWindUpStat;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -36,7 +40,11 @@ public class CapabilityClockwork
 
     public static class Clockwork implements IClockwork
     {
-        private  float summedProgress;
+        private ClockworkEfficiencyStat summedEfficiency  = new ClockworkEfficiencyStat(0);
+        private ClockworkMaxWindUpStat summedMaxWindUp  = new ClockworkMaxWindUpStat(0);
+        private ClockworkProgressStat summedProgress = new ClockworkProgressStat(0);
+        private ClockworkWindUpStat summedWindUp = new ClockworkWindUpStat(0);
+
         public Clockwork() {
             this(3);
         }
@@ -45,13 +53,24 @@ public class CapabilityClockwork
 
         }
 
+        private void resetClockworkStats(){
+            summedProgress = new ClockworkProgressStat(0);
+            summedEfficiency = new ClockworkEfficiencyStat(0);
+            summedMaxWindUp = new ClockworkMaxWindUpStat(0);
+            summedWindUp = new ClockworkWindUpStat(0);
+        }
         @Override
         public void buildFromStacks(IClockworkComponent[][] components) {
-            summedProgress = 0f;
+
+            resetClockworkStats();
             for (int x = 0; x < components.length ; x++) {
                 for (int y = 0; y < components[x].length; y++) {
                     if(components[x][y] != null){
-                        summedProgress += getActualProgress(getCompAndNeighbours(components,x,y));
+                        IClockworkComponent currentComp = components[x][y];
+                        summedProgress.StatValue += getActualProgress(getCompAndNeighbours(components,x,y));
+                        summedEfficiency.StatValue += currentComp.getEfficiency().StatValue;
+                        summedMaxWindUp.StatValue += currentComp.getWindUpMaxMod().StatValue;
+                        summedWindUp.StatValue += currentComp.getWindUpCost().StatValue;
                     }
                 }
             }
@@ -120,21 +139,42 @@ public class CapabilityClockwork
         @Override
         public NBTTagCompound serializeNBT() {
             NBTTagCompound compound = new NBTTagCompound();
-            compound.setFloat("PROGRESS", summedProgress);
+            compound.setFloat("PROGRESS", summedProgress.StatValue);
+            compound.setFloat("EFFICIENCY",summedEfficiency.StatValue);
+            compound.setFloat("WINDUP",summedWindUp.StatValue);
+            compound.setFloat("WINDUPMAX",summedMaxWindUp.StatValue);
             // TODO Save data to compound.
             return compound;
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound compound) {
-            summedProgress = compound.getFloat("PROGRESS");
+            summedProgress.StatValue = compound.getFloat("PROGRESS");
+            summedEfficiency.StatValue = compound.getFloat("EFFICIENCY");
+            summedWindUp.StatValue = compound.getFloat("WINDUP");
+            summedMaxWindUp.StatValue = compound.getFloat("WINDUPMAX");
+
         }
 
         @Override
-        public float getSummedProgress() {
+        public ClockworkProgressStat getProgress() {
             return summedProgress;
         }
 
+        @Override
+        public ClockworkWindUpStat getWindUpCost() {
+            return summedWindUp;
+        }
+
+        @Override
+        public ClockworkMaxWindUpStat getWindUpMaxMod() {
+            return summedMaxWindUp;
+        }
+
+        @Override
+        public ClockworkEfficiencyStat getEfficiency() {
+            return summedEfficiency;
+        }
     }
 
     // Default provider

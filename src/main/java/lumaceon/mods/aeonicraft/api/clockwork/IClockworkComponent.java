@@ -1,16 +1,9 @@
 package lumaceon.mods.aeonicraft.api.clockwork;
 
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkEfficiencyStat;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkMaxWindUpStat;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkProgressStat;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkWindUpStat;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.*;
 
-public interface IClockworkComponent
+public interface IClockworkComponent extends IClockworkBaseStats
 {
-        ClockworkProgressStat getProgress();
-        ClockworkWindUpStat getWindUpCost();
-        ClockworkMaxWindUpStat getWindUpMaxMod();
-        ClockworkEfficiencyStat getEfficiency();
         ClockworkComponentTypes getType();
 }
 
