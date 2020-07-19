@@ -19,7 +19,7 @@ public class ItemAeonicraftClockwork extends ItemClockwork
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack itemStack = playerIn.getHeldItem(handIn);
         IClockwork work = itemStack.getCapability(CLOCKWORK_CAPABILITY,null);
-        Aeonicraft.logger.info(work.getSummedTestInt());
+        Aeonicraft.logger.info(work.getSummedProgress());
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 

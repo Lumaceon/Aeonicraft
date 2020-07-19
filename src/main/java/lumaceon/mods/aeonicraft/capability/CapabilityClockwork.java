@@ -11,6 +11,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
+import java.util.ArrayList;
+
 public class CapabilityClockwork
 {
     @CapabilityInject(IClockwork.class)
@@ -34,7 +36,7 @@ public class CapabilityClockwork
 
     public static class Clockwork implements IClockwork
     {
-        private int summedTestInt;
+        private  float summedProgress;
         public Clockwork() {
             this(3);
         }
@@ -45,34 +47,73 @@ public class CapabilityClockwork
 
         @Override
         public void buildFromStacks(IClockworkComponent[][] components) {
-            summedTestInt = 0;
+            summedProgress = 0f;
             for (int x = 0; x < components.length ; x++) {
                 for (int y = 0; y < components[x].length; y++) {
                     if(components[x][y] != null){
-                        //summedTestInt += components[x][y].getTestInt();
+                        summedProgress += getActualProgress(getCompAndNeighbours(components,x,y));
                     }
                 }
             }
             //TODO Implement.
         }
 
+        private float getActualProgress(ArrayList<IClockworkComponent> components){
+            float returnValue = 0f;
+            IClockworkComponent component = components.get(0);
+            returnValue = component.getProgress().StatValue;
+
+            for (int i = 1; i < components.size(); i++) {
+                IClockworkComponent neighbourComponent = components.get(i);
+                if(component.getType() == component.getType()){
+                    returnValue *= 2;
+                }else{
+                    returnValue /= 2;
+                }
+            }
+            return returnValue;
+        }
+
+        private ArrayList<IClockworkComponent> getCompAndNeighbours(IClockworkComponent[][] components, int x, int y){
+            ArrayList<IClockworkComponent> returnComps = new ArrayList<IClockworkComponent>();
+            returnComps.add(components[x][y]);
+
+            if(x > 0){
+                returnComps.add(components[x-1][y]);
+            }
+            if(y > 0){
+                returnComps.add(components[x][y-1]);
+            }
+            if(x+1 < components.length){
+                returnComps.add(components[x+1][y]);
+            }
+            if(y+1 > components[x].length){
+                returnComps.add(components[x][y+1]);
+            }
+
+           while(returnComps.remove(null)){ }
+
+           return returnComps;
+        }
+
         @Override
         public NBTTagCompound serializeNBT() {
             NBTTagCompound compound = new NBTTagCompound();
-            compound.setInteger("MAX_THINGY", summedTestInt);
+            compound.setFloat("PROGRESS", summedProgress);
             // TODO Save data to compound.
             return compound;
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound compound) {
-            summedTestInt = compound.getInteger("MAX_THINGY");
+            summedProgress = compound.getFloat("PROGRESS");
         }
 
         @Override
-        public int getSummedTestInt() {
-            return summedTestInt;
+        public float getSummedProgress() {
+            return summedProgress;
         }
+
     }
 
     // Default provider

@@ -12,5 +12,5 @@ public interface IClockwork
     NBTTagCompound serializeNBT();
     void deserializeNBT(NBTTagCompound compound);
 
-    int getSummedTestInt();
+    float getSummedProgress();
 }
