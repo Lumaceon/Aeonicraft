@@ -58,11 +58,22 @@ public class CapabilityClockwork
             //TODO Implement.
         }
 
+
+        /**
+         * Gets the absolute/final progress of the component
+         * @param components ArrayList that should contain components and its neighbours
+         * @return returns a float that represents the final progress value of the component at this position
+         */
         private float getActualProgress(ArrayList<IClockworkComponent> components){
             float returnValue = 0f;
             IClockworkComponent component = components.get(0);
             returnValue = component.getProgress().StatValue;
 
+            //If Value is 0, return 0
+            if(returnValue == 0f){
+                return returnValue;
+            }
+            //Math shenanigans to double/divide if neighbours are same, or different, type.
             for (int i = 1; i < components.size(); i++) {
                 IClockworkComponent neighbourComponent = components.get(i);
                 if(component.getType() == component.getType()){
@@ -74,10 +85,19 @@ public class CapabilityClockwork
             return returnValue;
         }
 
+        /**
+         * Checks if a component at a given location in the matrix has neighbours and gives it back.
+         * @param components entire matrix that contains the ClockworkComponents
+         * @param x x coordinate of the "main" component, surrounding neighbours will be checked
+         * @param y y coordinate of the "main" component, surrounding neighbours will be checked
+         * @return return value of all components, index 0 is the base component, anything after the neighbours(direction doesn't matter)
+         */
+        //ToDo Better way/Keep it to getActualProgress only because only that is influenced?
         private ArrayList<IClockworkComponent> getCompAndNeighbours(IClockworkComponent[][] components, int x, int y){
             ArrayList<IClockworkComponent> returnComps = new ArrayList<IClockworkComponent>();
             returnComps.add(components[x][y]);
 
+            //Routine checks against outOfBounds exceptions
             if(x > 0){
                 returnComps.add(components[x-1][y]);
             }
@@ -91,6 +111,7 @@ public class CapabilityClockwork
                 returnComps.add(components[x][y+1]);
             }
 
+            //In case of any null values added, remove them here
            while(returnComps.remove(null)){ }
 
            return returnComps;

@@ -15,12 +15,18 @@ public class ItemClockworkComponent extends ItemAeonicraft implements IClockwork
 {
     public ItemClockworkComponent(int maxStack, int maxDamage, String name, float progress, float windupCost, float efficiency, float windUpMaxMod) {
         super(maxStack, maxDamage, name);
+
+        //Initialize values of the clockwork matrix variables, if one isn't used simply use 0. Decided for this possibility for now
+        //ToDo: Better way?
         this.progress = new ClockworkProgressStat(progress);
         this.windUpCost = new ClockworkWindUpStat(windupCost);
         this.windUpMaxMod = new ClockworkMaxWindUpStat(windUpMaxMod);
         this.efficiency = new ClockworkEfficiencyStat(efficiency);
     }
 
+    //Different values that are important for the clockworkMatrix
+    //ToDo: Better way?
+    //ToDO: Add the enum type
     private ClockworkProgressStat progress;
     private ClockworkWindUpStat windUpCost;
     private ClockworkMaxWindUpStat windUpMaxMod;
@@ -30,6 +36,7 @@ public class ItemClockworkComponent extends ItemAeonicraft implements IClockwork
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
+        //Array that can simply be added to that iterates over itself to add tooltips
         ClockworkBaseStat[] stats = {progress, windUpCost,windUpMaxMod,efficiency};
 
         for(ClockworkBaseStat stat : stats){
@@ -41,6 +48,7 @@ public class ItemClockworkComponent extends ItemAeonicraft implements IClockwork
 
     private String getTooltip(ClockworkBaseStat stat){
 
+        //Format of the tooltips, bold statName with a color followed by the number.
         String returnValue = "§l"+stat.getColorCode()+stat.getStatName()+":§r " + stat.StatValue;
         return returnValue;
     }
