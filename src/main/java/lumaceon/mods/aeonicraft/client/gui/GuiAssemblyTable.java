@@ -98,7 +98,10 @@ public class GuiAssemblyTable extends GuiContainer
             {
                 List<String> moreTips = clockwork.getAdditionalTooltipsForMatrixPosition(matrixX, matrixY);
                 if(moreTips != null)
+                {
+                    tooltip.clear();
                     tooltip.addAll(moreTips);
+                }
             }
         }
 
