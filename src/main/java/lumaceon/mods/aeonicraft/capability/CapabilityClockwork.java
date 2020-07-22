@@ -5,7 +5,10 @@ import lumaceon.mods.aeonicraft.api.clockwork.ClockworkTooltipDummy;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponent;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkTooltip;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.*;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkEfficiencyStat;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkMaxWindUpStat;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkProgressStat;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkWindUpStat;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -14,8 +17,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
 
 public class CapabilityClockwork
@@ -42,10 +45,13 @@ public class CapabilityClockwork
 
     public static class Clockwork implements IClockwork, IClockworkTooltip
     {
+        private int matrixSize;
+
         private ClockworkEfficiencyStat summedEfficiency  = new ClockworkEfficiencyStat(0);
         private ClockworkMaxWindUpStat summedMaxWindUp  = new ClockworkMaxWindUpStat(0);
         private ClockworkProgressStat summedProgress = new ClockworkProgressStat(0);
         private ClockworkWindUpStat summedWindUp = new ClockworkWindUpStat(0);
+
         private List<String>[][] matrixCompDescription;
 
 
@@ -56,6 +62,7 @@ public class CapabilityClockwork
 
         public Clockwork(int matrixSize) {
             matrixCompDescription = new ArrayList[matrixSize][matrixSize];
+            this.matrixSize = matrixSize;
         }
 
         private void resetClockworkStats(){
@@ -63,6 +70,11 @@ public class CapabilityClockwork
             summedEfficiency = new ClockworkEfficiencyStat(0);
             summedMaxWindUp = new ClockworkMaxWindUpStat(0);
             summedWindUp = new ClockworkWindUpStat(0);
+        }
+
+        @Override
+        public int getDiameter() {
+            return this.matrixSize;
         }
 
         @Override
@@ -92,6 +104,12 @@ public class CapabilityClockwork
                 }
             }
             //TODO Implement.
+        }
+
+        @Override
+        @Nullable
+        public List<String> getAdditionalTooltipsForMatrixPosition(int x, int y) {
+            return this.matrixCompDescription[x][y];
         }
 
 

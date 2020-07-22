@@ -30,7 +30,7 @@ public class ContainerAssemblyTableClient extends ContainerAssemblyTable
     @Override
     public void onCraftMatrixChanged(IInventory p_75130_1_)
     {
-        ItemStack item = mainInventory.getStackInSlot(0);
+        ItemStack item = anInventoryWithOneSlotForTheAssemblableItem.getStackInSlot(0);
 
         //On the client, we care about 3 conditions: new item is added, old item is taken out, and a DIFFERENT TYPE of item was added.
         //This differs from the server, where it's considered a change if the new item is the same type, but a different itemstack instance.

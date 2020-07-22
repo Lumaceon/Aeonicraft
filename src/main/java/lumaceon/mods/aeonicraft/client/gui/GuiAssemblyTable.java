@@ -1,9 +1,12 @@
 package lumaceon.mods.aeonicraft.client.gui;
 
 import lumaceon.mods.aeonicraft.api.IAssemblable;
+import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
+import lumaceon.mods.aeonicraft.capability.CapabilityClockwork;
 import lumaceon.mods.aeonicraft.client.gui.util.GuiHelper;
 import lumaceon.mods.aeonicraft.container.ContainerAssemblyTable;
 import lumaceon.mods.aeonicraft.container.ContainerAssemblyTableClient;
+import lumaceon.mods.aeonicraft.inventory.InventoryAssemblyTableComponents;
 import lumaceon.mods.aeonicraft.lib.Textures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -52,6 +55,53 @@ public class GuiAssemblyTable extends GuiContainer
         FontRenderer font = stack.getItem().getFontRenderer(stack);
         net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
         List<String> tooltip = this.getItemToolTip(stack);
+
+        // Apply additional tooltips if component has them.
+        ItemStack assemblyItem = ((ContainerAssemblyTable) this.inventorySlots).anInventoryWithOneSlotForTheAssemblableItem.getStackInSlot(0);
+        IClockwork clockwork = assemblyItem.getCapability(CapabilityClockwork.CAP, null);
+        if(clockwork != null)
+        {
+            InventoryAssemblyTableComponents components = ((ContainerAssemblyTable) this.inventorySlots).componentInventory;
+            int matrixDiameter = clockwork.getDiameter();
+
+            int index = 0;
+            boolean found = false;
+            int matrixX = 0;
+            int matrixY = 0;
+            while(matrixY < matrixDiameter && !found)
+            {
+                matrixX = 0;
+                while(matrixX < matrixDiameter)
+                {
+                    if(matrixX == matrixDiameter/2 && matrixY == matrixDiameter/2)
+                    {
+                        // In the case of the center position, the index skips by one in the x.
+                        matrixX++;
+                        continue;
+                    }
+
+                    if(components.getStackInSlot(index) == stack)
+                    {
+                        found = true;
+                        break;
+                    }
+
+                    matrixX++;
+                    index++;
+                }
+
+                if(found) break;
+                matrixY++;
+            }
+
+            if(found)
+            {
+                List<String> moreTips = clockwork.getAdditionalTooltipsForMatrixPosition(matrixX, matrixY);
+                if(moreTips != null)
+                    tooltip.addAll(moreTips);
+            }
+        }
+
         this.drawHoveringText(tooltip, x, y, (font == null ? fontRenderer : font));
         net.minecraftforge.fml.client.config.GuiUtils.postItemToolTip();
     }
@@ -75,7 +125,7 @@ public class GuiAssemblyTable extends GuiContainer
         if(inventorySlots instanceof ContainerAssemblyTable)
         {
             ContainerAssemblyTable container = (ContainerAssemblyTable)inventorySlots;
-            ItemStack item = container.mainInventory.getStackInSlot(0);
+            ItemStack item = container.anInventoryWithOneSlotForTheAssemblableItem.getStackInSlot(0);
             if(item != null && item.getItem() instanceof IAssemblable)
             {
                 IAssemblable assemblyGUI = (IAssemblable) item.getItem();

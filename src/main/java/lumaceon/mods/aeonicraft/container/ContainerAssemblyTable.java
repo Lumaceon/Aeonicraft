@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ContainerAssemblyTable extends Container
 {
-    public InventoryUpdated mainInventory = new InventoryUpdated(this, 1, 1);
+    public InventoryUpdated anInventoryWithOneSlotForTheAssemblableItem = new InventoryUpdated(this, 1, 1);
     public InventoryAssemblyTableComponents componentInventory;
     public World world;
     public EntityPlayer player;
@@ -37,7 +37,7 @@ public class ContainerAssemblyTable extends Container
         for(int x = 0; x < 9; x++)
             this.addSlotToContainer(new Slot(ip, x, 70 + x * 18 , 205));
 
-        this.addSlotToContainer(new SlotAssemblable(mainInventory, 0, 142, 68));
+        this.addSlotToContainer(new SlotAssemblable(anInventoryWithOneSlotForTheAssemblableItem, 0, 142, 68));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ContainerAssemblyTable extends Container
     @Override
     public void onCraftMatrixChanged(IInventory p_75130_1_)
     {
-        ItemStack item = mainInventory.getStackInSlot(0);
+        ItemStack item = anInventoryWithOneSlotForTheAssemblableItem.getStackInSlot(0);
         boolean mainItemChanged = item != previousMainStack;
 
         //Handle changes to the main item.
@@ -102,7 +102,7 @@ public class ContainerAssemblyTable extends Container
 
         if(!this.world.isRemote)
         {
-            ItemStack itemstack = this.mainInventory.getStackInSlot(0);
+            ItemStack itemstack = this.anInventoryWithOneSlotForTheAssemblableItem.getStackInSlot(0);
             if(!itemstack.isEmpty())
                 p_75134_1_.dropItem(itemstack, false);
         }
@@ -111,7 +111,7 @@ public class ContainerAssemblyTable extends Container
     @Override
     public boolean canInteractWith(EntityPlayer p_75145_1_)
     {
-        return mainInventory.isUsableByPlayer(p_75145_1_);
+        return anInventoryWithOneSlotForTheAssemblableItem.isUsableByPlayer(p_75145_1_);
     }
 
     @Override
