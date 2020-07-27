@@ -4,11 +4,8 @@ import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.clockwork.ClockworkTooltipDummy;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponent;
-import lumaceon.mods.aeonicraft.api.clockwork.IClockworkTooltip;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkEfficiencyStat;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkMaxWindUpStat;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkProgressStat;
-import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkWindUpStat;
+import lumaceon.mods.aeonicraft.api.clockwork.tooltips.IClockworkTooltips;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.*;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -20,6 +17,7 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class CapabilityClockwork
 {
@@ -43,7 +41,7 @@ public class CapabilityClockwork
     }
 
 
-    public static class Clockwork implements IClockwork, IClockworkTooltip
+    public static class Clockwork implements IClockwork
     {
         private int matrixSize;
 
@@ -72,6 +70,14 @@ public class CapabilityClockwork
             summedWindUp = new ClockworkWindUpStat(0);
         }
 
+        public List<String> clockworkMatrixComponentTooltips(ClockworkTooltipDummy dummy){
+            List<String> returnValue = new ArrayList<>();
+            for (ClockworkBaseStat stat : dummy.getClockworkStatCollection()) {
+                returnValue.addAll(dummy.getTooltipCollection(stat));
+            }
+            
+            return returnValue;
+        }
         @Override
         public int getDiameter() {
             return this.matrixSize;
@@ -79,25 +85,28 @@ public class CapabilityClockwork
 
         @Override
         public void buildFromStacks(IClockworkComponent[][] components) {
-            ClockworkTooltipDummy valueHolder = new ClockworkTooltipDummy();
-
             resetClockworkStats();
             for (int x = 0; x < components.length ; x++) {
                 for (int y = 0; y < components[x].length; y++) {
                     if(components[x][y] != null){
+                        ClockworkTooltipDummy valueHolder = new ClockworkTooltipDummy();
                         IClockworkComponent currentComp = components[x][y];
 
                         //set/calculate the singular statvalues, add it to the valueHolder(Dummy) and then add it to the sum
-                        summedProgress.StatValue += valueHolder.getProgress().StatValue = getActualProgress(getCompAndNeighbours(components,x,y));
-                        summedEfficiency.StatValue += valueHolder.getEfficiency().StatValue = currentComp.getEfficiency().StatValue;
-                        summedMaxWindUp.StatValue += valueHolder.getWindUpMaxMod().StatValue = currentComp.getWindUpMaxMod().StatValue;
-                        summedWindUp.StatValue += valueHolder.getWindUpCost().StatValue = currentComp.getWindUpCost().StatValue;
+
+
+                        List<IClockworkComponent> componentAndNeighbours = getCompAndNeighbours(components,x,y);
+                        summedProgress.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getProgress(), true);
+                        summedEfficiency.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getEfficiency(), false);
+                        summedMaxWindUp.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getWindUpMaxMod(), false);
+                        summedWindUp.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getWindUpCost(), false);
+
 
                         //populate the matrix with the proper tooltip description, feeding it the modified values from the valueHolder
-                        matrixCompDescription[x][y] = getTooltip(valueHolder.getClockworkStatCollection(), new ArrayList<String>());
+                        matrixCompDescription[x][y] = clockworkMatrixComponentTooltips(valueHolder);
 
                         //todo why does this log three times? Shouldn't it be two(Server, Client?) Also seems to be some sort of small delay when placing two.
-                        Aeonicraft.logger.info("Matrix in position " + x + " " + y + ": " + matrixCompDescription[x][y]);
+                        //Aeonicraft.logger.info("Matrix in position " + x + " " + y + ": " + matrixCompDescription[x][y]);
                     }else{
                         matrixCompDescription[x][y] = null;
                     }
@@ -113,29 +122,68 @@ public class CapabilityClockwork
         }
 
 
+
         /**
          * Gets the absolute/final progress of the component
          * @param components ArrayList that should contain components and its neighbours
          * @return returns a float that represents the final progress value of the component at this position
          */
-        private float getActualProgress(ArrayList<IClockworkComponent> components){
-            float returnValue = 0f;
-            IClockworkComponent component = components.get(0);
-            returnValue = component.getProgress().StatValue;
 
-            //If Value is 0, return 0
+        /**
+         * Calculate the total amount of stats gained and sets the relevant stats of the dummy PlaceHolder to properly add the tooltip in the matrix interface to the component position
+         * @param components List of components, first position is the "main", rest can be neighbours (or other components) that do relevant calculations (currently only neighbour bonus)
+         * @param dummy the dummy/placeholder object that has stats saved to it
+         * @param foo function that returns the relevant BaseStat to do calculations and other shenanigans with
+         * @param countNeighbours should it count the neighbours for bonus?
+         * @return returns the total value gained (or lost)
+         */
+        private float setDummyProgress(List<IClockworkComponent> components, ClockworkTooltipDummy dummy, Function<IClockworkBaseStats, ClockworkBaseStat> foo, boolean countNeighbours){
+            //Actual final number that is being worked with
+            float returnValue = 0f;
+
+            //Get the relevant Clockwork component from the actual component
+            IClockworkComponent mainComponent = components.get(0);
+
+            //get the relevant stat from the dummy
+            ClockworkBaseStat dummyClockworkStat = foo.apply(dummy);
+
+            //set the float values of the dummyClockworkStat, the mainCompStat and the returnValue to the mainCompStat
+            returnValue = dummyClockworkStat.StatValue = foo.apply(mainComponent).StatValue;
+
+            //If Value is 0, return 0 and don't apply any modifiers since the stat doesn't actually exist
             if(returnValue == 0f){
                 return returnValue;
             }
+
+
+            List<String> tooltipModifiers = dummy.getTooltipCollection(dummyClockworkStat);
+            tooltipModifiers.addAll(dummyClockworkStat.getBasicTooltipDescription());
+
+            //if Neighbours aren't supposed to be counted, return. Same if no neighbours exist
+            if(!countNeighbours) return returnValue;
+            if(components.size() == 1) return returnValue;
+
+            float multiplier = 1;
             //Math shenanigans to double/divide if neighbours are same, or different, type.
             for (int i = 1; i < components.size(); i++) {
                 IClockworkComponent neighbourComponent = components.get(i);
-                if(component.getType() == component.getType()){
-                    returnValue *= 2;
+                if(mainComponent.getType() == neighbourComponent.getType()){
+                    multiplier *= 2;
                 }else{
-                    returnValue /= 2;
+                    multiplier /= 2;
                 }
             }
+            //apply the multiplier to the returnValue
+            returnValue *= multiplier;
+
+            //difference between baseStat and modifiedValue to properly shenanigans the tooltip
+            float addedBonus = returnValue - dummyClockworkStat.StatValue;
+
+            //set proper string stuff
+            String placeHolder = tooltipModifiers.get(0);
+            tooltipModifiers.set(0,placeHolder + "+(" + addedBonus + ")");
+            tooltipModifiers.add("  Neighbour Multiplierbonus: x" + multiplier);
+
             return returnValue;
         }
 
@@ -147,7 +195,7 @@ public class CapabilityClockwork
          * @return return value of all components, index 0 is the base component, anything after the neighbours(direction doesn't matter)
          */
         //ToDo Better way/Keep it to getActualProgress only because only that is influenced?
-        private ArrayList<IClockworkComponent> getCompAndNeighbours(IClockworkComponent[][] components, int x, int y){
+        private List<IClockworkComponent> getCompAndNeighbours(IClockworkComponent[][] components, int x, int y){
             ArrayList<IClockworkComponent> returnComps = new ArrayList<IClockworkComponent>();
             returnComps.add(components[x][y]);
 

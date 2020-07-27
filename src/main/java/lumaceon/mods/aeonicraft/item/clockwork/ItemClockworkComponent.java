@@ -2,7 +2,7 @@ package lumaceon.mods.aeonicraft.item.clockwork;
 
 import lumaceon.mods.aeonicraft.api.clockwork.ClockworkComponentTypes;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponentItem;
-import lumaceon.mods.aeonicraft.api.clockwork.IClockworkTooltip;
+import lumaceon.mods.aeonicraft.api.clockwork.tooltips.IClockworkTooltips;
 import lumaceon.mods.aeonicraft.api.clockwork.baseStats.*;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemClockworkComponent extends ItemAeonicraft implements IClockworkComponentItem, IClockworkTooltip
+public class ItemClockworkComponent extends ItemAeonicraft implements IClockworkComponentItem, IClockworkTooltips
 {
     public ItemClockworkComponent(int maxStack, int maxDamage, String name, float progress, float windupCost, float efficiency, float windUpMaxMod) {
         super(maxStack, maxDamage, name);
@@ -37,7 +37,7 @@ public class ItemClockworkComponent extends ItemAeonicraft implements IClockwork
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        tooltip = getTooltip(getClockworkStatCollection(), tooltip);
+        tooltip.addAll(getTooltip(getClockworkStatCollection()));
 
     }
 
