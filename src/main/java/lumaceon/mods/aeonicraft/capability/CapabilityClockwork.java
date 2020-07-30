@@ -1,10 +1,8 @@
 package lumaceon.mods.aeonicraft.capability;
 
-import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.clockwork.ClockworkTooltipDummy;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponent;
-import lumaceon.mods.aeonicraft.api.clockwork.tooltips.IClockworkTooltips;
 import lumaceon.mods.aeonicraft.api.clockwork.baseStats.*;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,10 +43,10 @@ public class CapabilityClockwork
     {
         private int matrixSize;
 
-        private ClockworkEfficiencyStat summedEfficiency  = new ClockworkEfficiencyStat(0);
-        private ClockworkMaxWindUpStat summedMaxWindUp  = new ClockworkMaxWindUpStat(0);
-        private ClockworkProgressStat summedProgress = new ClockworkProgressStat(0);
-        private ClockworkWindUpStat summedWindUp = new ClockworkWindUpStat(0);
+        private ClockworkBaseStat summedEfficiency  =   BaseStatBuilder.getNewEfficiencyStatInstance(0);
+        private ClockworkBaseStat summedMaxWindUp  =    BaseStatBuilder.getNewWindupMaxStatInstance(0);
+        private ClockworkBaseStat summedProgress =      BaseStatBuilder.getNewProgressStatInstance(0);
+        private ClockworkBaseStat summedWindUp =        BaseStatBuilder.getNewWindupStatInstance(0);
 
         private List<String>[][] matrixCompDescription;
 
@@ -63,17 +61,18 @@ public class CapabilityClockwork
             this.matrixSize = matrixSize;
         }
 
-        private void resetClockworkStats(){
-            summedProgress = new ClockworkProgressStat(0);
-            summedEfficiency = new ClockworkEfficiencyStat(0);
-            summedMaxWindUp = new ClockworkMaxWindUpStat(0);
-            summedWindUp = new ClockworkWindUpStat(0);
+        private void resetClockworkStats() {
+            ClockworkBaseStat summedEfficiency = BaseStatBuilder.getNewEfficiencyStatInstance(0);
+            ClockworkBaseStat summedMaxWindUp = BaseStatBuilder.getNewWindupMaxStatInstance(0);
+            ClockworkBaseStat summedProgress = BaseStatBuilder.getNewProgressStatInstance(0);
+            ClockworkBaseStat summedWindUp = BaseStatBuilder.getNewWindupStatInstance(0);
         }
 
         public List<String> clockworkMatrixComponentTooltips(ClockworkTooltipDummy dummy){
             List<String> returnValue = new ArrayList<>();
             for (ClockworkBaseStat stat : dummy.getClockworkStatCollection()) {
-                returnValue.addAll(dummy.getTooltipCollection(stat));
+                returnValue.add("TODO");
+                return returnValue;
             }
             
             return returnValue;
@@ -98,8 +97,8 @@ public class CapabilityClockwork
                         List<IClockworkComponent> componentAndNeighbours = getCompAndNeighbours(components,x,y);
                         summedProgress.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getProgress(), true);
                         summedEfficiency.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getEfficiency(), false);
-                        summedMaxWindUp.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getWindUpMaxMod(), false);
-                        summedWindUp.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getWindUpCost(), false);
+                        //summedMaxWindUp.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getWindUpMaxMod(), false);
+                        summedWindUp.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getWindupCost(), false);
 
 
                         //populate the matrix with the proper tooltip description, feeding it the modified values from the valueHolder
@@ -156,8 +155,6 @@ public class CapabilityClockwork
             }
 
 
-            List<String> tooltipModifiers = dummy.getTooltipCollection(dummyClockworkStat);
-            tooltipModifiers.addAll(dummyClockworkStat.getBasicTooltipDescription());
 
             //if Neighbours aren't supposed to be counted, return. Same if no neighbours exist
             if(!countNeighbours) return returnValue;
@@ -178,11 +175,6 @@ public class CapabilityClockwork
 
             //difference between baseStat and modifiedValue to properly shenanigans the tooltip
             float addedBonus = returnValue - dummyClockworkStat.StatValue;
-
-            //set proper string stuff
-            String placeHolder = tooltipModifiers.get(0);
-            tooltipModifiers.set(0,placeHolder + "+(" + addedBonus + ")");
-            tooltipModifiers.add("  Neighbour Multiplierbonus: x" + multiplier);
 
             return returnValue;
         }
@@ -240,23 +232,22 @@ public class CapabilityClockwork
         }
 
         @Override
-        public ClockworkProgressStat getProgress() {
+        public ClockworkBaseStat getProgress() {
             return summedProgress;
         }
 
         @Override
-        public ClockworkWindUpStat getWindUpCost() {
+        public ClockworkBaseStat getWindupCost() {
             return summedWindUp;
         }
 
         @Override
-        public ClockworkMaxWindUpStat getWindUpMaxMod() {
-            return summedMaxWindUp;
+        public ClockworkBaseStat getEfficiency() {
+            return summedEfficiency;
         }
 
-        @Override
-        public ClockworkEfficiencyStat getEfficiency() {
-            return summedEfficiency;
+        public ClockworkBaseStat getWindUpMaxMod() {
+            return summedMaxWindUp;
         }
     }
 

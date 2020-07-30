@@ -4,13 +4,13 @@ package lumaceon.mods.aeonicraft.api.clockwork.baseStats;
 //Also has a helper method that returns a collection of these stats back
 public interface IClockworkBaseStats {
 
-    ClockworkProgressStat getProgress();
-    ClockworkWindUpStat getWindUpCost();
-    ClockworkMaxWindUpStat getWindUpMaxMod();
-    ClockworkEfficiencyStat getEfficiency();
+
+    ClockworkBaseStat getProgress();
+    ClockworkBaseStat getWindupCost();
+    ClockworkBaseStat getEfficiency();
 
     default public ClockworkBaseStat[] getClockworkStatCollection(){
-        ClockworkBaseStat[] returnValues = {getProgress(),getEfficiency(),getWindUpMaxMod(),getWindUpCost()};
+        ClockworkBaseStat[] returnValues = {getProgress(),getEfficiency(), getWindupCost()};
         return returnValues;
     }
 

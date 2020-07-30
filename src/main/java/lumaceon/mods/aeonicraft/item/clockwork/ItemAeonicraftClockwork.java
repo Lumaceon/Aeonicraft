@@ -2,7 +2,7 @@ package lumaceon.mods.aeonicraft.item.clockwork;
 
 import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
-import lumaceon.mods.aeonicraft.api.clockwork.tooltips.IClockworkTooltips;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.tooltip.IClockworkTooltips;
 import lumaceon.mods.aeonicraft.api.clockwork.ItemClockwork;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;

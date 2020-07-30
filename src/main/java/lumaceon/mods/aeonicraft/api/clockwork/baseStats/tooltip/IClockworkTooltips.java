@@ -1,4 +1,4 @@
-package lumaceon.mods.aeonicraft.api.clockwork.tooltips;
+package lumaceon.mods.aeonicraft.api.clockwork.baseStats.tooltip;
 
 import lumaceon.mods.aeonicraft.api.clockwork.baseStats.ClockworkBaseStat;
 
