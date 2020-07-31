@@ -1,24 +1,29 @@
 package lumaceon.mods.aeonicraft.api.clockwork;
 
 import lumaceon.mods.aeonicraft.api.clockwork.baseStats.*;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.tooltip.IClockworkTooltip;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.tooltip.IClockworkTooltips;
+
+import java.util.List;
 
 //Dummy class to hold data to populate modified tooltip matrix on Capability ClockworkJava
-public class ClockworkTooltipDummy implements IClockworkComponent {
+public class ClockworkTooltipDummy implements IClockworkComponent, IClockworkTooltips {
 
     public ClockworkTooltipDummy(){
         this(0,0,0);
     }
+
     public ClockworkTooltipDummy(float efficiency, float progress, float windUp){
-        compEfficiency =  BaseStatBuilder.getNewEfficiencyStatInstance(0);
-        compProgress =  BaseStatBuilder.getNewProgressStatInstance(0);
-        compWindUp =  BaseStatBuilder.getNewWindupStatInstance(0);
+        compEfficiency =  BaseStatBuilder.getNewEfficiencyStatInstance(efficiency);
+        compProgress =  BaseStatBuilder.getNewProgressStatInstance(progress);
+        compWindUp =  BaseStatBuilder.getNewWindupStatInstance(windUp);
     }
 
     public ClockworkTooltipDummy(IClockworkComponent componentToCopyFrom){
-        this(componentToCopyFrom.getEfficiency().StatValue, componentToCopyFrom.getProgress().StatValue,componentToCopyFrom.getWindupCost().StatValue);
+        this(componentToCopyFrom.getEfficiency().statValue, componentToCopyFrom.getProgress().statValue, componentToCopyFrom.getWindupCost().statValue);
     }
 
-   ClockworkBaseStat    compEfficiency;
+    ClockworkBaseStat    compEfficiency;
    ClockworkBaseStat    compProgress;
    ClockworkBaseStat    compWindUp;
 
@@ -34,9 +39,13 @@ public class ClockworkTooltipDummy implements IClockworkComponent {
     public ClockworkBaseStat getEfficiency() {
         return compEfficiency;
     }
-
     @Override
     public ClockworkComponentTypes getType() {
         return null;
     }
+
+ /*   @Override
+    public List<String> getBasicTooltipDescription() {
+        return null;
+    }*/
 }

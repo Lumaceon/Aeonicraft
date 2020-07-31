@@ -29,7 +29,7 @@ public class ItemStackHandlerClockwork extends ItemStackHandler
     @Override
     protected void onContentsChanged(int slot)
     {
-        IClockworkComponent[][] matrix = new IClockworkComponent[matrixSizeX][matrixSizeY];
+        IClockworkComponentItem[][] matrix = new IClockworkComponentItem[matrixSizeX][matrixSizeY];
 
         int matrixRadiusX = matrixSizeX / 2;
         int matrixRadiusY = matrixSizeY / 2;
@@ -47,8 +47,8 @@ public class ItemStackHandlerClockwork extends ItemStackHandler
                     index--;
 
                 stack = stacks.get(index);
-                if(stack.getItem() instanceof IClockworkComponent)
-                    matrix[x][y] = (IClockworkComponent) stack.getItem();
+                if(stack.getItem() instanceof IClockworkComponentItem)
+                    matrix[x][y] = (IClockworkComponentItem) stack.getItem();
                 else
                     matrix[x][y] = null;
             }

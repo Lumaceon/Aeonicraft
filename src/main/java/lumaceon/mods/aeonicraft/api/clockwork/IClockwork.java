@@ -11,7 +11,7 @@ import java.util.List;
 public interface IClockwork extends IClockworkBaseStats
 {
     int getDiameter();
-    void buildFromStacks(IClockworkComponent[][] components);
+    void buildFromStacks(IClockworkComponentItem[][] components);
     List<String> getAdditionalTooltipsForMatrixPosition(int x, int y);
 
     NBTTagCompound serializeNBT();

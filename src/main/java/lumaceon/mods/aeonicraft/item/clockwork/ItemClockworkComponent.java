@@ -2,6 +2,8 @@ package lumaceon.mods.aeonicraft.item.clockwork;
 
 import lumaceon.mods.aeonicraft.api.clockwork.ClockworkComponentTypes;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponentItem;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.modifiers.ModifierParent;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.modifiers.ModifierCollection;
 import lumaceon.mods.aeonicraft.api.clockwork.baseStats.tooltip.IClockworkTooltips;
 import lumaceon.mods.aeonicraft.api.clockwork.baseStats.*;
 import lumaceon.mods.aeonicraft.item.ItemAeonicraft;
@@ -10,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemClockworkComponent extends ItemAeonicraft implements IClockworkComponentItem, IClockworkTooltips
@@ -22,6 +25,7 @@ public class ItemClockworkComponent extends ItemAeonicraft implements IClockwork
         this.progress = BaseStatBuilder.getNewProgressStatInstance(progress);
         this.windupCost = BaseStatBuilder.getNewWindupStatInstance(windupCost);
         this.efficiency = BaseStatBuilder.getNewEfficiencyStatInstance(efficiency);
+        getClockworkCompModifiers().add(ModifierCollection.getNewPlusModifier(5,1,this));
     }
 
     //Different values that are important for the clockworkMatrix
@@ -32,11 +36,16 @@ public class ItemClockworkComponent extends ItemAeonicraft implements IClockwork
     private ClockworkBaseStat  windUpMaxMod;
     private ClockworkBaseStat  efficiency;
 
+    private List<ModifierParent> clockworkCompModifierParents = new ArrayList<ModifierParent>();
+
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
         tooltip.addAll(getTooltip(getClockworkStatCollection()));
+        for (ModifierParent mod: clockworkCompModifierParents) {
+            tooltip.addAll(mod.getBasicTooltipDescription());
+        }
 
     }
 
@@ -55,5 +64,10 @@ public class ItemClockworkComponent extends ItemAeonicraft implements IClockwork
     @Override
     public ClockworkComponentTypes getType() {
         return ClockworkComponentTypes.GEAR;
+    }
+
+    @Override
+    public List<ModifierParent> getClockworkCompModifiers() {
+        return clockworkCompModifierParents;
     }
 }

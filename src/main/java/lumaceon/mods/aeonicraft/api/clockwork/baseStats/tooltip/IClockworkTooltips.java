@@ -11,7 +11,7 @@ public interface IClockworkTooltips {
     default public List<String> getTooltip(ClockworkBaseStat[] stats){
         List<String> returnValue = new ArrayList<String>();
         for(ClockworkBaseStat stat : stats){
-            if(stat.StatValue != 0){
+            if(stat.statValue != 0){
                 //Format of the tooltips, bold statName with a color followed by the number.
                 returnValue.addAll(stat.getBasicTooltipDescription());
             }

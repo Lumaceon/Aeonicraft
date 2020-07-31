@@ -1,9 +1,14 @@
 package lumaceon.mods.aeonicraft.capability;
 
+import lumaceon.mods.aeonicraft.Aeonicraft;
 import lumaceon.mods.aeonicraft.api.clockwork.ClockworkTooltipDummy;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockwork;
 import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponent;
+import lumaceon.mods.aeonicraft.api.clockwork.IClockworkComponentItem;
 import lumaceon.mods.aeonicraft.api.clockwork.baseStats.*;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.modifiers.ModifierChild;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.modifiers.ModifierCollection;
+import lumaceon.mods.aeonicraft.api.clockwork.baseStats.modifiers.ModifierParent;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -14,8 +19,8 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
 public class CapabilityClockwork
 {
@@ -49,7 +54,8 @@ public class CapabilityClockwork
         private ClockworkBaseStat summedWindUp =        BaseStatBuilder.getNewWindupStatInstance(0);
 
         private List<String>[][] matrixCompDescription;
-
+        private List<ModifierChild>[][] matrixCellModifiers;
+        private ClockworkTooltipDummy[][] dummyMatrix;
 
 
         public Clockwork() {
@@ -58,14 +64,19 @@ public class CapabilityClockwork
 
         public Clockwork(int matrixSize) {
             matrixCompDescription = new ArrayList[matrixSize][matrixSize];
+            matrixCellModifiers = new ArrayList[matrixSize][matrixSize];
+            dummyMatrix = new ClockworkTooltipDummy[matrixSize][matrixSize];
             this.matrixSize = matrixSize;
         }
 
         private void resetClockworkStats() {
-            ClockworkBaseStat summedEfficiency = BaseStatBuilder.getNewEfficiencyStatInstance(0);
-            ClockworkBaseStat summedMaxWindUp = BaseStatBuilder.getNewWindupMaxStatInstance(0);
-            ClockworkBaseStat summedProgress = BaseStatBuilder.getNewProgressStatInstance(0);
-            ClockworkBaseStat summedWindUp = BaseStatBuilder.getNewWindupStatInstance(0);
+            summedEfficiency = BaseStatBuilder.getNewEfficiencyStatInstance(0);
+            summedMaxWindUp = BaseStatBuilder.getNewWindupMaxStatInstance(0);
+            summedProgress = BaseStatBuilder.getNewProgressStatInstance(0);
+            summedWindUp = BaseStatBuilder.getNewWindupStatInstance(0);
+            matrixCompDescription = new ArrayList[matrixSize][matrixSize];
+            matrixCellModifiers = new ArrayList[matrixSize][matrixSize];
+            dummyMatrix = new ClockworkTooltipDummy[matrixSize][matrixSize];
         }
 
         public List<String> clockworkMatrixComponentTooltips(ClockworkTooltipDummy dummy){
@@ -83,35 +94,111 @@ public class CapabilityClockwork
         }
 
         @Override
-        public void buildFromStacks(IClockworkComponent[][] components) {
+        public void buildFromStacks(IClockworkComponentItem[][] components) {
             resetClockworkStats();
             for (int x = 0; x < components.length ; x++) {
                 for (int y = 0; y < components[x].length; y++) {
                     if(components[x][y] != null){
-                        ClockworkTooltipDummy valueHolder = new ClockworkTooltipDummy();
-                        IClockworkComponent currentComp = components[x][y];
-
-                        //set/calculate the singular statvalues, add it to the valueHolder(Dummy) and then add it to the sum
-
-
-                        List<IClockworkComponent> componentAndNeighbours = getCompAndNeighbours(components,x,y);
-                        summedProgress.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getProgress(), true);
-                        summedEfficiency.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getEfficiency(), false);
-                        //summedMaxWindUp.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getWindUpMaxMod(), false);
-                        summedWindUp.StatValue += setDummyProgress(componentAndNeighbours,valueHolder, comp -> comp.getWindupCost(), false);
-
-
-                        //populate the matrix with the proper tooltip description, feeding it the modified values from the valueHolder
-                        matrixCompDescription[x][y] = clockworkMatrixComponentTooltips(valueHolder);
-
-                        //todo why does this log three times? Shouldn't it be two(Server, Client?) Also seems to be some sort of small delay when placing two.
-                        //Aeonicraft.logger.info("Matrix in position " + x + " " + y + ": " + matrixCompDescription[x][y]);
-                    }else{
-                        matrixCompDescription[x][y] = null;
+                        for (ModifierParent origin: components[x][y].getClockworkCompModifiers()) {
+                            populateModifierList(origin,x,y);
+                        }
+                        giveNeighborboon(x,y);
+                        dummyMatrix[x][y] = new ClockworkTooltipDummy(components[x][y]);
                     }
                 }
             }
-            //TODO Implement.
+
+            for (int x = 0; x < dummyMatrix.length ; x++) {
+                for (int y = 0; y < dummyMatrix[x].length; y++) {
+                    if(dummyMatrix[x][y] != null){
+                        ClockworkTooltipDummy dummy = dummyMatrix[x][y];
+                        if(matrixCellModifiers[x][y] != null){
+
+                            List<ModifierChild> originalList = matrixCellModifiers[x][y];
+                            List<ModifierChild> clonedList = new ArrayList<>();
+
+                            int j = 0;
+                            while(originalList.size() > 0){
+                                List<ModifierChild> hits = new ArrayList<ModifierChild>();
+                                clonedList.add(originalList.get(0));
+                                originalList.remove(0);
+                                for (int i = 0; i < originalList.size(); i++) {
+
+                                    boolean success = clonedList.get(j).mergeModChilds(originalList.get(i));
+                                    if(success){
+                                        hits.add(originalList.get(i));
+                                    }
+                                }
+                                j++;
+                                originalList.removeAll(hits);
+                            }
+                            matrixCellModifiers[x][y] = clonedList;
+
+                        for (ModifierChild mod : matrixCellModifiers[x][y]) {
+                            mod.stuff2(dummy);
+                        }}
+
+                        matrixCompDescription[x][y] = new ArrayList<String>();
+                        matrixCompDescription[x][y].addAll(dummy.getTooltip(dummy.getClockworkStatCollection()));
+                        summedWindUp.modifiedValue = summedWindUp.statValue += dummy.getWindupCost().modifiedValue;
+                        summedProgress.modifiedValue = summedProgress.statValue += dummy.getProgress().modifiedValue;
+                        summedEfficiency.modifiedValue = summedEfficiency.statValue += dummy.getEfficiency().modifiedValue;
+
+                    }
+                }
+            }
+        }
+
+        private void giveNeighborboon(int xStart, int yStart){
+            int range = 1;
+            int xLower = xStart - range;
+            int yLower = yStart - range;
+            int xUpper = xStart + range;
+            int yUpper = yStart + range;
+
+            for (int x = xLower; x <= xUpper; x++) {
+                for (int y = yLower; y <= yUpper; y++) {
+                    if(x < 0 || y < 0 || x >= matrixSize || y >= matrixSize) continue;
+                    if(x == xStart && y == yStart) continue;
+                    if((x == xUpper  && y == yUpper) || (x == xLower && y == yLower) || (x == xLower && y == yUpper) || (x == xUpper && y == yLower)){
+                        continue;
+                    }
+                    if(matrixCellModifiers[x][y] == null){
+                        matrixCellModifiers[x][y] = new ArrayList<ModifierChild>();
+                    }
+
+                    ModifierChild child = ModifierCollection.getNeighbourChildBoon();
+                    matrixCellModifiers[x][y].add(child);
+
+                }
+            }
+
+        }
+
+        private void populateModifierList(ModifierParent origin, int xStart, int yStart){
+            int range = origin.getRange();
+            int xLower = xStart - range;
+            int yLower = yStart - range;
+            int xUpper = xStart + range;
+            int yUpper = yStart + range;
+
+            for (int x = xLower; x <= xUpper; x++) {
+                for (int y = yLower; y <= yUpper; y++) {
+                    if(x < 0 || y < 0 || x >= matrixSize || y >= matrixSize) continue;
+                    if(x == xStart && y == yStart) continue;
+                    if((x == xUpper  && y == yUpper) || (x == xLower && y == yLower) || (x == xLower && y == yUpper) || (x == xUpper && y == yLower)){
+                        continue;
+                    }
+                    if(matrixCellModifiers[x][y] == null){
+                        matrixCellModifiers[x][y] = new ArrayList<ModifierChild>();
+                    }
+
+                    ModifierChild child = origin.spawnChild();
+                    matrixCellModifiers[x][y].add(child);
+
+                }
+            }
+
         }
 
         @Override
@@ -122,112 +209,25 @@ public class CapabilityClockwork
 
 
 
-        /**
-         * Gets the absolute/final progress of the component
-         * @param components ArrayList that should contain components and its neighbours
-         * @return returns a float that represents the final progress value of the component at this position
-         */
-
-        /**
-         * Calculate the total amount of stats gained and sets the relevant stats of the dummy PlaceHolder to properly add the tooltip in the matrix interface to the component position
-         * @param components List of components, first position is the "main", rest can be neighbours (or other components) that do relevant calculations (currently only neighbour bonus)
-         * @param dummy the dummy/placeholder object that has stats saved to it
-         * @param foo function that returns the relevant BaseStat to do calculations and other shenanigans with
-         * @param countNeighbours should it count the neighbours for bonus?
-         * @return returns the total value gained (or lost)
-         */
-        private float setDummyProgress(List<IClockworkComponent> components, ClockworkTooltipDummy dummy, Function<IClockworkBaseStats, ClockworkBaseStat> foo, boolean countNeighbours){
-            //Actual final number that is being worked with
-            float returnValue = 0f;
-
-            //Get the relevant Clockwork component from the actual component
-            IClockworkComponent mainComponent = components.get(0);
-
-            //get the relevant stat from the dummy
-            ClockworkBaseStat dummyClockworkStat = foo.apply(dummy);
-
-            //set the float values of the dummyClockworkStat, the mainCompStat and the returnValue to the mainCompStat
-            returnValue = dummyClockworkStat.StatValue = foo.apply(mainComponent).StatValue;
-
-            //If Value is 0, return 0 and don't apply any modifiers since the stat doesn't actually exist
-            if(returnValue == 0f){
-                return returnValue;
-            }
-
-
-
-            //if Neighbours aren't supposed to be counted, return. Same if no neighbours exist
-            if(!countNeighbours) return returnValue;
-            if(components.size() == 1) return returnValue;
-
-            float multiplier = 1;
-            //Math shenanigans to double/divide if neighbours are same, or different, type.
-            for (int i = 1; i < components.size(); i++) {
-                IClockworkComponent neighbourComponent = components.get(i);
-                if(mainComponent.getType() == neighbourComponent.getType()){
-                    multiplier *= 2;
-                }else{
-                    multiplier /= 2;
-                }
-            }
-            //apply the multiplier to the returnValue
-            returnValue *= multiplier;
-
-            //difference between baseStat and modifiedValue to properly shenanigans the tooltip
-            float addedBonus = returnValue - dummyClockworkStat.StatValue;
-
-            return returnValue;
-        }
-
-        /**
-         * Checks if a component at a given location in the matrix has neighbours and gives it back.
-         * @param components entire matrix that contains the ClockworkComponents
-         * @param x x coordinate of the "main" component, surrounding neighbours will be checked
-         * @param y y coordinate of the "main" component, surrounding neighbours will be checked
-         * @return return value of all components, index 0 is the base component, anything after the neighbours(direction doesn't matter)
-         */
-        //ToDo Better way/Keep it to getActualProgress only because only that is influenced?
-        private List<IClockworkComponent> getCompAndNeighbours(IClockworkComponent[][] components, int x, int y){
-            ArrayList<IClockworkComponent> returnComps = new ArrayList<IClockworkComponent>();
-            returnComps.add(components[x][y]);
-
-            //Routine checks against outOfBounds exceptions
-            if(x > 0){
-                returnComps.add(components[x-1][y]);
-            }
-            if(y > 0){
-                returnComps.add(components[x][y-1]);
-            }
-            if(x+1 < components.length){
-                returnComps.add(components[x+1][y]);
-            }
-            if(y+1 < components[x].length){
-                returnComps.add(components[x][y+1]);
-            }
-
-            //In case of any null values added, remove them here
-           while(returnComps.remove(null)){ }
-
-           return returnComps;
-        }
 
         @Override
         public NBTTagCompound serializeNBT() {
             NBTTagCompound compound = new NBTTagCompound();
-            compound.setFloat("PROGRESS", summedProgress.StatValue);
-            compound.setFloat("EFFICIENCY",summedEfficiency.StatValue);
-            compound.setFloat("WINDUP",summedWindUp.StatValue);
-            compound.setFloat("WINDUPMAX",summedMaxWindUp.StatValue);
+            compound.setFloat("PROGRESS", summedProgress.statValue);
+            compound.setFloat("EFFICIENCY", summedEfficiency.statValue);
+            compound.setFloat("WINDUP", summedWindUp.statValue);
+            compound.setFloat("WINDUPMAX", summedMaxWindUp.statValue);
             // TODO Save data to compound.
             return compound;
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound compound) {
-            summedProgress.StatValue = compound.getFloat("PROGRESS");
-            summedEfficiency.StatValue = compound.getFloat("EFFICIENCY");
-            summedWindUp.StatValue = compound.getFloat("WINDUP");
-            summedMaxWindUp.StatValue = compound.getFloat("WINDUPMAX");
+            summedProgress.modifiedValue = summedProgress.statValue = compound.getFloat("PROGRESS");
+            summedEfficiency.modifiedValue = summedEfficiency.statValue =  compound.getFloat("EFFICIENCY");
+            summedWindUp.modifiedValue = summedWindUp.statValue = compound.getFloat("WINDUP");
+            summedMaxWindUp.modifiedValue = summedMaxWindUp.statValue = compound.getFloat("WINDUPMAX");
+
 
         }
 
